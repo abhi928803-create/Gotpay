@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GotPay - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #0056D2; --success: #4caf50; --danger: #e53935; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); margin: 0; padding: 15px; }
+        
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+        .header { text-align: center; color: var(--primary); margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 900; }
+        .header p { margin: 5px 0 0 0; color: #666; font-size: 14px; }
+        
+        .section-title { color: #333; margin-top: 30px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 20px; }
+        
+        /* Request Cards */
+        .card { background: #fafafa; border: 1px solid #e0e0e0; padding: 18px; margin-bottom: 15px; border-radius: 10px; position: relative; }
+        .card-dep { border-left: 6px solid var(--success); }
+        .card-with { border-left: 6px solid var(--danger); }
+        
+        .badge { display: inline-block; padding: 4px 10px; background: #e3f2fd; color: var(--primary); border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+        .badge-bonus { background: #e8f5e9; color: var(--success); }
+        
+        .details { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 15px; }
+        .details strong { color: #111; }
+        .highlight-amount { font-size: 18px; color: var(--success); font-weight: bold; }
+        .upi-box { background: #ffebee; color: var(--danger); padding: 4px 8px; border-radius: 4px; font-weight: bold; font-family: monospace; font-size: 14px; }
+        
+        /* Buttons */
+        .btn-group { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; color: white; transition: 0.2s; }
+        .btn:active { transform: scale(0.98); }
+        .btn-approve { background: var(--success); box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3); }
+        .btn-reject { background: var(--danger); box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3); }
+        
+        .empty-msg { text-align: center; color: #888; font-style: italic; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>👑 GotPay Admin Panel</h1>
+            <p>Manage Deposits, Withdrawals, and Users</p>
+        </div>
+        
+        <!-- DEPOSIT SECTION -->
+        <h2 class="section-title"><i class="fa-solid fa-circle-arrow-up" style="color:var(--success);"></i> Pending Deposits (Buy Token)</h2>
+        <div id="depositList">
+            <div class="empty-msg">Loading deposit requests...</div>
+        </div>
+
+        <!-- WITHDRAW SECTION -->
+        <h2 class="section-title"><i class="fa-solid fa-circle-arrow-down" style="color:var(--danger);"></i> Pending Withdrawals (Sell Token)</h2>
+        <div id="withdrawList">
+            <div class="empty-msg">Loading withdrawal requests...</div>
+        </div>
+    </div>
+
+    <!-- FIREBASE & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+        // 🔥 FIREBASE CONFIGURATION 🔥
+        const firebaseConfig = {
+          apiKey: "AIzaSyCxU0-aRs0qnjrsdiTR5lojxnen8PwsxfU",
+          authDomain: "shakti-pay.firebaseapp.com",
+          databaseURL: "https://shakti-pay-default-rtdb.firebaseio.com",
+          projectId: "shakti-pay",
+          storageBucket: "shakti-pay.firebasestorage.app",
+          messagingSenderId: "603174782279",
+          appId: "1:603174782279:web:6220300ba1c4aff3597862"
+        };
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // --- 1. FETCH DEPOSITS ---
+        onValue(ref(database, 'deposit_requests'), (snapshot) => {
+            const listDiv = document.getElementById('depositList');
+            listDiv.innerHTML = '';
+            let hasPending = false;
+            
+            snapshot.forEach((child) => {
+                const reqId = child.key; 
+                const data = child.val();
+                
+                if(data.status === "Pending") {
+                    hasPending = true;
+                    // Format Date
+                    let dateStr = data.timestamp ? new Date(data.timestamp).toLocaleString() : "Unknown Time";
+                    
+                    listDiv.innerHTML += `
+                        <div class="card card-dep">
+                            <span class="badge"><i class="fa-solid fa-building-columns"></i> ${data.gateway || 'UPI'}</span>
+                            <span class="badge badge-bonus"><i class="fa-solid fa-fire"></i> 6% Bonus Applied</span>
+                            
+                            <div class="details">
+                                <p><strong>User:</strong> ${data.username} (UID: ${data.uid || 'N/A'})</p>
+                                <p><strong>Phone Number:</strong> ${data.phone}</p>
+                                <p><strong>Original Paid Amount:</strong> ₹${data.original_amount}</p>
+                                <p><strong>Amount To Add (+6%):</strong> <span class="highlight-amount">₹${data.amount_with_bonus}</span></p>
+                                <p><strong>UTR / Ref No:</strong> <span style="background:#eee; padding:2px 5px; font-weight:bold; letter-spacing:1px;">${data.utr}</span></p>
+                                <p style="font-size:12px; color:#888; margin-top:5px;">Time: ${dateStr}</p>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button class="btn btn-approve" onclick="approveDeposit('${reqId}', '${data.phone}', ${data.amount_with_bonus})">✅ Approve & Add ₹${data.amount_with_bonus}</button>
+                                <button class="btn btn-reject" onclick="rejectRequest('deposit_requests', '${reqId}')">❌ Reject</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            if(!hasPending) listDiv.innerHTML = '<div class="empty-msg">No pending deposits found! 🎉</div>';
+        });
+
+        // --- 2. FETCH WITHDRAWALS ---
+        onValue(ref(database, 'withdraw_requests'), (snapshot) => {
+            const listDiv = document.getElementById('withdrawList');
+            listDiv.innerHTML = '';
+            let hasPending = false;
+            
+            snapshot.forEach((child) => {
+                const reqId = child.key; 
+                const data = child.val();
+                
+                if(data.status === "Pending") {
+                    hasPending = true;
+                    let dateStr = data.timestamp ? new Date(data.timestamp).toLocaleString() : "Unknown Time";
+                    
+                    listDiv.innerHTML += `
+                        <div class="card card-with">
+                            <div class="details">
+                                <p><strong>User:</strong> ${data.username} (UID: ${data.uid || 'N/A'})</p>
+                                <p><strong>Phone Number:</strong> ${data.phone}</p>
+                                <p><strong>Amount To Send:</strong> <span class="highlight-amount" style="color:var(--danger);">₹${data.amount}</span></p>
+                                <p><strong>Send To UPI:</strong> <span class="upi-box">${data.upiId}</span> <i class="fa-regular fa-copy" style="cursor:pointer; color:#666;" onclick="navigator.clipboard.writeText('${data.upiId}'); alert('UPI Copied!');"></i></p>
+                                <p style="font-size:12px; color:#888; margin-top:5px;">Time: ${dateStr}</p>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button class="btn btn-approve" onclick="approveWithdraw('${reqId}', '${data.phone}', ${data.amount})">✅ Sent & Deduct ₹${data.amount}</button>
+                                <button class="btn btn-reject" onclick="rejectRequest('withdraw_requests', '${reqId}')">❌ Reject</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            if(!hasPending) listDiv.innerHTML = '<div class="empty-msg">No pending withdrawals found! 🎉</div>';
+        });
+
+        // --- 3. ACTION LOGICS ---
+
+        // Approve Deposit (Add Money)
+        window.approveDeposit = async function(reqId, phone, totalAmountToAdd) {
+            if(!confirm(`Are you sure you want to add ₹${totalAmountToAdd} to this user?`)) return;
+            
+            // Update request status
+            await update(ref(database, `deposit_requests/${reqId}`), { status: "Success" });
+            
+            // Add balance to user
+            const userRef = ref(database, `users/${phone}`);
+            const snap = await get(userRef);
+            let bal = (snap.exists() && snap.val().balance) ? snap.val().balance : 0;
+            await update(userRef, { balance: bal + totalAmountToAdd });
+            
+            alert(`✅ Deposit Approved! ₹${totalAmountToAdd} added to user's wallet.`);
+        }
+
+        // Approve Withdrawal (Deduct Money)
+        window.approveWithdraw = async function(reqId, phone, amountToDeduct) {
+            if(!confirm(`Did you successfully send ₹${amountToDeduct} to the user's UPI? \nClick OK to deduct balance.`)) return;
+            
+            // Update request status
+            await update(ref(database, `withdraw_requests/${reqId}`), { status: "Success" });
+            
+            // Deduct balance from user
+            const userRef = ref(database, `users/${phone}`);
+            const snap = await get(userRef);
+            let bal = (snap.exists() && snap.val().balance) ? snap.val().balance : 0;
+            let newBal = bal - amountToDeduct;
+            if(newBal < 0) newBal = 0; // Balance should not be negative
+            await update(userRef, { balance: newBal });
+            
+            alert(`✅ Withdrawal Approved! ₹${amountToDeduct} deducted from user's wallet.`);
+        }
+
+        // Reject Request (Common for both)
+        window.rejectRequest = async function(path, reqId) {
+            if(!confirm("Are you sure you want to REJECT this request?")) return;
+            
+            await update(ref(database, `${path}/${reqId}`), { status: "Rejected" });
+            alert("❌ Request Rejected!");
+        }
+    </script>
+</body>
+</html>
+
