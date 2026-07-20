@@ -258,33 +258,40 @@
 
         // --- AUTHENTICATION & UID LOGIC (NO OTP) ---
         window.registerUser = async () => {
-            let name = document.getElementById('regName').value;
-            let phone = document.getElementById('regPhone').value;
-            let pass = document.getElementById('regPass').value;
+    let name = document.getElementById('regName').value;
+    let phone = document.getElementById('regPhone').value;
+    let pass = document.getElementById('regPass').value;
 
-            if(!name  phone.length !== 10  !pass) return alert("Please fill all details correctly. Mobile number must be 10 digits.");
+    if(!name || phone.length !== 10 || !pass) {
+        alert("Please fill all details correctly.");
+        return;
+    }
 
-            let userRef = ref(db, users/${phone});
-            let snap = await get(userRef);
-            if(snap.exists ()) return alert("Number already registered! Please Login.");
+    let userRef = ref(db, 'users/' + phone);
+    let snap = await get(userRef);
+    
+    if(snap.exists()) {
+        alert("Number already registered! Please Login.");
+        return;
+    }
 
-            // Sequential UID Logic (100000 -> 100001)
-            let counterRef = ref(db, 'system/last_uid');
-            let counterSnap = await get(counterRef);
-            let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100000;
+    let counterRef = ref(db, 'system/last_uid');
+    let counterSnap = await get(counterRef);
+    let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
 
-            await set(userRef, {
-                username: name,
-                phone: phone,
-                password: pass,
-                uid: newUid,
-                balance: 0,
-                upis: {} // Empty Object for UPIs
-            });
-            await set(counterRef, newUid); // Update System Counter
-            
-            alert(Registration Successful!\nYour GotPay UID is: ${newUid});
-            showPage('loginPage');
+    await set(userRef, {
+        username: name,
+        phone: phone,
+        password: pass,
+        uid: newUid,
+        balance: 0,
+        upis: {}
+    });
+    
+    await set(counterRef, newUid);
+
+    alert("Registration Successful! Your UID is: " + newUid);
+    window.showPage('loginPage');
         }
 
         window.loginUser = async () => {
