@@ -216,9 +216,8 @@
 
     <!-- FIREBASE & JS LOGIC -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getDatabase, ref, set, get, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
-
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
         const firebaseConfig = {
          apiKey: "AIzaSyDo8GjgCQ5EGdNH7I8pbRnnxahcpmfwexs",
          authDomain: "gotpay-3cfe1.firebaseapp.com",
@@ -229,9 +228,8 @@
          appId: "1:62334887647:web:d5b389eb34c100b6812b6a",
          measurementId: "G-EBJBBFRSV7"
          };
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
+        firebase.initializeApp(firebaseConfig);
+         const db = firebase.database();
         let currentUser = null; 
         let currentBalance = 0;
         let generatedOTP = "";
@@ -267,8 +265,8 @@
         return;
     }
 
-    let userRef = ref(db, 'users/' + phone);
-    let snap = await get(userRef);
+    let userRef = db.ref('users/' + phone); 
+     let snap = await userRef.once('value');
     
     if(snap.exists()) {
         alert("Number already registered! Please Login.");
