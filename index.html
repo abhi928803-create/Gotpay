@@ -64,7 +64,7 @@
                 <input type="password" id="loginPass" class="input-field" placeholder="Password">
             </div>
             <button class="primary-btn" onclick="loginUser()">Login</button>
-            <button type="button" class="primary-btn" onclick="window.showPage('registerPage')">Create New Account</button>
+            <button type="button" class="primary-btn" onclick="document.getElementById('loginPage').classList.remove('active'); document.getElementById('registerPage').classList.add('active');">Create New Account</button>
         </div>
 
         <!-- REGISTER PAGE (NO OTP) -->
@@ -81,7 +81,7 @@
                 <input type="password" id="regPass" class="input-field" placeholder="Set Password">
             </div>
             <button class="primary-btn" onclick="registerUser()">Register</button>
-            <button type="button" class="primary-btn" onclick="window.showPage('loginPage')">Already registered? Login</button>
+            <button type="button" class="primary-btn" onclick="document.getElementById('registerPage').classList.remove('active'); document.getElementById('loginPage').classList.add('active');">Already registered? Login</button>
         </div>
 
         <!-- DASHBOARD APP -->
