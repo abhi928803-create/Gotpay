@@ -70,7 +70,69 @@
          visibility: visible;
          opacity: 1;
           bottom: 50px;
-          }
+             {
+        /* --- NEW DASHBOARD STYLES --- */
+.stats-bar {
+    display: flex;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border-radius: 12px;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.stat-box {
+    flex: 1;
+    padding: 12px;
+}
+.stat-box:first-child {
+    border-right: 1px solid rgba(255,255,255,0.2);
+}
+.quick-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.action-btn {
+    text-align: center;
+    cursor: pointer;
+}
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    background: #f4f7fc;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--primary);
+    margin: 0 auto 8px auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.promo-banner {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    border-radius: 12px;
+    padding: 15px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0,114,255,0.2);
+}
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.section-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
     </style>
 </head>
 <body>
@@ -114,39 +176,89 @@
             
             <!-- HOME PAGE -->
             <div id="homePage" class="page-content active">
-                <div class="header">
-                    <div class="user-badge">
-                        <div class="avatar" id="avatarInitial">U</div>
-                        <div>
-                            <h3 id="displayUsername" style="color:#111; font-size:16px;">Loading...</h3>
-                            <p style="font-size:12px; color:#666;">UID: <strong id="displayUid">---</strong></p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-power-off" style="color: var(--danger); font-size: 22px; cursor:pointer;" onclick="logout()"></i>
-                </div>
+    
+    <!-- Top Header -->
+    <div class="header">
+        <div class="user-badge">
+            <div class="avatar"><i class="fa-solid fa-user" style="color: var(--primary);"></i></div>
+            <div>
+                <strong id="displayUsername" style="font-size: 16px; color: #333;">Loading...</strong>
+                <div style="font-size: 12px; color: #777; margin-top: 2px;">ID: <span id="displayUid">---</span> <i class="fa-regular fa-copy" style="margin-left: 5px; cursor: pointer;"></i></div>
+            </div>
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <i class="fa-regular fa-bell" style="font-size: 20px; color: #555; cursor: pointer;"></i>
+            <i class="fa-solid fa-power-off" style="color: var(--danger); font-size: 20px; cursor: pointer;" onclick="logout()"></i>
+        </div>
+    </div>
 
-                <div class="balance-card">
-                    <p style="font-size:14px; opacity:0.9;">Total Available Balance</p>
-                    <h1 id="userBalance">₹ 0.00</h1>
-                    <p style="font-size:12px; color:#a1c4fd;">1 USDT = ₹112.00</p>
-                </div>
+    <!-- Main Balance Card -->
+    <div class="balance-card" style="margin-top: 20px; margin-bottom: 5px; border-radius: 15px 15px 0 0; padding-bottom: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="color: white;">
+                <div style="font-size: 14px; opacity: 0.9;">Available Balance</div>
+                <h1 style="margin: 8px 0; font-size: 38px;">₹ <span id="userBalance">0.00</span></h1>
+            </div>
+            <button style="background: white; color: var(--primary); border: none; padding: 6px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Detail</button>
+        </div>
+    </div>
 
-                <div class="card-box" style="display:flex; justify-content:space-around; text-align:center; padding:15px 10px;">
-                    <div onclick="switchTab('depositTab')" style="cursor:pointer; width:45%;">
-                        <i class="fa-solid fa-circle-arrow-up" style="color: var(--success); font-size:28px;"></i>
-                        <h4 style="margin-top:8px; color:#333;">Buy (Deposit)</h4>
-                    </div>
-                    <div style="width:1px; background:#eee;"></div>
-                    <div onclick="switchTab('withdrawTab')" style="cursor:pointer; width:45%;">
-                        <i class="fa-solid fa-circle-arrow-down" style="color: var(--danger); font-size:28px;"></i>
-                        <h4 style="margin-top:8px; color:#333;">Sell (Withdraw)</h4>
-                    </div>
-                </div>
+    <!-- Deposit / Withdrawal Stats -->
+    <div class="stats-bar">
+        <div class="stat-box">
+            <div style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-arrow-up" style="color: #4caf50; margin-right: 5px;"></i>Deposit</div>
+            <div style="font-weight: bold; margin-top: 5px; font-size: 15px;">₹ 0.00</div>
+        </div>
+        <div class="stat-box">
+            <div style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-arrow-down" style="color: #ff9800; margin-right: 5px;"></i>Withdrawal</div>
+            <div style="font-weight: bold; margin-top: 5px; font-size: 15px;">₹ 0.00</div>
+        </div>
+    </div>
 
-                <div class="card-box">
-                    <h3 style="margin-bottom:10px; color:#333;">Recent Activity</h3>
-                    <div id="homeHistoryList" style="font-size:13px; color:#666;">Loading...</div>
-                </div> </div>
+    <!-- Quick Action Icons -->
+    <div class="quick-actions">
+        <div class="action-btn" onclick="switchTab('buyPage')">
+            <div class="icon-circle"><i class="fa-solid fa-building-columns"></i></div>
+            <div style="font-size: 12px; font-weight: 600; color: #444;">Deposit</div>
+        </div>
+        <div class="action-btn" onclick="switchTab('sellPage')">
+            <div class="icon-circle"><i class="fa-solid fa-wallet"></i></div>
+            <div style="font-size: 12px; font-weight: 600; color: #444;">Withdraw</div>
+        </div>
+        <div class="action-btn">
+            <div class="icon-circle"><i class="fa-solid fa-list-check"></i></div>
+            <div style="font-size: 12px; font-weight: 600; color: #444;">Task</div>
+        </div>
+        <div class="action-btn">
+            <div class="icon-circle"><i class="fa-solid fa-users"></i></div>
+            <div style="font-size: 12px; font-weight: 600; color: #444;">Team</div>
+        </div>
+    </div>
+
+    <!-- Promo Banner -->
+    <div class="promo-banner">
+        <div>
+            <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; opacity: 0.9;">Newcomer Rewards</div>
+            <div style="font-size: 20px; font-weight: 900; margin: 4px 0;">In progress</div>
+            <div style="font-size: 11px; opacity: 0.9;">Complete daily paid tasks to claim.</div>
+        </div>
+        <button style="background: white; color: #0072ff; border: none; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer;">View details</button>
+    </div>
+
+    <!-- Transactions List -->
+    <div class="transactions-section">
+        <div class="section-header">
+            <h3>Transactions</h3>
+            <span style="color: var(--primary); font-size: 13px; font-weight: bold; cursor: pointer;">See All</span>
+        </div>
+        <div id="recentHistory" class="card-box" style="padding: 10px;">
+            <!-- Your Javascript will automatically load history here -->
+            <p style="text-align: center; color: #999; font-size: 13px;">No recent activity.</p>
+        </div>
+    </div>
+    
+</div>
+
 
             <!-- DEPOSIT (BUY) PAGE -->
             <div id="depositTab" class="page-content">
