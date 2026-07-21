@@ -268,11 +268,11 @@
 
     <!-- Quick Action Icons -->
     <div class="quick-actions">
-        <div class="action-btn" onclick="switchTab('buyPage')">
+        <div class="action-btn" onclick="switchTab('depositTab')">
             <div class="icon-circle"><i class="fa-solid fa-building-columns"></i></div>
             <div style="font-size: 12px; font-weight: 600; color: #444;">Deposit</div>
         </div>
-        <div class="action-btn" onclick="switchTab('sellPage')">
+        <div class="action-btn" onclick="switchTab('withdrawTab')">
             <div class="icon-circle"><i class="fa-solid fa-wallet"></i></div>
             <div style="font-size: 12px; font-weight: 600; color: #444;">Withdraw</div>
         </div>
@@ -397,7 +397,7 @@
         <i class="fa-solid fa-house"></i>
         <div>Home</div>
     </div>
-    <div class="nav-item" onclick="switchTab('buyPage', this)">
+    <div class="nav-item" onclick="switchTab('depositTab', this)">
         <i class="fa-solid fa-credit-card"></i>
         <div>Payment</div>
     </div>
@@ -409,15 +409,15 @@
         </div>
     </div>
 
-    <div class="nav-item" onclick="switchTab('sellPage', this)">
+    <div class="nav-item" onclick="switchTab('withdrawTab', this)">
         <i class="fa-solid fa-chart-pie"></i>
         <div>Statistics</div>
     </div>
-    <div class="nav-item" onclick="switchTab('profilePage', this)">
+    <div class="nav-item" onclick="switchTab('profileTab', this)">
         <i class="fa-solid fa-user"></i>
         <div>My</div>
-    </div/>
-    </div> 
+    </div>
+</div>
         <!-- FIREBASE & JS LOGIC -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
