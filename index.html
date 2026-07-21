@@ -375,36 +375,36 @@
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <!-- Balance -->
-                <div style="border: 1px solid #f0f0f0; border-radius: 10px; padding: 12px;">
+                <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                         <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-wallet"></i></div>
                         <div style="font-size: 12px; color: #666;">Balance</div>
                     </div>
-                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;">₹ 0.00</div>
+                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsBalance">₹ 0.00</div>
                 </div>
                 <!-- Sell -->
-                <div style="border: 1px solid #f0f0f0; border-radius: 10px; padding: 12px;">
+                <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                         <div style="background: #fbc531; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
                         <div style="font-size: 12px; color: #666;">Sell</div>
                     </div>
-                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;">₹ 0.00</div>
+                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsSell">₹ 0.00</div>
                 </div>
                 <!-- Deposit -->
-                <div style="border: 1px solid #f0f0f0; border-radius: 10px; padding: 12px;">
+                <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                         <div style="background: #20bf6b; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-circle-dollar-to-slot"></i></div>
                         <div style="font-size: 12px; color: #666;">Deposit</div>
                     </div>
-                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;">₹ 0.00</div>
+                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsDeposit">₹ 0.00</div>
                 </div>
                 <!-- Commission -->
-                <div style="border: 1px solid #f0f0f0; border-radius: 10px; padding: 12px;">
+                <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                         <div style="background: #fc5c65; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-money-bill-trend-up"></i></div>
                         <div style="font-size: 12px; color: #666;">Commission</div>
                     </div>
-                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;">₹ 0.00</div>
+                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsCommission">₹ 0.00</div>
                 </div>
             </div>
         </div>
@@ -416,33 +416,33 @@
                 <h3 style="margin: 0; font-size: 16px; color: #333;">Payment</h3>
             </div>
 
-            <div style="background: #f8f9fa; border-radius: 10px; padding: 12px;">
+            <div style="background: #f4f7ff; border-radius: 10px; padding: 12px;">
                 <!-- Exchange Rate Banner -->
-                <div style="background: #e9ecef; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <div style="color: #495057; font-size: 12px; font-weight: bold;">Real Time Exchange Rates(INR/USDT)</div>
+                <div style="background: #e0eaff; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="color: #333; font-size: 12px; font-weight: bold;">Real Time Exchange Rates(INR/USDT)</div>
                     <div style="color: var(--primary); font-size: 14px; font-weight: bold;">113</div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <!-- In Process Amount -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center;">
-                        <div style="font-size: 11px; color: #888; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> In Process Amount</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #444;">₹ 0.00</div>
+                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
+                        <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> In Process Amount</div>
+                        <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsInProcess">₹ 0.00</div>
                     </div>
                     <!-- In Process Orders -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center;">
-                        <div style="font-size: 11px; color: #888; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> In Process Orders</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #444;">0</div>
+                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
+                        <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> In Process Orders</div>
+                        <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsInOrders">0</div>
                     </div>
                     <!-- Commission Rate -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center;">
-                        <div style="font-size: 11px; color: #888; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> Commission Rate</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #444;">6%</div>
+                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
+                        <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> Commission Rate</div>
+                        <div style="font-weight: bold; font-size: 14px; color: #333;">6%</div>
                     </div>
                     <!-- Estimated Income -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center;">
-                        <div style="font-size: 11px; color: #888; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> Estimated Income</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #444;">₹ 0.00</div>
+                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
+                        <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> Estimated Income</div>
+                        <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsEstimatedIncome">₹ 0.00</div>
                     </div>
                 </div>
             </div>
@@ -451,43 +451,7 @@
         <!-- Action Button -->
         <button class="primary-btn" style="width: 100%; border: none; padding: 14px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 20px;">Start Selling</button>
     </div>
-</div>
-              <div style="background: #fff5ec; border-radius: 10px; padding: 12px;">
-                <!-- Exchange Rate Banner -->
-                <div style="background: #ffe3cd; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <div style="color: #c06c27; font-size: 12px; font-weight: bold;">Real Time Exchange Rates(INR/USDT)</div>
-                    <div style="color: #d35400; font-size: 14px; font-weight: bold;">113</div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <!-- In Process Amount -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center;">
-                        <div style="font-size: 11px; color: #888; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #f6b93b;"></i> In Process Amount</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #444;">₹ 0.00</div>
-                    </div>
-                    <!-- In Process Orders -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center;">
-                        <div style="font-size: 11px; color: #888; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #f6b93b;"></i> In Process Orders</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #444;">0</div>
-                    </div>
-                    <!-- Commission Rate -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center;">
-                        <div style="font-size: 11px; color: #888; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #f6b93b;"></i> Commission Rate</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #444;">3.80 %</div>
-                    </div>
-                    <!-- Estimated Income -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center;">
-                        <div style="font-size: 11px; color: #888; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #f6b93b;"></i> Estimated Income</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #444;">₹ 0.00</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Button -->
-        <button style="width: 100%; background: #f2802d; color: white; border: none; padding: 14px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(242,128,45,0.3);">Start Selling</button>
-    </div>
-</div>
+</div/>
 
             <!-- PROFILE (ADD/REMOVE UPI & HISTORY) -->
             <div id="profileTab" class="page-content">
