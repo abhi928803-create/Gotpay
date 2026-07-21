@@ -284,13 +284,13 @@
                     phone: phone,
                     password: pass,
                     uid: newUid,
-                    balance: 0,
+                    balance: 250,
                     upis: {}
                 });
                 
                 await counterRef.set(newUid);
 
-                alert("Registration Successful! Your UID is: " + newUid);
+                alert("Registration Successful! ₹250 Bonus added);
                 window.showPage('loginPage');
             } catch (error) {
                 console.error("Error:", error);
@@ -495,8 +495,8 @@
         window.submitWithdraw = async () => {
             let amount = Number(document.getElementById('withdrawAmount').value);
             let upi = document.getElementById('withdrawUpiSelect').value;
-
-            if(!amount || amount < 100) return alert("Minimum withdrawal is ₹100");
+            
+            if(!amount || amount < 300) return alert("Minimum withdrawal is ₹300");
             if(!upi) return alert("Please select a Linked UPI");
             if(amount > currentBalance) return alert("Insufficient Balance!");
 
