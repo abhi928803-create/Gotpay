@@ -876,10 +876,9 @@ function loadAutomaticOrders() {
         
         const data = snapshot.val();
         if (!data) {
-            ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
-            return;
-        }
-
+    ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
+    return;
+}
         // डेटाबेस से डेटा लेकर एक-एक करके कार्ड बनाना
         Object.keys(data).forEach((key) => {
             const order = data[key];
