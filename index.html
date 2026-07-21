@@ -372,20 +372,44 @@ window.loginUser = async () => {
         
         let userData = snap.val();
         
-        // पासवर्ड चेक करते समय .trim() लगाने से आगे-पीछे का एक्सट्रा स्पेस हट जाता है
         if(String(userData.password).trim() !== String(pass)) {
             alert("Incorrect Password!");
             return;
         }
 
         localStorage.setItem("gotpay_session", phone);
-        loadDashboard(phone);
+        window.loadDashboard(phone);
     } catch (error) {
         console.error("Login Error:", error);
         alert("Error: " + error.message);
     }
 };
-}
+
+// --- LOAD DASHBOARD FUNCTION ---
+window.loadDashboard = function(phone) {
+    document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
+    let mainApp = document.getElementById('mainApp');
+    if(mainApp) mainApp.style.display = 'block';
+
+    db.ref('users/' + phone).on('value', (snapshot) => {
+        if (snapshot.exists()) {
+            currentUser = snapshot.val();
+            currentBalance = currentUser.balance || 0;
+            
+            let usernameEl = document.getElementById('displayUsername');
+            let uidEl = document.getElementById('displayUid');
+            let balanceEl = document.getElementById('userBalance');
+            
+            if(usernameEl) usernameEl.innerText = currentUser.username;
+            if(uidEl) uidEl.innerText = "UID: " + currentUser.uid;
+            if(balanceEl) balanceEl.innerText = "₹ " + currentBalance;
+            
+            if(typeof renderUpiList === 'function') {
+                renderUpiList();
+            }
+        }
+    });
+};
             // Real-time History (Home Page)
             db.ref('deposit_requests').on('value', renderHistory);
         }
