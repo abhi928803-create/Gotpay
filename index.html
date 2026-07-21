@@ -351,15 +351,34 @@
         };
     </script>
 
-        // --- LOAD DASHBOARD DATA ---
-        db.ref('users/' + phone).on('value', (snapshot) => {
+        // --- LOAD DASHBOARD FUNCTION ---
+window.loadDashboard = (phone) => {
+    // 1. डैशबोर्ड पेज दिखाएं और लॉगिन/रजिस्टर छुपाएं
+    document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
+    let mainApp = document.getElementById('mainApp');
+    if(mainApp) mainApp.style.display = 'block';
+
+    // 2. डेटाबेस से यूजर का डेटा रियल-टाइम में लोड करें
+    db.ref('users/' + phone).on('value', (snapshot) => {
         if (snapshot.exists()) {
             currentUser = snapshot.val();
             currentBalance = currentUser.balance || 0;
-            // बाकी का आपका UI कोड वही रहेगा...
+            
+            // यूज़रनेम और बैलेंस स्क्रीन पर अपडेट करें
+            let usernameEl = document.getElementById('displayUsername');
+            let uidEl = document.getElementById('displayUid');
+            let balanceEl = document.getElementById('userBalance');
+            
+            if(usernameEl) usernameEl.innerText = currentUser.username;
+            if(uidEl) uidEl.innerText = "UID: " + currentUser.uid;
+            if(balanceEl) balanceEl.innerText = "₹ " + currentBalance;
+            
+            if(typeof renderUpiList === 'function') {
+                renderUpiList();
+            }
         }
     });
-
+}
             // Real-time History (Home Page)
             db.ref('deposit_requests').on('value', renderHistory);
         }
