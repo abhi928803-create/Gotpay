@@ -215,7 +215,7 @@
     </div>
 
     <!-- FIREBASE & JS LOGIC -->
-    <script type="module">
+    <script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
         const firebaseConfig = {
@@ -261,37 +261,40 @@
     let pass = document.getElementById('regPass').value;
 
     if(!name || phone.length !== 10 || !pass) {
-        alert("Please fill all details correctly.");
+        alert("Please fill all details correctly. Mobile number must be 10 digits.");
         return;
     }
 
-    let userRef = db.ref('users/' + phone); 
-     let snap = await userRef.once('value');
-    
-    if(snap.exists()) {
-        alert("Number already registered! Please Login.");
-        return;
-    }
-
-    let counterRef = ref(db, 'system/last_uid');
-    let counterSnap = await get(counterRef);
-    let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
-
-    await set(userRef, {
-        username: name,
-        phone: phone,
-        password: pass,
-        uid: newUid,
-        balance: 0,
-        upis: {}
-    });
-    
-    await set(counterRef, newUid);
-
-    alert("Registration Successful! Your UID is: " + newUid);
-    window.showPage('loginPage');
+    try {
+        let userRef = db.ref('users/' + phone);
+        let snap = await userRef.once('value');
+        
+        if(snap.exists()) {
+            alert("Number already registered! Please Login.");
+            return;
         }
 
+        let counterRef = db.ref('system/last_uid');
+        let counterSnap = await counterRef.once('value');
+        let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
+
+        await userRef.set({
+            username: name,
+            phone: phone,
+            password: pass,
+            uid: newUid,
+            balance: 0,
+            upis: {}
+        });
+        
+        await counterRef.set(newUid);
+
+        alert("Registration Successful! Your UID is: " + newUid);
+        window.showPage('loginPage');
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Error: " + error.message);
+    }
         window.loginUser = async () => {
             let phone = document.getElementById('loginPhone').value;
             let pass = document.getElementById('loginPass').value;
