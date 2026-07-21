@@ -47,11 +47,36 @@
         .nav-item { text-align: center; color: #999; font-size: 11px; display: flex; flex-direction: column;align-items: center; gap: 5px; cursor: pointer; flex: 1; }
         .nav-item i { font-size: 20px; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
+         #customToast {
+         visibility: hidden;
+         min-width: 250px;
+         background-color: #333;
+         color: #fff;
+         text-align: center;
+         border-radius: 8px;
+         padding: 15px;
+         position: fixed;
+         z-index: 9999;
+         left: 50%;
+         bottom: 30px;
+         transform: translateX(-50%);
+         font-size: 14px;
+         box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+         opacity: 0;
+         transition: opacity 0.3s, bottom 0.3s;
+         }
+
+         #customToast.show {
+         visibility: visible;
+         opacity: 1;
+          bottom: 50px;
+          }
     </style>
 </head>
 <body>
 
     <div class="app-container">
+    <div id="customToast"></div>
         
         <!-- LOGIN PAGE -->
         <div id="loginPage" class="auth-page active">
@@ -248,11 +273,20 @@
                 element.classList.add('active');
             }
         }
-
+        window.showToast = function(message) {
+        let toast = document.getElementById("customToast");
+        toast.innerText = message;
+        toast.classList.add("show");
+    
+        setTimeout(function() {
+           toast.classList.remove("show");
+         }, 3000);
+        };
+        
         // --- OTP SIMULATOR (FOR UPI BINDING) ---
         window.sendDemoOTP = () => {
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-            alert("GotPay Alert\nYour OTP is: " + generatedOTP);
+            showToast("GotPay Alert\nYour OTP is: " + generatedOTP);
         }
 
         // --- AUTHENTICATION & UID LOGIC (NO OTP) ---
