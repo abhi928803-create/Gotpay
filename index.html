@@ -256,10 +256,11 @@
 
         // --- AUTHENTICATION & UID LOGIC (NO OTP) ---
         window.registerUser = async () => {
+    alert("Function Triggered!"); // यह लाइन यहाँ जोड़ें
     let name = document.getElementById('regName').value;
     let phone = document.getElementById('regPhone').value;
     let pass = document.getElementById('regPass').value;
-    if(!name || phone.length !== 10 || !pass) {
+    // ... बाकी का कोड वही रहेगा
         alert("Please fill all details correctly. Mobile number must be 10 digits.");
         return;
     }
