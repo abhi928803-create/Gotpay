@@ -236,6 +236,28 @@
 
         // --- UI ROUTING ---
         window.showPage = (pageId) => {
+<!-- FIREBASE & JS LOGIC -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+         apiKey: "AIzaSyDo8GjgCQ5EGdNH7I8pbRnnxahcpmfwexs",
+         authDomain: "gotpay-3cfe1.firebaseapp.com",
+         databaseURL: "https://gotpay-3cfe1-default-rtdb.firebaseio.com",
+         projectId: "gotpay-3cfe1",
+         storageBucket: "gotpay-3cfe1.firebasestorage.app",
+         messagingSenderId: "62334887647",
+         appId: "1:62334887647:web:d5b389eb34c100b6812b6a",
+         measurementId: "G-EBJBBFRSV7"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        let currentUser = null; 
+        let currentBalance = 0;
+        let generatedOTP = "";
+
+        // --- UI ROUTING ---
+        window.showPage = (pageId) => {
             document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
@@ -251,80 +273,83 @@
         // --- OTP SIMULATOR (FOR UPI BINDING) ---
         window.sendDemoOTP = () => {
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-            alert([GotPay Alert]\nYour OTP is: ${generatedOTP});
+            alert("GotPay Alert\nYour OTP is: " + generatedOTP);
         }
 
         // --- AUTHENTICATION & UID LOGIC (NO OTP) ---
         window.registerUser = async () => {
-    alert("Function Triggered!"); // यह लाइन यहाँ जोड़ें
-    let name = document.getElementById('regName').value;
-    let phone = document.getElementById('regPhone').value;
-    let pass = document.getElementById('regPass').value;
-    // ... बाकी का कोड वही रहेगा
-        alert("Please fill all details correctly. Mobile number must be 10 digits.");
-        return;
-    }
+            let name = document.getElementById('regName').value;
+            let phone = document.getElementById('regPhone').value;
+            let pass = document.getElementById('regPass').value;
 
-    try {
-        let userRef = db.ref('users/' + phone);
-        let snap = await userRef.once('value');
-        
-        if(snap.exists()) {
-            alert("Number already registered! Please Login.");
-            return;
-        }
+            if(!name || phone.length !== 10 || !pass) {
+                alert("Please fill all details correctly. Mobile number must be 10 digits.");
+                return;
+            }
 
-        let counterRef = db.ref('system/last_uid');
-        let counterSnap = await counterRef.once('value');
-        let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
+            try {
+                let userRef = db.ref('users/' + phone);
+                let snap = await userRef.once('value');
+                
+                if(snap.exists()) {
+                    alert("Number already registered! Please Login.");
+                    return;
+                }
 
-        await userRef.set({
-            username: name,
-            phone: phone,
-            password: pass,
-            uid: newUid,
-            balance: 0,
-            upis: {}
-        });
-        
-        await counterRef.set(newUid);
+                let counterRef = db.ref('system/last_uid');
+                let counterSnap = await counterRef.once('value');
+                let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
 
-        alert("Registration Successful! Your UID is: " + newUid);
-        window.showPage('loginPage');
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Error: " + error.message);
-    }
+                await userRef.set({
+                    username: name,
+                    phone: phone,
+                    password: pass,
+                    uid: newUid,
+                    balance: 0,
+                    upis: {}
+                });
+                
+                await counterRef.set(newUid);
+
+                alert("Registration Successful! Your UID is: " + newUid);
+                window.showPage('loginPage');
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error: " + error.message);
+            }
+        };
+
         window.loginUser = async () => {
-    let phone = document.getElementById('loginPhone').value;
-    let pass = document.getElementById('loginPass').value;
-    
-    if(phone.length !== 10 || !pass) {
-        alert("Enter valid details.");
-        return;
-    }
+            let phone = document.getElementById('loginPhone').value;
+            let pass = document.getElementById('loginPass').value;
+            
+            if(phone.length !== 10 || !pass) {
+                alert("Enter valid details.");
+                return;
+            }
 
-    try {
-        let userRef = db.ref('users/' + phone);
-        let snap = await userRef.once('value');
-        
-        if(!snap.exists()) {
-            alert("Account not found!");
-            return;
-        }
-        
-        if(snap.val().password !== pass) {
-            alert("Incorrect Password!");
-            return;
-        }
+            try {
+                let userRef = db.ref('users/' + phone);
+                let snap = await userRef.once('value');
+                
+                if(!snap.exists()) {
+                    alert("Account not found!");
+                    return;
+                }
+                
+                if(snap.val().password !== pass) {
+                    alert("Incorrect Password!");
+                    return;
+                }
 
-        localStorage.setItem("gotpay_session", phone);
-        loadDashboard(phone);
-    } catch (error) {
-        console.error("Login Error:", error);
-        alert("Error: " + error.message);
-    }
-}
+                localStorage.setItem("gotpay_session", phone);
+                loadDashboard(phone);
+            } catch (error) {
+                console.error("Login Error:", error);
+                alert("Error: " + error.message);
+            }
+        };
+    </script>
 
         // --- LOAD DASHBOARD DATA ---
         db.ref('users/' + phone).on('value', (snapshot) => {
