@@ -310,38 +310,105 @@
     
 </div>
 
+            <!-- PAYMENT PAGE -->
+<div id="paymentTab" class="page-content" style="padding-bottom: 80px; min-height: 100vh; background-color: #f4f7ff;">
+    <!-- Header -->
+    <h2 style="text-align: center; color: var(--primary); padding: 20px 0; margin: 0; font-size: 22px;">Payment</h2>
 
-            <!-- DEPOSIT (BUY) PAGE -->
-            <div id="depositTab" class="page-content">
-                <h2>Buy Token (Deposit)</h2>
-                <p style="font-size:12px; color:var(--success); font-weight:bold; margin-bottom:15px;">🔥 Flat 6% Commission on all Deposits!</p>
-                
-                <div class="card-box">
-                    <label style="font-size:12px; font-weight:bold;">Select Payment Gateway:</label>
-                    <select id="buyGateway" class="select-field">
-                        <option value="MobiKwik">MobiKwik Gateway</option>
-                        <option value="Freecharge">Freecharge Gateway</option>
-                    </select>
-                    
-                    <label style="font-size:12px; font-weight:bold;">Enter Amount (₹):</label>
-                    <input type="number" id="depositAmount" class="input-field" placeholder="E.g. 500" oninput="calculateBonus()">
-                    
-                    <p style="font-size:13px; margin-top:10px; color:#555;">You will receive: <strong style="color:var(--success);">₹<span id="bonusDisplay">0</span></strong> <span style="font-size:11px;">(Incl. 6% Bonus)</span></p>
+    <div style="padding: 0 15px;">
+        <!-- Top Banner Card (Blue Theme) -->
+        <div style="background: linear-gradient(135deg, var(--primary), #1a56db); border-radius: 20px; padding: 20px; color: white; box-shadow: 0 4px 15px rgba(26,86,219,0.3); margin-bottom: 20px; position: relative; overflow: hidden;">
+            <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Cashback</div>
+            <div style="font-size: 32px; font-weight: bold; margin-bottom: 15px;">6%</div>
 
-                    <button class="primary-btn" onclick="generateDepositRequest()">Proceed to Pay</button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px; border-radius: 12px;">
+                    <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">Balance</div>
+                    <div style="font-size: 16px; font-weight: bold;" id="paymentBalance">₹ 0.00</div>
                 </div>
-
-                <!-- QR Scanner Box -->
-                <div id="depositQRBox" class="card-box" style="display:none; text-align:center; border: 2px dashed var(--primary);">
-                    <h3 style="color:var(--primary);">Pay ₹<span id="depAmountDisplay">0</span></h3>
-                    <p style="font-size:12px; color:#666;">Via <span id="depGatewayDisplay"></span></p>
-                    <img id="qrImage" src="" style="width:180px; height:180px; margin:15px 0; border-radius:10px;">
-                    <p style="font-weight:bold; font-size:14px;">Admin UPI: <span id="adminUpiDisplay">yourupi@upi</span></p>
-                    
-                    <input type="text" id="utrInput" class="input-field" placeholder="Enter 12-Digit UTR Number" maxlength="12" style="margin-top:15px;">
-                    <button class="primary-btn" style="background: var(--success);" onclick="submitDepositUTR()">Confirm Payment</button>
+                <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px; border-radius: 12px;">
+                    <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">Reward</div>
+                    <div style="font-size: 16px; font-weight: bold;">₹ 0</div>
                 </div>
             </div>
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 10px; border-radius: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; opacity: 0.8;">Pending</span>
+                <span style="font-size: 14px; font-weight: bold;">₹ 0</span>
+            </div>
+        </div>
+
+        <!-- Instruction Note -->
+        <div style="font-size: 11px; color: #666; text-align: center; margin-bottom: 15px;">
+            ⚠️ Please use Freecharge or Mobikwik or Paytm wallet for payment!
+        </div>
+
+        <!-- Filter Tabs -->
+        <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px;" class="no-scrollbar">
+            <button style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 13px; white-space: nowrap; cursor: pointer;">Top Picks</button>
+            <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;" onclick="switchTab('depositTab', this)">100-199</button>
+            <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;" onclick="switchTab('depositTab', this)">200-299</button>
+            <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;" onclick="switchTab('depositTab', this)">300-399</button>
+        </div>
+
+        <!-- Order Cards List (100 to 10000 range with unique 6-digit codes) -->
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            
+            <!-- Card 1 -->
+            <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
+                    <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: M3nK9X</span>
+                </div>
+                <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ 8,550</strong></div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ 513.00 <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
+                    <button onclick="switchTab('depositTab', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
+                    <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: 7pLq2W</span>
+                </div>
+                <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ 3,200</strong></div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ 192.00 <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
+                    <button onclick="switchTab('depositTab', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
+                    <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: 9xVb4R</span>
+                </div>
+                <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ 500</strong></div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ 30.00 <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
+                    <button onclick="switchTab('depositTab', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
+                    <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: H8fY5m</span>
+                </div>
+                <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ 10,000</strong></div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ 600.00 <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
+                    <button onclick="switchTab('depositTab', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
             <!-- WITHDRAW (SELL) PAGE -->
             <div id="withdrawTab" class="page-content">
@@ -529,6 +596,7 @@
         const db = firebase.database();
         let currentUser = null; 
         let currentBalance = 0;
+        document.getElementById('paymentBalance').innerText = '₹ ' + currentBalance.toFixed(2);
         let generatedOTP = "";
 
         // --- UI ROUTING ---
