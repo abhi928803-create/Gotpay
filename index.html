@@ -1235,6 +1235,136 @@ function updateLiveAssets() {
         }
     }
 }
+
+                // --- ADVANCED MULTI-STEP UPI BINDING WORKFLOW ---
+    let selectedBindingTool = "Paytm";
+    let bindingPhoneNum = "";
+    let chosenUpiToBind = "";
+
+    // 1. My UPI page ke '+ Add UPI' button se Choose Tool page par jana
+    window.openChooseToolPage = function() {
+        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+        let page = document.getElementById('chooseToolPage');
+        if(page) page.style.display = 'block';
+    };
+
+    // 2. Tool Card select karne par border highlight hoga
+    window.selectToolCard = function(element, toolName) {
+        document.querySelectorAll('.tool-card').forEach(c => c.style.border = '2px solid transparent');
+        element.style.border = '2px solid var(--primary)';
+        selectedBindingTool = toolName;
+    };
+
+    // 3. 'Sure' dabane par Step 1 (Phone) page khulega
+    window.proceedToWalletStep1 = function() {
+        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+        let page = document.getElementById('walletStep1Page');
+        if(page) page.style.display = 'block';
+
+        if(document.getElementById('step1WalletTitle')) {
+            document.getElementById('step1WalletTitle').innerText = "Create " + selectedBindingTool + " Wallet";
+        }
+        if(document.getElementById('walletPhoneInput') && currentUser && currentUser.phone) {
+            document.getElementById('walletPhoneInput').value = currentUser.phone;
+        }
+    };
+
+    // 4. Step 1 se 'Next' dabane par Step 2 (OTP) page khulega
+    window.proceedToWalletStep2 = function() {
+        let phoneInput = document.getElementById('walletPhoneInput');
+        bindingPhoneNum = phoneInput ? phoneInput.value.trim() : "";
+
+        if(bindingPhoneNum.length < 10) {
+            alert("⚠️ Please enter a valid phone number!");
+            return;
+        }
+
+        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+        let page = document.getElementById('walletStep2Page');
+        if(page) page.style.display = 'block';
+
+        if(document.getElementById('step2OtpTitle')) {
+            document.getElementById('step2OtpTitle').innerText = selectedBindingTool + " OTP Verification";
+        }
+        if(document.getElementById('displayOtpPhone')) {
+            document.getElementById('displayOtpPhone').value = bindingPhoneNum;
+        }
+    };
+
+    // 5. Step 2 se 'Next' dabane par Step 3 (Fetch Bank-Linked UPIs) page khulega
+    window.proceedToWalletStep3 = function() {
+        let otpInput = document.getElementById('walletOtpInput');
+        let otpVal = otpInput ? otpInput.value.trim() : "";
+
+        if(otpVal.length < 4) {
+            alert("⚠️ Please enter the OTP code!");
+            return;
+        }
+
+        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+        let page = document.getElementById('walletStep3Page');
+        if(page) page.style.display = 'block';
+
+        if(document.getElementById('finishAppTitle')) {
+            document.getElementById('finishAppTitle').innerText = selectedBindingTool;
+        }
+
+        // Generate realistic bank-linked UPI options based on user's phone / selected tool (e.g. Navi / Paytm UPI)
+        let listContainer = document.getElementById('fetchedUpiOptionsList');
+        if(listContainer) {
+            let cleanPhone = bindingPhoneNum.slice(-4); // last 4 digits
+            let upi1 = cleanPhone + "@" + selectedBindingTool.toLowerCase();
+            let upi2 = bindingPhoneNum + "@ybl";
+            let upi3 = "user" + cleanPhone + "@okicici";
+
+            chosenUpiToBind = upi1; // default selection
+
+            listContainer.innerHTML = `
+                <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                    📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Recommended</span>
+                </div>
+                <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                    📍 ${upi2}
+                </div>
+                <div onclick="selectFetchedUpi(this, '${upi3}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                    📍 ${upi3}
+                </div>
+            `;
+        }
+    };
+
+    // 6. User fetched options me se koi ek UPI select karega
+    window.selectFetchedUpi = function(element, upiStr) {
+        document.querySelectorAll('.fetched-upi-item').forEach(i => {
+            i.style.border = '2px solid #ddd';
+            i.style.background = 'white';
+        });
+        element.style.border = '2px solid var(--primary)';
+        element.style.background = '#e3f2fd';
+        chosenUpiToBind = upiStr;
+    };
+
+    // 7. Final Confirm & Bind UPI to Firebase
+    window.finalizeAndSaveUpi = function() {
+        if(!currentUser) { alert("Please login first!"); return; }
+
+        if(!currentUser.upis) currentUser.upis = {};
+        currentUser.upis[selectedBindingTool] = chosenUpiToBind;
+
+        db.ref('users/' + currentUser.phone + '/upis').set(currentUser.upis).then(() => {
+            alert("🎉 " + selectedBindingTool + " UPI (" + chosenUpiToBind + ") Bound Successfully!");
+            
+            // Wapas My Profile / My UPI page par bhej do
+            if(typeof switchTab === 'function') {
+                switchTab('walletPage');
+            } else {
+                location.reload();
+            }
+        }).catch(err => {
+            alert("Error: " + err.message);
+        });
+    };
+
                         // --- ADVANCED ORDER CLAIM SYSTEM WITH MULTI-BANK & UTR ---
     let pendingClaimAmount = 0;
     let pendingClaimCommission = 0;
@@ -1360,6 +1490,15 @@ function updateLiveAssets() {
         });
     };
 
+            // Auto-fix to link "+ Add UPI" buttons
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll("button, div").forEach(el => {
+            if (el.innerText && el.innerText.includes("+ Add UPI")) {
+                el.onclick = function() { openChooseToolPage(); };
+            }
+        });
+    });
+        
 
 </script> <!-- Iske theek upar paste karna hai -->
 </body>
