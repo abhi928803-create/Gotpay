@@ -772,7 +772,9 @@
         let currentBalance = 0;
         let generatedOTP = "";
         
-        document.getElementById('paymentBalance').innerText = '₹ ' + currentBalance.toFixed(2);
+    if (document.getElementById('paymentBalance')) {
+    document.getElementById('paymentBalance').innerText = '₹ ' + currentBalance.toFixed(2);
+}
 
         // --- UI ROUTING ---
         window.showPage = (pageId) => {
@@ -1590,6 +1592,3 @@ function updateLiveAssets() {
 </script> <!-- Iske theek upar paste karna hai -->
 </body>
 </html> 
-    
-
-            
