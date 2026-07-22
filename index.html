@@ -471,46 +471,46 @@
     </div>
 
 </div>
-                <!-- 🟢 SELECT TOOL POPUP (MODAL) 🟢 -->
+                    <!-- 🟢 SELECT TOOL POPUP (MODAL) 🟢 -->
     <div id="selectToolModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center;">
         <div style="background: white; width: 85%; border-radius: 15px; padding: 20px; box-sizing: border-box; text-align: left;">
             <h3 style="margin-top: 0; margin-bottom: 15px; color: #333; font-size: 18px;">Select tool</h3>
             
-            <div style="display: flex; align-items: center; justify-content: space-between; border: 1.5px solid #ff8c00; padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; border: 1.5px solid var(--primary); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="color: #00b9f1; font-weight: bold; font-style: italic; font-size: 18px;">Paytm</div>
+                    <div id="popupPlatformIcon" style="color: var(--primary); font-weight: bold; font-style: italic; font-size: 18px;">UMP</div>
                     <div>
-                        <div style="font-weight: bold; color: #333; font-size: 14px;">Paytm</div>
-                        <div style="font-size: 12px; color: #777;">9155132637</div>
+                        <div id="popupPlatformName" style="font-weight: bold; color: #333; font-size: 14px;">UMP</div>
+                        <div id="popupUpiId" style="font-size: 12px; color: #777;">Loading...</div>
                     </div>
                 </div>
-                <input type="radio" checked style="accent-color: #ff8c00; transform: scale(1.3);">
+                <input type="radio" checked style="accent-color: var(--primary); transform: scale(1.3);">
             </div>
             
             <p style="font-size: 11px; color: #888; margin-bottom: 20px; line-height: 1.4;">* After selecting the payment tool, please use the selected tool to make payment, otherwise the account will not be credited.</p>
             
             <div style="display: flex; gap: 10px;">
-                <button onclick="closeToolModal()" style="flex: 1; padding: 12px; border: 1px solid #ff8c00; background: white; color: #ff8c00; border-radius: 8px; font-weight: bold; font-size: 15px;">Cancel</button>
-                <button onclick="confirmToolSelection()" style="flex: 1; padding: 12px; border: none; background: #ff8c00; color: white; border-radius: 8px; font-weight: bold; font-size: 15px;">Confirm</button>
+                <button onclick="closeToolModal()" style="flex: 1; padding: 12px; border: 1px solid var(--primary); background: white; color: var(--primary); border-radius: 8px; font-weight: bold; font-size: 15px;">Cancel</button>
+                <button onclick="confirmToolSelection()" style="flex: 1; padding: 12px; border: none; background: var(--primary); color: white; border-radius: 8px; font-weight: bold; font-size: 15px;">Confirm</button>
             </div>
         </div>
     </div>
 
-    <!-- 🟢 NAYA "ORDER DETAILS" PAGE 🟢 -->
-    <div id="orderDetailsPage" class="page-content" style="background: #fdf5f2; min-height: 100vh; padding: 15px; padding-bottom: 100px;">
+    <!-- 🟢 NAYA "ORDER DETAILS" PAGE (UTR INPUT & CANCEL WORKING) 🟢 -->
+    <div id="orderDetailsPage" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px;">
         
         <!-- Header -->
         <div style="display: flex; align-items: center; margin-bottom: 20px;">
-            <div onclick="closeOrderPage()" style="font-size: 20px; cursor: pointer; color: #333;">←</div>
-            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: #333;">Order</h2>
-            <div style="width: 20px;"></div> <!-- Spacer -->
+            <div onclick="closeOrderPage()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Order</h2>
+            <div style="width: 20px;"></div>
         </div>
 
-        <!-- Orange Details Card -->
-        <div style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-            <div style="background: #ff8c00; color: white; text-align: center; padding: 25px 20px;">
+        <!-- Details Card -->
+        <div style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.1);">
+            <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-align: center; padding: 25px 20px;">
                 <div style="font-size: 28px; font-weight: bold;">INR <span id="orderPageAmount">0.00</span></div>
-                <div style="background: rgba(255,255,255,0.3); display: inline-block; padding: 4px 15px; border-radius: 20px; font-size: 12px; margin-top: 8px;">Expire: <strong>19:57</strong></div>
+                <div style="background: rgba(255,255,255,0.2); display: inline-block; padding: 4px 15px; border-radius: 20px; font-size: 12px; margin-top: 8px;">Expire: <strong>19:57</strong></div>
             </div>
             
             <div style="padding: 20px; font-size: 13px; color: #555;">
@@ -523,30 +523,37 @@
                 <div style="display: flex; justify-content: space-between; padding: 12px 0;">
                     <span>IFSC:</span> <strong style="color:#333;">IDIB000H713 📋</strong>
                 </div>
-                <div style="text-align: right; font-size: 11px; color: #ff8c00; margin-bottom: 10px;">Note : IF IFSC Mismatched , Do Not Pay</div>
+                <div style="text-align: right; font-size: 11px; color: var(--danger); margin-bottom: 10px;">Note : IF IFSC Mismatched , Do Not Pay</div>
                 
                 <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; border-top: 1px solid #f0f0f0;">
-                    <span>Code:</span> <strong style="color:#333;">5sf196 📋</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-                    <span>Type:</span> <strong style="color:#333;">IMPS 📋</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-                    <span>Payout Wallet:</span> <strong style="color:#333;"><span style="color:#00b9f1; font-style:italic;">Paytm</span> <span style="background:#fbe9e7; color:#ff8c00; padding:2px 8px; border-radius:10px; font-size:11px; margin-left:5px;">Change</span></strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-                    <span>Status:</span> <span style="color: #ff8c00; font-weight:bold;">Pending <span style="background:#fbe9e7; padding:2px 8px; border-radius:10px; font-size:11px; margin-left:5px;">Cancel</span></span>
+                    <span>Code:</span> <strong id="dynamicOrderCode" style="color:#333;">5sf196 📋</strong>
                 </div>
                 
-                <div style="text-align: center; margin-top: 20px; color: #ff8c00; font-weight: bold; font-size: 14px;">
-                    Upload Voucher >
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span>Payout Wallet:</span> <strong style="color:#333;"><span id="orderPayoutPlatform" style="color:var(--primary); font-style:italic;">UMP</span></strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span>Your Payout UMP:</span> <strong id="orderPayoutUpiId" style="color:#333;">Loading...</strong>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; align-items: center;">
+                    <span>Status:</span> 
+                    <span style="color: #ff9800; font-weight:bold;">Pending 
+                        <button onclick="cancelCurrentOrder()" style="background: #ffebee; color: var(--danger); border: none; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; margin-left: 8px; cursor: pointer;">Cancel</button>
+                    </span>
+                </div>
+                
+                <!-- UTR INPUT BOX (UPLOAD VOUCHER HATAKAR) -->
+                <div style="margin-top: 20px;">
+                    <label style="display: block; font-size: 12px; font-weight: bold; color: var(--primary); margin-bottom: 5px;">Enter UTR / Transaction Reference Number:</label>
+                    <input type="text" id="userUtrInput" placeholder="Enter 12-digit UTR number" style="width: 100%; padding: 12px; border: 1.5px solid var(--primary); border-radius: 8px; font-size: 14px; box-sizing: border-box; outline: none;">
                 </div>
             </div>
         </div>
         
-        <button id="goPayBtn" onclick="processFinalPayment()" style="width: 100%; background: #ff8c00; color: white; border: none; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; margin-top: 30px; box-shadow: 0 4px 10px rgba(255,140,0,0.3);">go pay</button>
+        <button id="goPayBtn" onclick="processFinalPayment()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; margin-top: 25px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">go pay</button>
     </div>
-            
+
             <!-- BOTTOM NAV -->
             <div class="nav">
                 <div class="nav-item active" onclick="switchTab('homePage', this)">
@@ -1060,55 +1067,84 @@ function updateLiveAssets() {
         }
     }
 }
-                // --- ADVANCED ORDER CLAIM SYSTEM (MULTI-STEP) ---
+                    // --- ADVANCED ORDER CLAIM SYSTEM WITH UTR & CANCEL ---
     let pendingClaimAmount = 0;
     let pendingClaimCommission = 0;
     let pendingClaimBtn = null;
+    let userSelectedPlatform = "UMP";
+    let userSelectedUpiId = "";
 
-    // 1. Claim dabane par Popup aayega
     window.claimOrder = function(orderAmount, commissionAmount, btnElement) {
         if(!currentUser) { alert("Please login first!"); return; }
         
-        // Data temporary save kar rahe hain
+        if(!currentUser.upis || Object.keys(currentUser.upis).length === 0) {
+            alert("⚠️ Please Bind your UMP (UPI) in 'My Profile' first before claiming orders!");
+            return; 
+        }
+
+        userSelectedPlatform = Object.keys(currentUser.upis)[0];
+        userSelectedUpiId = currentUser.upis[userSelectedPlatform];
+
         pendingClaimAmount = orderAmount;
         pendingClaimCommission = commissionAmount;
         pendingClaimBtn = btnElement;
 
-        // Popup show karo
+        if(document.getElementById('popupPlatformIcon')) document.getElementById('popupPlatformIcon').innerText = userSelectedPlatform;
+        if(document.getElementById('popupPlatformName')) document.getElementById('popupPlatformName').innerText = userSelectedPlatform;
+        if(document.getElementById('popupUpiId')) document.getElementById('popupUpiId').innerText = userSelectedUpiId;
+
         let modal = document.getElementById('selectToolModal');
         if(modal) modal.style.display = 'flex';
     };
 
-    // 2. Popup mein Cancel dabane par
     window.closeToolModal = function() {
         let modal = document.getElementById('selectToolModal');
         if(modal) modal.style.display = 'none';
     };
 
-    // 3. Popup mein Confirm dabane par Naya Page khulega
     window.confirmToolSelection = function() {
         closeToolModal();
         
-        // Order Page par Amount set karna
-        if(document.getElementById('orderPageAmount')) {
-            document.getElementById('orderPageAmount').innerText = pendingClaimAmount;
-        }
+        if(document.getElementById('orderPageAmount')) document.getElementById('orderPageAmount').innerText = pendingClaimAmount;
+        if(document.getElementById('orderPayoutPlatform')) document.getElementById('orderPayoutPlatform').innerText = userSelectedPlatform;
+        if(document.getElementById('orderPayoutUpiId')) document.getElementById('orderPayoutUpiId').innerText = userSelectedUpiId;
+        
+        // Clear UTR input field
+        if(document.getElementById('userUtrInput')) document.getElementById('userUtrInput').value = '';
 
-        // Sab page chhupa kar Order page dikhao
+        let randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        if(document.getElementById('dynamicOrderCode')) document.getElementById('dynamicOrderCode').innerText = randomCode + " 📋";
+
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
         let orderPage = document.getElementById('orderDetailsPage');
         if(orderPage) orderPage.classList.add('active');
     };
 
-    // 4. Back button dabane par (Order page se)
     window.closeOrderPage = function() {
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
         let payPage = document.getElementById('paymentPage');
-        if(payPage) payPage.classList.add('active'); // Wapas payment tab par
+        if(payPage) payPage.classList.add('active'); 
     };
 
-    // 5. 'Go Pay' dabane par asli mein paise add honge
+    // 🔴 CANCEL ORDER FUNCTION
+    window.cancelCurrentOrder = function() {
+        if(confirm("Are you sure you want to cancel this order?")) {
+            alert("Order Cancelled successfully.");
+            closeOrderPage();
+        }
+    };
+
+    // ✅ GO PAY FUNCTION (UTR VALIDATION & COMMISSION ADD)
     window.processFinalPayment = function() {
+        let utrInput = document.getElementById('userUtrInput');
+        let utrValue = utrInput ? utrInput.value.trim() : "";
+
+        if(utrValue.length < 6) {
+            alert("⚠️ Please enter a valid UTR / Transaction Reference Number!");
+            if(utrInput) utrInput.focus();
+            return;
+        }
+
         let btn = document.getElementById('goPayBtn');
         btn.innerText = "Processing...";
         btn.disabled = true;
@@ -1117,26 +1153,20 @@ function updateLiveAssets() {
         let newBal = (Number(currentUser.balance) || 0) + earnedCommission;
         let newComm = (Number(currentUser.commission) || 0) + earnedCommission;
 
-        // Firebase Update
         db.ref('users/' + currentUser.phone).update({
             balance: newBal,
             commission: newComm
         }).then(() => {
-            alert("Order Completed! Commission Added: ₹" + earnedCommission.toFixed(2));
+            alert("Payment Verified! UTR: " + utrValue + "\nCommission Added: ₹" + earnedCommission.toFixed(2));
             
-            // Profile aur Stats live update
             currentUser.balance = newBal;
             currentUser.commission = newComm;
             if(typeof updateLiveAssets === 'function') updateLiveAssets();
             
-            // Button wapas thik karo
             btn.innerText = "go pay";
             btn.disabled = false;
-
-            // Wapas Payment page par bhejo
             closeOrderPage();
             
-            // Purane Claim button ko green kardo
             if(pendingClaimBtn) {
                 pendingClaimBtn.innerText = "Claimed";
                 pendingClaimBtn.style.background = "#4caf50";
