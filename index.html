@@ -132,25 +132,30 @@
                     </div>
                 </div>
 
-                <!-- Quick Action Icons -->
-                <div class="quick-actions">
-                    <div class="action-btn" onclick="switchTab('depositTab')">
-                        <div class="icon-circle"><i class="fa-solid fa-building-columns"></i></div>
-                        <div style="font-size: 12px; font-weight: 600; color: #444;">Deposit</div>
-                    </div>
-                    <div class="action-btn" onclick="switchTab('withdrawTab')">
-                        <div class="icon-circle"><i class="fa-solid fa-wallet"></i></div>
-                        <div style="font-size: 12px; font-weight: 600; color: #444;">Withdraw</div>
-                    </div>
-                    <div class="action-btn">
-                        <div class="icon-circle"><i class="fa-solid fa-list-check"></i></div>
-                        <div style="font-size: 12px; font-weight: 600; color: #444;">Task</div>
-                    </div>
-                    <div class="action-btn">
-                        <div class="icon-circle"><i class="fa-solid fa-users"></i></div>
-                        <div style="font-size: 12px; font-weight: 600; color: #444;">Team</div>
-                    </div>
-                </div>
+                        <!-- Quick Action Icons -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0;">
+            <!-- USDT Icon -->
+            <div onclick="switchTab('usdtTab')" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border, #334155); border-radius: 14px; padding: 12px 5px; text-align: center; cursor: pointer;">
+                <div style="font-size: 20px; color: var(--primary, #2563eb); margin-bottom: 5px;"><i class="fa-solid fa-coins"></i></div>
+                <span style="font-size: 12px; color: var(--text, #f8fafc); font-weight: 600;">USDT</span>
+            </div>
+            <!-- Task Icon -->
+            <div onclick="switchTab('taskTab')" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border, #334155); border-radius: 14px; padding: 12px 5px; text-align: center; cursor: pointer;">
+                <div style="font-size: 20px; color: var(--primary, #2563eb); margin-bottom: 5px;"><i class="fa-solid fa-list-check"></i></div>
+                <span style="font-size: 12px; color: var(--text, #f8fafc); font-weight: 600;">Task</span>
+            </div>
+            <!-- Team Icon -->
+            <div onclick="switchTab('teamTab')" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border, #334155); border-radius: 14px; padding: 12px 5px; text-align: center; cursor: pointer;">
+                <div style="font-size: 20px; color: var(--primary, #2563eb); margin-bottom: 5px;"><i class="fa-solid fa-users"></i></div>
+                <span style="font-size: 12px; color: var(--text, #f8fafc); font-weight: 600;">Team</span>
+            </div>
+            <!-- Order Icon -->
+            <div onclick="switchTab('orderTab')" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border, #334155); border-radius: 14px; padding: 12px 5px; text-align: center; cursor: pointer;">
+                <div style="font-size: 20px; color: var(--primary, #2563eb); margin-bottom: 5px;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <span style="font-size: 12px; color: var(--text, #f8fafc); font-weight: 600;">Order</span>
+            </div>
+        </div>
+
 
                 <!-- Promo Banner -->
                 <div class="promo-banner">
