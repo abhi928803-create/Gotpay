@@ -1291,46 +1291,57 @@ function updateLiveAssets() {
         }
     };
 
-    // 5. Step 2 se 'Next' dabane par Step 3 (Fetch Bank-Linked UPIs) page khulega
+     // Step 2 se 'Next' dabane par realistic verification ke sath Step 3 khulega
     window.proceedToWalletStep3 = function() {
         let otpInput = document.getElementById('walletOtpInput');
         let otpVal = otpInput ? otpInput.value.trim() : "";
 
         if(otpVal.length < 4) {
-            alert("⚠️ Please enter the OTP code!");
+            alert("⚠️ Please enter a valid 4-digit OTP code received on your mobile!");
             return;
         }
 
-        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-        let page = document.getElementById('walletStep3Page');
-        if(page) page.style.display = 'block';
+        // Professional Loading Effect
+        let nextBtn = event.target;
+        let oldText = nextBtn.innerText;
+        nextBtn.innerText = "Verifying OTP...";
+        nextBtn.disabled = true;
 
-        if(document.getElementById('finishAppTitle')) {
-            document.getElementById('finishAppTitle').innerText = selectedBindingTool;
-        }
+        setTimeout(() => {
+            nextBtn.innerText = oldText;
+            nextBtn.disabled = false;
 
-        // Generate realistic bank-linked UPI options based on user's phone / selected tool (e.g. Navi / Paytm UPI)
-        let listContainer = document.getElementById('fetchedUpiOptionsList');
-        if(listContainer) {
-            let cleanPhone = bindingPhoneNum.slice(-4); // last 4 digits
-            let upi1 = cleanPhone + "@" + selectedBindingTool.toLowerCase();
-            let upi2 = bindingPhoneNum + "@ybl";
-            let upi3 = "user" + cleanPhone + "@okicici";
+            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+            let page = document.getElementById('walletStep3Page');
+            if(page) page.style.display = 'block';
 
-            chosenUpiToBind = upi1; // default selection
+            if(document.getElementById('finishAppTitle')) {
+                document.getElementById('finishAppTitle').innerText = selectedBindingTool;
+            }
 
-            listContainer.innerHTML = `
-                <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
-                    📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Recommended</span>
-                </div>
-                <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
-                    📍 ${upi2}
-                </div>
-                <div onclick="selectFetchedUpi(this, '${upi3}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
-                    📍 ${upi3}
-                </div>
-            `;
-        }
+            // Generate realistic bank-linked UPI options based on user's entered phone number
+            let listContainer = document.getElementById('fetchedUpiOptionsList');
+            if(listContainer) {
+                let cleanPhone = bindingPhoneNum.slice(-4); // last 4 digits
+                let upi1 = bindingPhoneNum + "@" + selectedBindingTool.toLowerCase();
+                let upi2 = bindingPhoneNum + "@ybl";
+                let upi3 = "user" + cleanPhone + "@okicici";
+
+                chosenUpiToBind = upi1; // default selection
+
+                listContainer.innerHTML = `
+                    <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                        📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                    </div>
+                    <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                        📍 ${upi2}
+                    </div>
+                    <div onclick="selectFetchedUpi(this, '${upi3}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                        📍 ${upi3}
+                    </div>
+                `;
+            }
+        }, 1200); 
     };
 
     // 6. User fetched options me se koi ek UPI select karega
