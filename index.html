@@ -1456,7 +1456,7 @@ function updateLiveAssets() {
         }
     };
 
-    // ✅ GO PAY FUNCTION (UTR VALIDATION & COMMISSION ADD)
+    // ✅ GO PAY FUNCTION (PROPER BALANCE & COMMISSION ADD)
     window.processFinalPayment = function() {
         let utrInput = document.getElementById('userUtrInput');
         let utrValue = utrInput ? utrInput.value.trim() : "";
@@ -1467,28 +1467,37 @@ function updateLiveAssets() {
             return;
         }
 
-        let btn = document.getElementById('goPayBtn');
+        let btn = document.getElementById('goPayBtn') || event.target;
+        let oldText = btn.innerText;
         btn.innerText = "Processing...";
         btn.disabled = true;
 
-        let earnedCommission = Number(pendingClaimCommission) || 0;
-        let newBal = (Number(currentUser.balance) || 0) + earnedCommission;
-        let newComm = (Number(currentUser.commission) || 0) + earnedCommission;
+        // Yahan pendingClaimAmount aapke order ka main amount (jaise 100) hai
+        let orderAmt = Number(pendingClaimAmount) || 0; 
+        let earnedCommission = Number(pendingClaimCommission) || 0; 
+        
+        let currentBal = Number(currentUser.balance) || 0;
+        let currentComm = Number(currentUser.commission) || 0;
+
+        // Total add hone wala paisa (Order Amount + Commission)
+        let newBal = currentBal + orderAmt + earnedCommission;
+        let newComm = currentComm + earnedCommission;
 
         db.ref('users/' + currentUser.phone).update({
             balance: newBal,
             commission: newComm
         }).then(() => {
-            alert("Payment Verified! UTR: " + utrValue + "\nCommission Added: ₹" + earnedCommission.toFixed(2));
-            
+            alert("🎉 Payment Verified! UTR: " + utrValue + "\nAmount Added: ₹" + orderAmt + "\nCommission Added: ₹" + earnedCommission);
+
             currentUser.balance = newBal;
             currentUser.commission = newComm;
+
             if(typeof updateLiveAssets === 'function') updateLiveAssets();
-            
-            btn.innerText = "go pay";
+
+            btn.innerText = oldText;
             btn.disabled = false;
             closeOrderPage();
-            
+
             if(pendingClaimBtn) {
                 pendingClaimBtn.innerText = "Claimed";
                 pendingClaimBtn.style.background = "#4caf50";
@@ -1496,10 +1505,11 @@ function updateLiveAssets() {
             }
         }).catch(err => {
             alert("Error: " + err.message);
-            btn.innerText = "go pay";
+            btn.innerText = oldText;
             btn.disabled = false;
         });
     };
+
 
             // Auto-fix to link "+ Add UPI" buttons
     document.addEventListener("DOMContentLoaded", function() {
@@ -1509,7 +1519,42 @@ function updateLiveAssets() {
             }
         });
     });
+
+            // ⏱️ 20 Minutes Countdown Timer Logic
+    let orderTimerInterval = null;
+
+    window.startOrderTimer = function(durationInMinutes) {
+        let totalSeconds = durationInMinutes * 60;
         
+        if (orderTimerInterval) clearInterval(orderTimerInterval);
+
+        orderTimerInterval = setInterval(() => {
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                let mins = Math.floor(totalSeconds / 60);
+                let secs = totalSeconds % 60;
+                
+                // Format time as MM:SS
+                let formattedTime = String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                
+                // HTML element jahan timer dikh raha hai (apne timer element ki ID yahan check kar lein)
+                let timerEl = document.getElementById('orderExpireTimer') || document.querySelector('.order-timer');
+                if (timerEl) {
+                    timerEl.innerText = formattedTime;
+                }
+            } else {
+                clearInterval(orderTimerInterval);
+                alert("⚠️ Order Expired!");
+                if (typeof closeOrderPage === 'function') closeOrderPage();
+            }
+        }, 1000);
+    };
+
+    // Auto start timer when order opens
+    let originalOpenOrder = window.openOrderPage || function(){};
+    // Aapke order open hone par ye timer ko trigger kar dega
+    startOrderTimer(20);
+   
 
 </script> <!-- Iske theek upar paste karna hai -->
 </body>
