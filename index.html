@@ -361,6 +361,172 @@
                 <button onclick="switchTab('withdrawTab', document.querySelectorAll('.nav-item')[2])" style="background: #004ecb; color: white; border: none; padding: 15px; border-radius: 25px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 78, 203, 0.3);">Start Selling</button>
             </div>
 
+                <!-- 🟢 1. CHOOSE PAYMENT TOOL PAGE 🟢 -->
+    <div id="chooseToolPage" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px; display: none;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div onclick="switchTab('walletPage')" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Add Tool</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h3 style="color: #333; font-size: 20px; margin: 0;">Choose your payment</h3>
+        </div>
+
+        <!-- Personal / Business Tabs -->
+        <div style="display: flex; background: #e3f2fd; border-radius: 25px; padding: 4px; margin-bottom: 20px;">
+            <div style="flex: 1; text-align: center; padding: 10px; background: var(--primary); color: white; border-radius: 20px; font-weight: bold; font-size: 14px;">Personal</div>
+            <div style="flex: 1; text-align: center; padding: 10px; color: #555; font-weight: bold; font-size: 14px;">Business</div>
+        </div>
+
+        <!-- Tools List -->
+        <div id="toolsListContainer" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+            <!-- Option: Paytm -->
+            <div onclick="selectToolCard(this, 'Paytm')" class="tool-card" style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 2px solid var(--primary); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: #e3f2fd; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">P</div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; font-size: 15px;">Paytm</div>
+                        <div style="font-size: 12px; color: #777;">Payin 100.00 - 50000.00</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 12px; font-weight: bold;">Payout</span>
+            </div>
+
+            <!-- Option: Mobikwik -->
+            <div onclick="selectToolCard(this, 'Mobikwik')" class="tool-card" style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 2px solid transparent; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: #e3f2fd; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">M</div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; font-size: 15px;">Mobikwik <span style="background: #ff9800; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px;">Binding Bonus</span></div>
+                        <div style="font-size: 12px; color: #777;">Payin 99.00 - 50000.00</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 12px; font-weight: bold;">Payout</span>
+            </div>
+
+            <!-- Option: Freecharge -->
+            <div onclick="selectToolCard(this, 'Freecharge')" class="tool-card" style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 2px solid transparent; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: #e3f2fd; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">F</div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; font-size: 15px;">Freecharge</div>
+                        <div style="font-size: 12px; color: #777;">Payin 100.00 - 50000.00</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 12px; font-weight: bold;">Payout</span>
+            </div>
+
+            <!-- Option: Navi -->
+            <div onclick="selectToolCard(this, 'Navi')" class="tool-card" style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 2px solid transparent; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: #e3f2fd; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">N</div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; font-size: 15px;">Navi</div>
+                        <div style="font-size: 12px; color: #777;">Payin 100.00 - 50000.00</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 12px; font-weight: bold;">Payout</span>
+            </div>
+        </div>
+
+        <button onclick="proceedToWalletStep1()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">Sure</button>
+    </div>
+
+    <!-- 🟢 2. WALLET STEP 1: PHONE NUMBER 🟢 -->
+    <div id="walletStep1Page" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px; display: none;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div onclick="openChooseToolPage()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Wallet</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <!-- Step Indicator -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 20px;">
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">1</div><span style="font-size: 11px; color: var(--primary); font-weight: bold;">Phone</span></div>
+            <div style="flex: 1; height: 2px; background: #ddd; margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #ddd; color: #777; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">2</div><span style="font-size: 11px; color: #777;">Authorize</span></div>
+            <div style="flex: 1; height: 2px; background: #ddd; margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #ddd; color: #777; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">3</div><span style="font-size: 11px; color: #777;">Finish</span></div>
+        </div>
+
+        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.05); margin-bottom: 25px;">
+            <h3 id="step1WalletTitle" style="margin-top: 0; color: #333; font-size: 18px;">Create Paytm Wallet</h3>
+            <p style="font-size: 13px; color: #666; line-height: 1.4;">1. Let's get started! Please complete the form below based on your wallet information.<br>2. Click "Next" to complete and enter the next step.</p>
+            
+            <label style="display: block; font-size: 13px; font-weight: bold; color: var(--primary); margin-bottom: 8px;">Your Phone</label>
+            <div style="display: flex; border: 1.5px solid var(--primary); border-radius: 8px; overflow: hidden;">
+                <span style="background: #e3f2fd; padding: 12px; font-weight: bold; color: var(--primary);">+91</span>
+                <input type="tel" id="walletPhoneInput" placeholder="Enter phone number" style="flex: 1; padding: 12px; border: none; outline: none; font-size: 14px;">
+            </div>
+        </div>
+
+        <button onclick="proceedToWalletStep2()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">Next</button>
+    </div>
+
+    <!-- 🟢 3. WALLET STEP 2: OTP VERIFICATION 🟢 -->
+    <div id="walletStep2Page" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px; display: none;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div onclick="proceedToWalletStep1()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Wallet</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <!-- Step Indicator -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 20px;">
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #4caf50; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">✓</div><span style="font-size: 11px; color: #4caf50; font-weight: bold;">Phone</span></div>
+            <div style="flex: 1; height: 2px; background: var(--primary); margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">2</div><span style="font-size: 11px; color: var(--primary); font-weight: bold;">Authorize</span></div>
+            <div style="flex: 1; height: 2px; background: #ddd; margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #ddd; color: #777; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">3</div><span style="font-size: 11px; color: #777;">Finish</span></div>
+        </div>
+
+        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.05); margin-bottom: 25px;">
+            <h3 id="step2OtpTitle" style="margin-top: 0; color: #333; font-size: 18px;">Paytm OTP Verification</h3>
+            <p style="font-size: 13px; color: #666; line-height: 1.4;">1. Please send the OTP code to your phone first.<br>2. Enter the OTP code after receiving it.</p>
+            
+            <label style="display: block; font-size: 13px; font-weight: bold; color: var(--primary); margin-bottom: 6px;">Phone Number</label>
+            <input type="text" id="displayOtpPhone" readonly style="width: 100%; padding: 12px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 15px; box-sizing: border-box;">
+
+            <label style="display: block; font-size: 13px; font-weight: bold; color: var(--primary); margin-bottom: 6px;">OTP Code</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="walletOtpInput" placeholder="Enter OTP" style="flex: 1; padding: 12px; border: 1.5px solid var(--primary); border-radius: 8px; font-size: 14px; box-sizing: border-box; outline: none;">
+                <button style="background: #e3f2fd; color: var(--primary); border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; font-size: 13px;">26s</button>
+            </div>
+            <div style="font-size: 12px; color: #4caf50; margin-top: 8px; font-weight: bold;">OTP has been sent successfully.</div>
+        </div>
+
+        <button onclick="proceedToWalletStep3()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">Next</button>
+    </div>
+
+    <!-- 🟢 4. WALLET STEP 3: FETCH & BIND LINKED UPI 🟢 -->
+    <div id="walletStep3Page" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px; display: none;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div onclick="proceedToWalletStep2()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Wallet</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <!-- Step Indicator -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 20px;">
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #4caf50; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">✓</div><span style="font-size: 11px; color: #4caf50; font-weight: bold;">Phone</span></div>
+            <div style="flex: 1; height: 2px; background: #4caf50; margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #4caf50; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">✓</div><span style="font-size: 11px; color: #4caf50; font-weight: bold;">Authorize</span></div>
+            <div style="flex: 1; height: 2px; background: var(--primary); margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">3</div><span style="font-size: 11px; color: var(--primary); font-weight: bold;">Finish</span></div>
+        </div>
+
+        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.05); margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #333; font-size: 18px;">Select Linked UPI</h3>
+            <p style="font-size: 13px; color: #666; line-height: 1.4;">Select your bank-linked UPI found for <span id="finishAppTitle" style="font-weight:bold; color:var(--primary);">Navi</span>:</p>
+            
+            <div id="fetchedUpiOptionsList" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <!-- Dynamically populated linked UPIs will appear here -->
+            </div>
+        </div>
+
+        <button onclick="finalizeAndSaveUpi()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">Confirm & Bind UPI</button>
+    </div>
             
             <!-- 🟢 NAYA "MY" (PROFILE) PAGE - GOTPAY BLUE THEME 🟢 -->
 <div id="profileTab" class="page-content" style="padding: 15px; padding-bottom: 100px; min-height: 100vh;">
