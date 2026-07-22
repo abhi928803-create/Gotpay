@@ -370,6 +370,23 @@
                 </div>
             </div>
 
+            <!-- 🟢 UPDATED UPI WALLET PAGE 🟢 -->
+<div id="walletPage" class="page-content" style="padding: 15px; padding-bottom: 100px;">
+    
+    <!-- Header & Add Button -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; margin-top: 10px;">
+        <h2 style="color: var(--primary); font-size: 22px; margin: 0;">My UPI</h2>
+        <button onclick="switchTab('profileTab')" style="background: linear-gradient(135deg, #0d6efd, #0052cc); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 82, 204, 0.3);">
+            + Add UPI
+        </button>
+    </div>
+
+    <!-- Yahan par automatically aapke add kiye hue UPI cards aayenge -->
+    <div id="walletUpiContainer">
+        <!-- Khali jagah -->
+    </div>
+
+</div>
             <!-- BOTTOM NAV -->
             <div class="nav">
                 <div class="nav-item active" onclick="switchTab('homePage', this)">
@@ -381,7 +398,7 @@
                     <div>Payment</div>
                 </div>
                 
-                <div class="nav-item center-btn-wrapper" onclick="switchTab('homePage', this)">
+                <div class="nav-item center-btn-wrapper" onclick="walletPage('homePage', this)">
                     <div class="center-action-btn">
                         <i class="fa-solid fa-wallet"></i>
                     </div>
