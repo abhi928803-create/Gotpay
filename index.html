@@ -514,15 +514,17 @@
             </div>
             
             <div style="padding: 20px; font-size: 13px; color: #555;">
+                                <!-- MULTIPLE ADMIN BANKS CONTAINER -->
                 <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-                    <span>PayeeAccount:</span> <strong style="color:#333;">21302478933 📋</strong>
+                    <span>PayeeAccount:</span> <strong id="adminAccDisplay" style="color:#333;">Loading... 📋</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-                    <span>PayeeName:</span> <strong style="color:#333;">RAMSAPAL 📋</strong>
+                    <span>PayeeName:</span> <strong id="adminNameDisplay" style="color:#333;">Loading... 📋</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; padding: 12px 0;">
-                    <span>IFSC:</span> <strong style="color:#333;">IDIB000H713 📋</strong>
+                    <span>IFSC:</span> <strong id="adminIfscDisplay" style="color:#333;">Loading... 📋</strong>
                 </div>
+
                 <div style="text-align: right; font-size: 11px; color: var(--danger); margin-bottom: 10px;">Note : IF IFSC Mismatched , Do Not Pay</div>
                 
                 <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; border-top: 1px solid #f0f0f0;">
@@ -1067,12 +1069,18 @@ function updateLiveAssets() {
         }
     }
 }
-                    // --- ADVANCED ORDER CLAIM SYSTEM WITH UTR & CANCEL ---
+                        // --- ADVANCED ORDER CLAIM SYSTEM WITH MULTI-BANK & UTR ---
     let pendingClaimAmount = 0;
     let pendingClaimCommission = 0;
     let pendingClaimBtn = null;
     let userSelectedPlatform = "UMP";
     let userSelectedUpiId = "";
+
+    // 🏦 APKE MULTIPLE ADMIN BANKS KI LIST (Yahan aap apne aur bhi accounts jod sakte hain)
+    let adminBanksList = [
+        { acc: "30000439941", name: "Abhinav Kumar", ifsc: "FINO0000001" },
+        { acc: "30000439941", name: "ROHIT KUMAR", ifsc: "FINO0000001" }
+    ];
 
     window.claimOrder = function(orderAmount, commissionAmount, btnElement) {
         if(!currentUser) { alert("Please login first!"); return; }
@@ -1111,6 +1119,13 @@ function updateLiveAssets() {
         
         // Clear UTR input field
         if(document.getElementById('userUtrInput')) document.getElementById('userUtrInput').value = '';
+
+        // 🎲 RANDOM BANK SELECT HOGA HAR NAYE ORDER PAR
+        let randomBank = adminBanksList[Math.floor(Math.random() * adminBanksList.length)];
+        
+        if(document.getElementById('adminAccDisplay')) document.getElementById('adminAccDisplay').innerText = randomBank.acc + " 📋";
+        if(document.getElementById('adminNameDisplay')) document.getElementById('adminNameDisplay').innerText = randomBank.name + " 📋";
+        if(document.getElementById('adminIfscDisplay')) document.getElementById('adminIfscDisplay').innerText = randomBank.ifsc + " 📋";
 
         let randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
         if(document.getElementById('dynamicOrderCode')) document.getElementById('dynamicOrderCode').innerText = randomCode + " 📋";
@@ -1178,6 +1193,7 @@ function updateLiveAssets() {
             btn.disabled = false;
         });
     };
+
 
 </script> <!-- Iske theek upar paste karna hai -->
 </body>
