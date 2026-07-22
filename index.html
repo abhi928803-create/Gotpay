@@ -1706,6 +1706,178 @@
             if(tabId === 'teamTab') loadTeamData();
             if(tabId === 'orderTab') renderOrderHistoryLists();
         };
+
+               // --- TEAM & UNIQUE INVITATION LINK GENERATOR ---
+        function loadTeamData() {
+            if(!currentUser) return;
+            
+            // Har user ke liye unique 6-digit code generate karna ya UID se banana
+            let uniqueCode = currentUser.invite_code || Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            // Agar pehle se saved nahi hai to database me save kar do
+            if(!currentUser.invite_code) {
+                db.ref('users/' + currentUser.phone).update({ invite_code: uniqueCode });
+                currentUser.invite_code = uniqueCode;
+            }
+
+            let siteUrl = window.location.origin + window.location.pathname;
+            let fullInviteLink = siteUrl + "?ref=" + uniqueCode;
+
+            let inviteEl = document.getElementById('userInviteLink');
+            if(inviteEl) inviteEl.innerText = fullInviteLink;
+
+            if(document.getElementById('teamTotalComm')) {
+                let comm = currentUser.commission || 0;
+                document.getElementById('teamTotalComm').innerText = "₹ " + comm.toFixed(2);
+            }
+        }
+
+        window.copyInviteLink = function() {
+            let inviteEl = document.getElementById('userInviteLink');
+            if(inviteEl) {
+                navigator.clipboard.writeText(inviteEl.innerText);
+                alert("📋 Invitation Link Copied to Clipboard!");
+            }
+        };
+
+        // --- ORDER SUB-TAB SWITCHING (Receive / Purchase) ---
+        let currentOrderSubTab = 'receive';
+        window.switchOrderSubTab = function(tabName) {
+            currentOrderSubTab = tabName;
+            let btnRec = document.getElementById('btnReceiveTab');
+            let btnPur = document.getElementById('btnPurchaseTab');
+            let purCard = document.getElementById('purchaseSummaryCard');
+
+            if(tabName === 'receive') {
+                btnRec.style.background = 'var(--primary)';
+                btnRec.style.color = 'white';
+                btnPur.style.background = 'transparent';
+                btnPur.style.color = 'var(--text-muted)';
+                if(purCard) purCard.style.display = 'none';
+            } else {
+                btnPur.style.background = 'var(--primary)';
+                btnPur.style.color = 'white';
+                btnRec.style.background = 'transparent';
+                btnRec.style.color = 'var(--text-muted)';
+                if(purCard) {
+                    purCard.style.display = 'block';
+                    if(document.getElementById('historyBalDisplay')) {
+                        let currentBal = Number(currentUser ? currentUser.balance : 0) || 0;
+                        document.getElementById('historyBalDisplay').innerText = "₹ " + currentBal.toFixed(2);
+                    }
+                }
+            }
+            renderOrderHistoryLists();
+        };
+
+        function renderOrderHistoryLists() {
+            if(!currentUser) return;
+            let container = document.getElementById('orderHistoryListContainer');
+            if(!container) return;
+
+            let html = "";
+            
+            if(currentOrderSubTab === 'receive') {
+                // Receive Tab (Order Claims / Sales)
+                db.ref('order_payments_pending').once('value', snap => {
+                    let records = [];
+                    snap.forEach(c => {
+                        let d = c.val();
+                        if(d && String(d.phone) === String(currentUser.phone)) {
+                            records.push(d);
+                        }
+                    });
+
+                    if(records.length === 0) {
+                        container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:30px;">No receive history found.</div>`;
+                        return;
+                    }
+
+                    records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    records.forEach(r => {
+                        let statusColor = r.status === 'Approved' || r.status === 'Success' ? '#10b981' : (r.status === 'Rejected' ? '#ef4444' : '#f59e0b');
+                        let statusText = r.status === 'Approved' ? 'Succeed' : (r.status === 'Pending' ? 'Pending' : r.status);
+                        let randomOrderCode = "Go" + Math.abs(hashCode(r.utr || "gotpay")).toString().substring(0, 5);
+
+                        html += `
+                        <div style="background:var(--card-bg, #1e293b); border:1px solid var(--border, #334155); border-radius:14px; padding:15px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="font-size:18px; font-weight:900; color:var(--primary); margin-bottom:4px;">- ₹ ${r.order_amount}</div>
+                                <div style="font-size:12px; color:var(--text-muted);">Order Code: <span style="color:var(--text); font-weight:bold;">${randomOrderCode}</span></div>
+                            </div>
+                            <div style="text-align:right;">
+                                <span style="background:${statusColor}22; color:${statusColor}; border:1px solid ${statusColor}44; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:bold;">${statusText}</span>
+                                <div style="font-size:10px; color:var(--text-muted); margin-top:6px;">${new Date(r.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                                <div style="font-size:10px; color:var(--text-muted);">${new Date(r.timestamp).toLocaleDateString()}</div>
+                            </div>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                });
+            } else {
+                // Purchase Tab (Deposits)
+                db.ref('deposit_requests').once('value', snap => {
+                    let records = [];
+                    snap.forEach(c => {
+                        let d = c.val();
+                        if(d && String(d.phone) === String(currentUser.phone)) {
+                            records.push(d);
+                        }
+                    });
+
+                    if(records.length === 0) {
+                        container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:30px;">No deposit history found.</div>`;
+                        return;
+                    }
+
+                    records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    records.forEach(r => {
+                        let statusColor = r.status === 'Success' || r.status === 'Approved' ? '#10b981' : '#ef4444';
+                        let statusText = r.status === 'Pending' ? 'Pending' : (r.status === 'Success' ? 'Succeed' : r.status);
+                        let randomCode = "5sf" + Math.abs(hashCode(r.utr || "dep")).toString().substring(0, 5);
+                        let rewardAmt = (Number(r.original_amount) * 0.06).toFixed(1);
+
+                        html += `
+                        <div style="background:var(--card-bg, #1e293b); border:1px solid var(--border, #334155); border-radius:14px; padding:15px; margin-bottom:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <div style="font-size:18px; font-weight:900; color:var(--success);">+ ₹ ${r.original_amount}</div>
+                                <span style="background:${statusColor}22; color:${statusColor}; border:1px solid ${statusColor}44; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:bold;">${statusText}</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
+                                <span>Reward: <strong style="color:var(--success);">+ ₹ ${rewardAmt}</strong></span>
+                                <span>Order Code: <b style="color:var(--text);">${randomCode}</b></span>
+                            </div>
+                            <div style="font-size:10px; color:var(--text-muted); margin-top:6px; text-align:right;">${new Date(r.timestamp).toLocaleString()}</div>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                });
+            }
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash);
+        }
+
+        // Jab user Team ya Order tab par click karega to data load ho jayega
+        let originalSwitchTab = window.switchTab;
+        window.switchTab = function(tabId, element) {
+            if(typeof originalSwitchTab === 'function') originalSwitchTab(tabId, element);
+            
+            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+            let target = document.getElementById(tabId);
+            if(target) target.style.display = 'block';
+
+            if(tabId === 'teamTab') loadTeamData();
+            if(tabId === 'orderTab') renderOrderHistoryLists();
+        }; 
     </script>
     </body>
 </html>
