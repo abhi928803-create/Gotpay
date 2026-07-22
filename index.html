@@ -1456,6 +1456,7 @@
             }
         };
 
+                // --- SECURE FINAL PAYMENT (GOES TO ADMIN FOR APPROVAL) ---
         window.processFinalPayment = function(event) {
             let utrInput = document.getElementById('userUtrInput');
             let utrValue = utrInput ? utrInput.value.trim() : "";
@@ -1473,30 +1474,31 @@
 
             let orderAmt = Number(pendingClaimAmount) || 0; 
             let earnedCommission = Number(pendingClaimCommission) || 0; 
-            
-            let currentBal = Number(currentUser.balance) || 0;
-            let currentComm = Number(currentUser.commission) || 0;
 
-            let newBal = currentBal + orderAmt + earnedCommission;
-            let newComm = currentComm + earnedCommission;
+            // यह सीधे यूज़र का बैलेंस नहीं बढ़ाएगा, बल्कि एडमिन अप्रूवल के लिए पेंडिंग भेजेगा
+            let requestData = {
+                phone: currentUser.phone,
+                username: currentUser.username,
+                uid: currentUser.uid,
+                order_amount: orderAmt,
+                commission: earnedCommission,
+                utr: utrValue,
+                platform: userSelectedPlatform,
+                status: "Pending", 
+                timestamp: new Date().toISOString()
+            };
 
-            db.ref('users/' + currentUser.phone).update({
-                balance: newBal,
-                commission: newComm
-            }).then(() => {
-                alert("🎉 Payment Verified! UTR: " + utrValue + "\nAmount Added: ₹" + orderAmt + "\nCommission Added: ₹" + earnedCommission);
-
-                currentUser.balance = newBal;
-                currentUser.commission = newComm;
-                if(typeof updateLiveAssets === 'function') updateLiveAssets();
-
+            db.ref('order_payments_pending').push(requestData)
+            .then(() => {
+                alert("⏳ Request Sent to Admin!\nUTR: " + utrValue + "\nAmount: ₹" + orderAmt + "\nAdmin will approve your payment soon.");
+                
                 btn.innerText = oldText;
                 btn.disabled = false;
                 closeOrderPage();
 
                 if(pendingClaimBtn) {
-                    pendingClaimBtn.innerText = "Claimed";
-                    pendingClaimBtn.style.background = "#4caf50";
+                    pendingClaimBtn.innerText = "Pending";
+                    pendingClaimBtn.style.background = "#ff9800"; 
                     pendingClaimBtn.disabled = true;
                 }
             }).catch(err => {
@@ -1505,6 +1507,7 @@
                 btn.disabled = false;
             });
         };
+
 
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll("button, div").forEach(el => {
