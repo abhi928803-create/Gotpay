@@ -342,33 +342,97 @@
                 </div>
             </div>
 
-            <!-- PROFILE (ADD/REMOVE UPI) -->
-            <div id="profileTab" class="page-content">
-                <h2 style="margin-bottom:15px;">Manage Accounts</h2>
-                <div class="card-box">
-                    <h3 style="color:var(--primary); margin-bottom:5px;">Add New UPI</h3>
-                    <select id="bindUpiType" class="select-field">
-                        <option value="MobiKwik">MobiKwik</option>
-                        <option value="Paytm">Paytm</option>
-                        <option value="PhonePe">PhonePe</option> 
-                        <option value="AmazonPay">AmazonPay</option>
-                        <option value="Paytm Business">Paytm Business</option>
-                    </select>
-                    <input type="text" id="bindUpiId" class="input-field" placeholder="Enter UPI ID (e.g. 9876543210@paytm)">
-                    
-                    <div class="input-group">
-                        <input type="text" id="bindOtp" class="input-field" placeholder="Enter OTP" maxlength="4">
-                        <button class="otp-btn" onclick="sendDemoOTP()">Get OTP</button>
-                    </div>
+            <!-- 🟢 NAYA "MY" (PROFILE) PAGE - GOTPAY BLUE THEME 🟢 -->
+<div id="profileTab" class="page-content" style="padding: 15px; padding-bottom: 100px; min-height: 100vh;">
+    
+    <h2 style="text-align: center; color: var(--primary); padding: 10px 0 20px 0; margin: 0; font-size: 22px;">My Profile</h2>
 
-                    <button class="primary-btn" style="padding:10px; margin-top:15px;" onclick="addUpi()">Link UPI</button>
+    <!-- Stats Container (Live Update Hoga) -->
+    <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0eaff; margin-bottom: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <!-- Deposit Box -->
+            <div style="background: #f4f7fc; border: 1px solid #e0eaff; border-radius: 12px; padding: 15px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #555;">
+                    <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 11px;"><i class="fa-solid fa-money-check-dollar"></i></div>
+                    <span style="font-size: 13px; font-weight: 600;">Deposit</span>
                 </div>
-
-                <div class="card-box">
-                    <h4 style="margin-bottom:10px;">Your Linked UPIs</h4>
-                    <div id="linkedUpiList" style="font-size:13px; color:#555;">Loading...</div>
-                </div>
+                <div style="font-size: 18px; font-weight: bold; color: #333;">₹ <span id="myTotalDeposit">0.00</span></div>
             </div>
+            <!-- Withdraw Box -->
+            <div style="background: #f4f7fc; border: 1px solid #e0eaff; border-radius: 12px; padding: 15px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #555;">
+                    <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 11px;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <span style="font-size: 13px; font-weight: 600;">Withdraw</span>
+                </div>
+                <div style="font-size: 18px; font-weight: bold; color: #333;">₹ <span id="myTotalWithdraw">0.00</span></div>
+            </div>
+        </div>
+        <!-- Commission Box -->
+        <div style="background: #f4f7fc; border: 1px solid #e0eaff; border-radius: 12px; padding: 15px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #555;">
+                <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 11px;"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <span style="font-size: 13px; font-weight: 600;">Commission</span>
+            </div>
+            <div style="font-size: 18px; font-weight: bold; color: #333;">₹ <span id="myTotalCommission">0.00</span></div>
+        </div>
+    </div>
+
+    <!-- Grid Menu Container -->
+    <div style="background: white; border-radius: 20px; padding: 25px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0eaff; margin-bottom: 25px; position: relative;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px 10px; text-align: center;">
+            
+            <!-- Wallet (Takes to your new center button page) -->
+            <div onclick="switchTab('walletPage')" style="cursor: pointer;">
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Wallet</div>
+            </div>
+            
+            <!-- Integral / Task -->
+            <div>
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Integral</div>
+            </div>
+            
+            <!-- Service -->
+            <div>
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Service</div>
+            </div>
+            
+            <!-- Message -->
+            <div>
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-comment-dots"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Message</div>
+            </div>
+            
+            <!-- Pin / Security -->
+            <div>
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Pin</div>
+            </div>
+
+        </div>
+        <!-- Version text -->
+        <div style="position: absolute; bottom: 10px; right: 15px; font-size: 10px; color: #aaa; font-weight: bold;">v1.3.5</div>
+    </div>
+
+    <!-- Logout Button -->
+    <button onclick="logout()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 86, 210, 0.3);">
+        Logout
+    </button>
+
+</div>
+<!-- 🟢 NAYA "MY" PAGE KHATAM 🟢 -->
 
             <!-- 🟢 UPDATED UPI WALLET PAGE 🟢 -->
 <div id="walletPage" class="page-content" style="padding: 15px; padding-bottom: 100px;">
@@ -839,8 +903,49 @@ function loadAutomaticOrders() {
     });
 }
         loadAutomaticOrders();
-    </script>
+       
+    // --- LIVE ASSET CALCULATOR (My Profile Page) ---
+    function updateLiveAssets() {
+        if(!currentUser) return;
+
+        // 1. Live Total Deposit Calculate Karega
+        db.ref('deposit_requests').on('value', snap => {
+            let totalDep = 0;
+            snap.forEach(c => {
+                let d = c.val();
+                if(d.phone === currentUser.phone) { 
+                    totalDep += Number(d.original_amount) || 0;
+                }
+            });
+            if(document.getElementById('myTotalDeposit')) {
+                document.getElementById('myTotalDeposit').innerText = totalDep.toFixed(2);
+            }
+        });
+
+        // 2. Live Total Withdraw Calculate Karega
+        db.ref('withdraw_requests').on('value', snap => {
+            let totalWd = 0;
+            snap.forEach(c => {
+                let d = c.val();
+                if(d.phone === currentUser.phone) {
+                    totalWd += Number(d.amount) || 0;
+                }
+            });
+            if(document.getElementById('myTotalWithdraw')) {
+                document.getElementById('myTotalWithdraw').innerText = totalWd.toFixed(2);
+            }
+        });
+
+        // 3. Commission Update
+        let totalComm = currentUser.commission || 0.00;
+        if(document.getElementById('myTotalCommission')) {
+            document.getElementById('myTotalCommission').innerText = totalComm.toFixed(2);
+        }
+    }
+
+</script> <!-- Iske theek upar paste karna hai -->
 </body>
-</html>
+</html> 
+    
 
             
