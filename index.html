@@ -1290,7 +1290,8 @@ function updateLiveAssets() {
         }
     };
 
-     // Step 2 se 'Next' dabane par realistic verification ke sath Step 3 khulega
+    
+ // 5. Step 2 se 'Next' dabane par realistic verification ke sath Step 3 khulega
     window.proceedToWalletStep3 = function() {
         let otpInput = document.getElementById('walletOtpInput');
         let otpVal = otpInput ? otpInput.value.trim() : "";
@@ -1372,7 +1373,8 @@ function updateLiveAssets() {
 
                 listContainer.innerHTML = htmlContent;
             }
-
+        }, 1500);
+    };  
 
     // 6. User fetched options me se koi ek UPI select karega
     window.selectFetchedUpi = function(element, upiStr) {
