@@ -1264,8 +1264,8 @@ function updateLiveAssets() {
         if(document.getElementById('step1WalletTitle')) {
             document.getElementById('step1WalletTitle').innerText = "Create " + selectedBindingTool + " Wallet";
         }
-        if(document.getElementById('walletPhoneInput') && currentUser && currentUser.phone) {
-            document.getElementById('walletPhoneInput').value = currentUser.phone;
+               if(document.getElementById('walletPhoneInput')) {
+            document.getElementById('walletPhoneInput').value = "";
         }
     };
 
