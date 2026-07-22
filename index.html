@@ -1319,30 +1319,61 @@ function updateLiveAssets() {
                 document.getElementById('finishAppTitle').innerText = selectedBindingTool;
             }
 
-            // Generate realistic bank-linked UPI options based on user's entered phone number
+                     // Generate customized UPI options based on the selected binding tool
             let listContainer = document.getElementById('fetchedUpiOptionsList');
             if(listContainer) {
-                let cleanPhone = bindingPhoneNum.slice(-4); // last 4 digits
-                let upi1 = bindingPhoneNum + "@" + selectedBindingTool.toLowerCase();
-                let upi2 = bindingPhoneNum + "@ybl";
-                let upi3 = "user" + cleanPhone + "@okicici";
+                let tool = (selectedBindingTool || "").toLowerCase();
+                let htmlContent = "";
 
-                chosenUpiToBind = upi1; // default selection
+                if(tool.includes('mobikwik')) {
+                    let upi1 = bindingPhoneNum + "@mbkns";
+                    chosenUpiToBind = upi1;
+                    htmlContent = `
+                        <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                            📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                        </div>
+                    `;
+                } else if(tool.includes('freecharge')) {
+                    let upi1 = bindingPhoneNum + "@freecharge";
+                    chosenUpiToBind = upi1;
+                    htmlContent = `
+                        <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                            📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                        </div>
+                    `;
+                } else if(tool.includes('navi')) {
+                    let upi1 = bindingPhoneNum + "@nyes";
+                    let upi2 = bindingPhoneNum + "@naviaxis";
+                    chosenUpiToBind = upi1;
+                    htmlContent = `
+                        <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                            📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                        </div>
+                        <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                            📍 ${upi2}
+                        </div>
+                    `;
+                } else {
+                    let upi1 = bindingPhoneNum + "@ptyes";
+                    let upi2 = bindingPhoneNum + "@ptaxis";
+                    let upi3 = bindingPhoneNum + "@ptsbi";
+                    chosenUpiToBind = upi1;
+                    htmlContent = `
+                        <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                            📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                        </div>
+                        <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                            📍 ${upi2}
+                        </div>
+                        <div onclick="selectFetchedUpi(this, '${upi3}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                            📍 ${upi3}
+                        </div>
+                    `;
+                }
 
-                listContainer.innerHTML = `
-                    <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
-                        📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
-                    </div>
-                    <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
-                        📍 ${upi2}
-                    </div>
-                    <div onclick="selectFetchedUpi(this, '${upi3}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
-                        📍 ${upi3}
-                    </div>
-                `;
+                listContainer.innerHTML = htmlContent;
             }
-        }, 1200); 
-    };
+
 
     // 6. User fetched options me se koi ek UPI select karega
     window.selectFetchedUpi = function(element, upiStr) {
