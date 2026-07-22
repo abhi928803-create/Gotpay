@@ -644,6 +644,7 @@
             });
 
             db.ref('deposit_requests').on('value', renderHistory);
+            updateLiveAssets();
         };
 
         let session = localStorage.getItem("gotpay_session");
