@@ -772,11 +772,11 @@
         let currentBalance = 0;
         let generatedOTP = "";
         
-    if (document.getElementById('paymentBalance')) {
-    document.getElementById('paymentBalance').innerText = '₹ ' + currentBalance.toFixed(2);
-}
-
-        // --- UI ROUTING ---
+        // FIX 1: Prevent crash if element is missing
+        if (document.getElementById('paymentBalance')) {
+            document.getElementById('paymentBalance').innerText = '₹ ' + currentBalance.toFixed(2);
+        }
+                // --- UI ROUTING ---
         window.showPage = (pageId) => {
             document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -793,9 +793,11 @@
         
         window.showToast = function(message) {
             let toast = document.getElementById("customToast");
-            toast.innerText = message;
-            toast.classList.add("show");
-            setTimeout(function() { toast.classList.remove("show"); }, 3000);
+            if(toast) {
+                toast.innerText = message;
+                toast.classList.add("show");
+                setTimeout(function() { toast.classList.remove("show"); }, 3000);
+            }
         };
         
         // --- OTP SIMULATOR ---
@@ -886,8 +888,7 @@
             document.getElementById('mainApp').style.display = 'none';
             window.showPage('loginPage');
         };
-
-        // --- DASHBOARD LOGIC ---
+                // --- DASHBOARD LOGIC ---
         window.loadDashboard = function(phone) {
             document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
             let mainApp = document.getElementById('mainApp');
@@ -925,73 +926,78 @@
             window.loadDashboard(session);
         }
 
-// --- UPDATED UPI MANAGEMENT (Auto Card Generator) ---
-function renderUpiList() {
-    let profileListHtml = "";
-    let walletCardsHtml = "";
-    let selectHtml = '<option value="">-- Select Linked UPI --</option>';
-    
-    // Check agar user ke paas UPI hai
-    if(currentUser.upis && Object.keys(currentUser.upis).length > 0) {
-        for(let platform in currentUser.upis) {
-            let upiId = currentUser.upis[platform];
+        // --- UPDATED UPI MANAGEMENT (Auto Card Generator) ---
+        function renderUpiList() {
+            let profileListHtml = "";
+            let walletCardsHtml = "";
+            let selectHtml = '<option value="">-- Select Linked UPI --</option>';
             
-            // 1. Profile Page ke liye choti list
-            profileListHtml += `
-                <div class="list-item">
-                    <div><strong style="color:var(--primary);">${platform}</strong><br><span style="font-size:12px;">${upiId}</span></div>
-                    <button class="remove-btn" onclick="removeUpi('${platform}')">Remove</button>
-                </div>
-            `;
-            
-            // 2. Withdraw page ke liye dropdown
-            selectHtml += `<option value="${upiId}">${platform} - ${upiId}</option>`;
-            
-            // 3. Wallet Page ke liye aapka PREMIUM CARD design (Automatic)
-            walletCardsHtml += `
-            <div style="background: linear-gradient(135deg, #1e3c72, #2a5298); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; overflow: hidden;">
-                <div style="position: absolute; right: -30px; top: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1;">
-                    <div>
-                        <h3 style="color: #ffffff; font-size: 26px; margin: 0; font-weight: 900; letter-spacing: 1px;">UPI</h3>
-                        <p style="color: #d1e0ff; font-size: 14px; margin: 5px 0 0 0;">${upiId}</p>
-                    </div>
-                    <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; border: 1px solid #4caf50; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Active</span>
-                </div>
+            if(currentUser.upis && Object.keys(currentUser.upis).length > 0) {
+                for(let platform in currentUser.upis) {
+                    let upiId = currentUser.upis[platform];
+                    
+                    profileListHtml += `
+                        <div class="list-item">
+                            <div><strong style="color:var(--primary);">${platform}</strong><br><span style="font-size:12px;">${upiId}</span></div>
+                            <button class="remove-btn" onclick="removeUpi('${platform}')">Remove</button>
+                        </div>
+                    `;
+                    
+                    selectHtml += `<option value="${upiId}">${platform} - ${upiId}</option>`;
+                    
+                    walletCardsHtml += `
+                    <div style="background: linear-gradient(135deg, #1e3c72, #2a5298); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; overflow: hidden;">
+                        <div style="position: absolute; right: -30px; top: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1;">
+                            <div>
+                                <h3 style="color: #ffffff; font-size: 26px; margin: 0; font-weight: 900; letter-spacing: 1px;">UPI</h3>
+                                <p style="color: #d1e0ff; font-size: 14px; margin: 5px 0 0 0;">${upiId}</p>
+                            </div>
+                            <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; border: 1px solid #4caf50; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Active</span>
+                        </div>
 
-                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 1;">
-                    <span style="color: #b3caff; font-size: 11px;">Limits: 100 ~ 1,00,000</span>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="color: #ffffff; font-size: 13px; font-weight: bold;">${platform}</span>
-                        <button onclick="removeUpi('${platform}')" style="background: rgba(255, 0, 0, 0.2); color: #ffcccc; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer;">Delete</button>
-                    </div>
-                </div>
-            </div>`;
+                        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 1;">
+                            <span style="color: #b3caff; font-size: 11px;">Limits: 100 ~ 1,00,000</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="color: #ffffff; font-size: 13px; font-weight: bold;">${platform}</span>
+                                <button onclick="removeUpi('${platform}')" style="background: rgba(255, 0, 0, 0.2); color: #ffcccc; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer;">Delete</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            } else {
+                profileListHtml = "<p style='text-align:center; padding:10px;'>No UPI Linked.</p>";
+                walletCardsHtml = `
+                    <div style="text-align:center; padding: 40px 20px;">
+                        <div style="font-size: 40px; color: #ccc; margin-bottom: 10px;"><i class="fa-solid fa-wallet"></i></div>
+                        <p style="color:#999; font-size:14px;">No UPI accounts linked yet.</p>
+                        <button onclick="switchTab('profileTab')" style="margin-top:15px; background:var(--primary); color:white; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">Link UPI Now</button>
+                    </div>`;
+            }
+            
+            // FIX 2: Prevent Crash if elements are missing
+            if(document.getElementById('linkedUpiList')) {
+                document.getElementById('linkedUpiList').innerHTML = profileListHtml;
+            }
+            if(document.getElementById('withdrawUpiSelect')) {
+                document.getElementById('withdrawUpiSelect').innerHTML = selectHtml;
+            }
+            if(document.getElementById('walletUpiContainer')) {
+                document.getElementById('walletUpiContainer').innerHTML = walletCardsHtml;
+            }
         }
-    } else {
-        // Agar koi UPI add nahi kiya hai
-        profileListHtml = "<p style='text-align:center; padding:10px;'>No UPI Linked.</p>";
-        walletCardsHtml = `
-            <div style="text-align:center; padding: 40px 20px;">
-                <div style="font-size: 40px; color: #ccc; margin-bottom: 10px;"><i class="fa-solid fa-wallet"></i></div>
-                <p style="color:#999; font-size:14px;">No UPI accounts linked yet.</p>
-                <button onclick="switchTab('profileTab')" style="margin-top:15px; background:var(--primary); color:white; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">Link UPI Now</button>
-            </div>`;
-    }
-    
-    // HTML ko update karna
-    if(document.getElementById('linkedUpiList')) {
-    document.getElementById('linkedUpiList').innerHTML = profileListHtml;
-}
-if(document.getElementById('withdrawUpiSelect')) {
-    document.getElementById('withdrawUpiSelect').innerHTML = selectHtml; 
-}
 
         window.addUpi = async () => {
-            let platform = document.getElementById('bindUpiType').value;
-            let upiId = document.getElementById('bindUpiId').value.trim();
-            let otp = document.getElementById('bindOtp').value.trim();
+            let typeEl = document.getElementById('bindUpiType');
+            let idEl = document.getElementById('bindUpiId');
+            let otpEl = document.getElementById('bindOtp');
+            
+            if(!typeEl || !idEl || !otpEl) return;
+            
+            let platform = typeEl.value;
+            let upiId = idEl.value.trim();
+            let otp = otpEl.value.trim();
 
             if(!upiId) return alert("Enter UPI ID");
             if(otp !== generatedOTP || otp === "") return alert("Invalid OTP!");
@@ -999,8 +1005,8 @@ if(document.getElementById('withdrawUpiSelect')) {
             try {
                 await db.ref(`users/${currentUser.phone}/upis`).update({ [platform]: upiId });
                 alert(`✅ ${platform} UPI Added Successfully!`);
-                document.getElementById('bindUpiId').value = "";
-                document.getElementById('bindOtp').value = "";
+                idEl.value = "";
+                otpEl.value = "";
                 generatedOTP = ""; 
             } catch(e) {
                 alert("Error saving UPI: " + e.message);
@@ -1016,11 +1022,12 @@ if(document.getElementById('withdrawUpiSelect')) {
                 alert("Error removing UPI: " + e.message);
             }
         }
-
-        // --- DEPOSIT SYSTEM ---
+                // --- DEPOSIT SYSTEM ---
         window.calculateBonus = () => {
             let amt = Number(document.getElementById('depositAmount').value) || 0;
-            document.getElementById('bonusDisplay').innerText = (amt + (amt * 0.06)).toFixed(2);
+            if(document.getElementById('bonusDisplay')) {
+                document.getElementById('bonusDisplay').innerText = (amt + (amt * 0.06)).toFixed(2);
+            }
         }
 
         window.generateDepositRequest = () => {
@@ -1133,462 +1140,401 @@ if(document.getElementById('withdrawUpiSelect')) {
                 document.getElementById('homeHistoryList').innerHTML = html;
             }
         }
-
-// --- UPDATED AUTOMATIC ORDERS RENDER ---
-function loadAutomaticOrders() {
-    const ordersRef = firebase.database().ref('orders');
-    ordersRef.on('value', (snapshot) => {
-        const ordersListEl = document.getElementById('paymentOrdersList');
-        if (!ordersListEl) return;
-        ordersListEl.innerHTML = ''; 
-        
-        const data = snapshot.val();
-        if (!data) {
-            ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
-            return;
+                // --- AUTOMATIC ORDERS RENDER ---
+        function loadAutomaticOrders() {
+            const ordersRef = firebase.database().ref('orders');
+            ordersRef.on('value', (snapshot) => {
+                const ordersListEl = document.getElementById('paymentOrdersList');
+                if (!ordersListEl) return;
+                ordersListEl.innerHTML = ''; 
+                
+                const data = snapshot.val();
+                if (!data) {
+                    ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
+                    return;
+                }
+                
+                Object.keys(data).forEach((key) => {
+                    const order = data[key] || {};
+                    const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                    const amountVal = order.amount || order.amt || 0;
+                    const incomeVal = order.income || order.profit || (amountVal * 0.06).toFixed(2);
+                    
+                    const cardHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
+                                <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: ${randomCode}</span>
+                            </div>
+                            <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ ${amountVal}</strong></div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ ${incomeVal} <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
+                                <button onclick="claimOrder('${amountVal}', '${incomeVal}', this)" style="background: var(--primary); color: white; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px;">Claim</button>
+                            </div>
+                        </div>
+                    `;
+                    ordersListEl.innerHTML += cardHTML;
+                });
+            });
         }
-        
-        Object.keys(data).forEach((key) => {
-            const order = data[key] || {};
-            const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-            
-            // Safe Amount Calculation
-            const amountVal = order.amount || order.amt || 0;
-            
-            // Income Agar Database Me Na Ho To 6% Auto Calculate Hoga
-            const incomeVal = order.income || order.profit || (amountVal * 0.06).toFixed(2);
-            
-            const cardHTML = `
-                <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
-                        <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: ${randomCode}</span>
-                    </div>
-                    <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ ${amountVal}</strong></div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ ${incomeVal} <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
-                        <button onclick="claimOrder('${amountVal}', '${incomeVal}', this)" style="background: var(--primary); color: white; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px;">Claim</button>
-                    </div>
-                </div>
-            `;
-            ordersListEl.innerHTML += cardHTML;
-        });
-    });
-}
         loadAutomaticOrders();
-       
-// --- LIVE ASSET & STATISTICS CALCULATOR ---
-function updateLiveAssets() {
-    if(!currentUser) return;
 
-    // Balance & Commission Update (Statistics & Profile Page)
-    let totalComm = currentUser.commission || 0.00;
-    let currentBal = currentUser.balance || 0.00;
-    
-    if(document.getElementById('myTotalCommission')) document.getElementById('myTotalCommission').innerText = totalComm.toFixed(2);
-    if(document.getElementById('statCommission')) document.getElementById('statCommission').innerText = totalComm.toFixed(2);
-    if(document.getElementById('statBalance')) document.getElementById('statBalance').innerText = currentBal.toFixed(2);
+        // --- LIVE ASSET & STATISTICS CALCULATOR ---
+        function updateLiveAssets() {
+            if(!currentUser) return;
+            let totalComm = currentUser.commission || 0.00;
+            let currentBal = currentUser.balance || 0.00;
+            
+            if(document.getElementById('myTotalCommission')) document.getElementById('myTotalCommission').innerText = totalComm.toFixed(2);
+            if(document.getElementById('statCommission')) document.getElementById('statCommission').innerText = totalComm.toFixed(2);
+            if(document.getElementById('statBalance')) document.getElementById('statBalance').innerText = currentBal.toFixed(2);
 
-    let totalPending = 0; // In Process calculate karne ke liye
+            let totalPending = 0; 
+            db.ref('deposit_requests').on('value', snap => {
+                let totalDep = 0;
+                let pendingDep = 0;
+                snap.forEach(c => {
+                    let d = c.val();
+                    if(d.phone === currentUser.phone) { 
+                        totalDep += Number(d.original_amount) || 0;
+                        if(d.status === 'Pending') pendingDep += Number(d.original_amount) || 0;
+                    }
+                });
+                if(document.getElementById('myTotalDeposit')) document.getElementById('myTotalDeposit').innerText = totalDep.toFixed(2);
+                if(document.getElementById('statDeposit')) document.getElementById('statDeposit').innerText = totalDep.toFixed(2);
+                
+                totalPending = pendingDep;
+                if(document.getElementById('statInProcess')) document.getElementById('statInProcess').innerText = totalPending.toFixed(2);
+            });
 
-    // Deposit Update Karega
-    db.ref('deposit_requests').on('value', snap => {
-        let totalDep = 0;
-        let pendingDep = 0;
-        snap.forEach(c => {
-            let d = c.val();
-            if(d.phone === currentUser.phone) { 
-                totalDep += Number(d.original_amount) || 0;
-                if(d.status === 'Pending') pendingDep += Number(d.original_amount) || 0;
-            }
-        });
-        if(document.getElementById('myTotalDeposit')) document.getElementById('myTotalDeposit').innerText = totalDep.toFixed(2);
-        if(document.getElementById('statDeposit')) document.getElementById('statDeposit').innerText = totalDep.toFixed(2);
-        
-        // Pending logic update
-        totalPending = pendingDep;
-        updatePendingUI();
-    });
-
-    // Withdraw Update Karega
-    db.ref('withdraw_requests').on('value', snap => {
-        let totalWd = 0;
-        let pendingWd = 0;
-        snap.forEach(c => {
-            let d = c.val();
-            if(d.phone === currentUser.phone) {
-                totalWd += Number(d.amount) || 0;
-                if(d.status === 'Pending') pendingWd += Number(d.amount) || 0;
-            }
-        });
-        if(document.getElementById('myTotalWithdraw')) document.getElementById('myTotalWithdraw').innerText = totalWd.toFixed(2);
-        if(document.getElementById('statWithdraw')) document.getElementById('statWithdraw').innerText = totalWd.toFixed(2);
-        
-        // Pending logic update
-        totalPending += pendingWd;
-        updatePendingUI();
-    });
-
-    // Pending UI update helper
-    function updatePendingUI() {
-        if(document.getElementById('statInProcess')) {
-            document.getElementById('statInProcess').innerText = totalPending.toFixed(2);
-        }
-    }
-}
-
-                // --- ADVANCED MULTI-STEP UPI BINDING WORKFLOW ---
-    let selectedBindingTool = "Paytm";
-    let bindingPhoneNum = "";
-    let chosenUpiToBind = "";
-
-    // 1. My UPI page ke '+ Add UPI' button se Choose Tool page par jana
-    window.openChooseToolPage = function() {
-        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-        let page = document.getElementById('chooseToolPage');
-        if(page) page.style.display = 'block';
-    };
-
-    // 2. Tool Card select karne par border highlight hoga
-    window.selectToolCard = function(element, toolName) {
-        document.querySelectorAll('.tool-card').forEach(c => c.style.border = '2px solid transparent');
-        element.style.border = '2px solid var(--primary)';
-        selectedBindingTool = toolName;
-    };
-
-    // 3. 'Sure' dabane par Step 1 (Phone) page khulega
-    window.proceedToWalletStep1 = function() {
-        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-        let page = document.getElementById('walletStep1Page');
-        if(page) page.style.display = 'block';
-
-        if(document.getElementById('step1WalletTitle')) {
-            document.getElementById('step1WalletTitle').innerText = "Create " + selectedBindingTool + " Wallet";
-        }
-               if(document.getElementById('walletPhoneInput')) {
-            document.getElementById('walletPhoneInput').value = "";
-        }
-    };
-
-    // 4. Step 1 se 'Next' dabane par Step 2 (OTP) page khulega
-    window.proceedToWalletStep2 = function() {
-        let phoneInput = document.getElementById('walletPhoneInput');
-        bindingPhoneNum = phoneInput ? phoneInput.value.trim() : "";
-
-        if(bindingPhoneNum.length < 10) {
-            alert("⚠️ Please enter a valid phone number!");
-            return;
+            db.ref('withdraw_requests').on('value', snap => {
+                let totalWd = 0;
+                let pendingWd = 0;
+                snap.forEach(c => {
+                    let d = c.val();
+                    if(d.phone === currentUser.phone) {
+                        totalWd += Number(d.amount) || 0;
+                        if(d.status === 'Pending') pendingWd += Number(d.amount) || 0;
+                    }
+                });
+                if(document.getElementById('myTotalWithdraw')) document.getElementById('myTotalWithdraw').innerText = totalWd.toFixed(2);
+                if(document.getElementById('statWithdraw')) document.getElementById('statWithdraw').innerText = totalWd.toFixed(2);
+                
+                totalPending += pendingWd;
+                if(document.getElementById('statInProcess')) document.getElementById('statInProcess').innerText = totalPending.toFixed(2);
+            });
         }
 
-        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-        let page = document.getElementById('walletStep2Page');
-        if(page) page.style.display = 'block';
+        // --- ADVANCED MULTI-STEP UPI BINDING WORKFLOW ---
+        let selectedBindingTool = "Paytm";
+        let bindingPhoneNum = "";
+        let chosenUpiToBind = "";
 
-        if(document.getElementById('step2OtpTitle')) {
-            document.getElementById('step2OtpTitle').innerText = selectedBindingTool + " OTP Verification";
-        }
-        if(document.getElementById('displayOtpPhone')) {
-            document.getElementById('displayOtpPhone').value = bindingPhoneNum;
-        }
-    };
-
-    
- // 5. Step 2 se 'Next' dabane par realistic verification ke sath Step 3 khulega
-    window.proceedToWalletStep3 = function() {
-        let otpInput = document.getElementById('walletOtpInput');
-        let otpVal = otpInput ? otpInput.value.trim() : "";
-
-        if(otpVal.length < 4) {
-            alert("⚠️ Please enter a valid 4-digit OTP code received on your mobile!");
-            return;
-        }
-
-        // Professional Loading Effect
-        let nextBtn = event.target;
-        let oldText = nextBtn.innerText;
-        nextBtn.innerText = "Verifying OTP...";
-        nextBtn.disabled = true;
-
-        setTimeout(() => {
-            nextBtn.innerText = oldText;
-            nextBtn.disabled = false;
-
+        window.openChooseToolPage = function() {
             document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-            let page = document.getElementById('walletStep3Page');
+            let page = document.getElementById('chooseToolPage');
+            if(page) page.style.display = 'block';
+        };
+
+        window.selectToolCard = function(element, toolName) {
+            document.querySelectorAll('.tool-card').forEach(c => c.style.border = '2px solid transparent');
+            element.style.border = '2px solid var(--primary)';
+            selectedBindingTool = toolName;
+        };
+
+        window.proceedToWalletStep1 = function() {
+            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+            let page = document.getElementById('walletStep1Page');
             if(page) page.style.display = 'block';
 
-            if(document.getElementById('finishAppTitle')) {
-                document.getElementById('finishAppTitle').innerText = selectedBindingTool;
+            if(document.getElementById('step1WalletTitle')) {
+                document.getElementById('step1WalletTitle').innerText = "Create " + selectedBindingTool + " Wallet";
+            }
+            if(document.getElementById('walletPhoneInput')) {
+                document.getElementById('walletPhoneInput').value = "";
+            }
+        };
+
+        window.proceedToWalletStep2 = function() {
+            let phoneInput = document.getElementById('walletPhoneInput');
+            bindingPhoneNum = phoneInput ? phoneInput.value.trim() : "";
+
+            if(bindingPhoneNum.length < 10) {
+                alert("⚠️ Please enter a valid phone number!");
+                return;
             }
 
-                     // Generate customized UPI options based on the selected binding tool
-            let listContainer = document.getElementById('fetchedUpiOptionsList');
-            if(listContainer) {
-                let tool = (selectedBindingTool || "").toLowerCase();
-                let htmlContent = "";
+            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+            let page = document.getElementById('walletStep2Page');
+            if(page) page.style.display = 'block';
 
-                if(tool.includes('mobikwik')) {
-                    let upi1 = bindingPhoneNum + "@mbkns";
-                    chosenUpiToBind = upi1;
-                    htmlContent = `
-                        <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
-                            📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
-                        </div>
-                    `;
-                } else if(tool.includes('freecharge')) {
-                    let upi1 = bindingPhoneNum + "@freecharge";
-                    chosenUpiToBind = upi1;
-                    htmlContent = `
-                        <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
-                            📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
-                        </div>
-                    `;
-                } else if(tool.includes('navi')) {
-                    let upi1 = bindingPhoneNum + "@nyes";
-                    let upi2 = bindingPhoneNum + "@naviaxis";
-                    chosenUpiToBind = upi1;
-                    htmlContent = `
-                        <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
-                            📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
-                        </div>
-                        <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
-                            📍 ${upi2}
-                        </div>
-                    `;
+            if(document.getElementById('step2OtpTitle')) {
+                document.getElementById('step2OtpTitle').innerText = selectedBindingTool + " OTP Verification";
+            }
+            if(document.getElementById('displayOtpPhone')) {
+                document.getElementById('displayOtpPhone').value = bindingPhoneNum;
+            }
+        };
+
+        window.proceedToWalletStep3 = function(event) {
+            let otpInput = document.getElementById('walletOtpInput');
+            let otpVal = otpInput ? otpInput.value.trim() : "";
+
+            if(otpVal.length < 4) {
+                alert("⚠️ Please enter a valid 4-digit OTP code received on your mobile!");
+                return;
+            }
+
+            let nextBtn = event ? event.target : document.activeElement;
+            let oldText = nextBtn.innerText || "Next";
+            nextBtn.innerText = "Verifying OTP...";
+            nextBtn.disabled = true;
+
+            // FIX 3: Added properly closed setTimeout
+            setTimeout(() => {
+                nextBtn.innerText = oldText;
+                nextBtn.disabled = false;
+
+                document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+                let page = document.getElementById('walletStep3Page');
+                if(page) page.style.display = 'block';
+
+                if(document.getElementById('finishAppTitle')) {
+                    document.getElementById('finishAppTitle').innerText = selectedBindingTool;
+                }
+
+                let listContainer = document.getElementById('fetchedUpiOptionsList');
+                if(listContainer) {
+                    let tool = (selectedBindingTool || "").toLowerCase();
+                    let htmlContent = "";
+
+                    if(tool.includes('mobikwik')) {
+                        let upi1 = bindingPhoneNum + "@mbkns";
+                        chosenUpiToBind = upi1;
+                        htmlContent = `
+                            <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                                📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                            </div>
+                        `;
+                    } else if(tool.includes('freecharge')) {
+                        let upi1 = bindingPhoneNum + "@freecharge";
+                        chosenUpiToBind = upi1;
+                        htmlContent = `
+                            <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                                📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                            </div>
+                        `;
+                    } else if(tool.includes('navi')) {
+                        let upi1 = bindingPhoneNum + "@nyes";
+                        let upi2 = bindingPhoneNum + "@naviaxis";
+                        chosenUpiToBind = upi1;
+                        htmlContent = `
+                            <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                                📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                            </div>
+                            <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                                📍 ${upi2}
+                            </div>
+                        `;
+                    } else {
+                        let upi1 = bindingPhoneNum + "@ptyes";
+                        let upi2 = bindingPhoneNum + "@ptaxis";
+                        let upi3 = bindingPhoneNum + "@ptsbi";
+                        chosenUpiToBind = upi1;
+                        htmlContent = `
+                            <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                                📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                            </div>
+                            <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                                📍 ${upi2}
+                            </div>
+                            <div onclick="selectFetchedUpi(this, '${upi3}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                                📍 ${upi3}
+                            </div>
+                        `;
+                    }
+                    listContainer.innerHTML = htmlContent;
+                }
+            }, 1500); 
+        };
+
+        window.selectFetchedUpi = function(element, upiStr) {
+            document.querySelectorAll('.fetched-upi-item').forEach(i => {
+                i.style.border = '2px solid #ddd';
+                i.style.background = 'white';
+            });
+            element.style.border = '2px solid var(--primary)';
+            element.style.background = '#e3f2fd';
+            chosenUpiToBind = upiStr;
+        };
+
+        window.finalizeAndSaveUpi = function() {
+            if(!currentUser) { alert("Please login first!"); return; }
+
+            if(!currentUser.upis) currentUser.upis = {};
+            currentUser.upis[selectedBindingTool] = chosenUpiToBind;
+
+            db.ref('users/' + currentUser.phone + '/upis').set(currentUser.upis).then(() => {
+                alert("🎉 " + selectedBindingTool + " UPI (" + chosenUpiToBind + ") Bound Successfully!");
+                if(typeof switchTab === 'function') switchTab('walletPage');
+                else location.reload();
+            }).catch(err => {
+                alert("Error: " + err.message);
+            });
+        };
+                // --- ADVANCED ORDER CLAIM SYSTEM ---
+        let pendingClaimAmount = 0;
+        let pendingClaimCommission = 0;
+        let pendingClaimBtn = null;
+        let userSelectedPlatform = "UMP";
+        let userSelectedUpiId = "";
+
+        let adminBanksList = [
+            { acc: "30000439941", name: "Abhinav Kumar", ifsc: "FINO0000001" },
+            { acc: "30000439941", name: "ROHIT KUMAR", ifsc: "FINO0000001" }
+        ];
+
+        window.claimOrder = function(orderAmount, commissionAmount, btnElement) {
+            if(!currentUser) { alert("Please login first!"); return; }
+            if(!currentUser.upis || Object.keys(currentUser.upis).length === 0) {
+                alert("⚠️ Please Bind your UMP (UPI) in 'My Profile' first before claiming orders!");
+                return; 
+            }
+
+            userSelectedPlatform = Object.keys(currentUser.upis)[0];
+            userSelectedUpiId = currentUser.upis[userSelectedPlatform];
+
+            pendingClaimAmount = orderAmount;
+            pendingClaimCommission = commissionAmount;
+            pendingClaimBtn = btnElement;
+
+            if(document.getElementById('popupPlatformIcon')) document.getElementById('popupPlatformIcon').innerText = userSelectedPlatform;
+            if(document.getElementById('popupPlatformName')) document.getElementById('popupPlatformName').innerText = userSelectedPlatform;
+            if(document.getElementById('popupUpiId')) document.getElementById('popupUpiId').innerText = userSelectedUpiId;
+
+            let modal = document.getElementById('selectToolModal');
+            if(modal) modal.style.display = 'flex';
+        };
+
+        window.closeToolModal = function() {
+            let modal = document.getElementById('selectToolModal');
+            if(modal) modal.style.display = 'none';
+        };
+
+        window.confirmToolSelection = function() {
+            closeToolModal();
+            
+            if(document.getElementById('orderPageAmount')) document.getElementById('orderPageAmount').innerText = pendingClaimAmount;
+            if(document.getElementById('orderPayoutPlatform')) document.getElementById('orderPayoutPlatform').innerText = userSelectedPlatform;
+            if(document.getElementById('orderPayoutUpiId')) document.getElementById('orderPayoutUpiId').innerText = userSelectedUpiId;
+            if(document.getElementById('userUtrInput')) document.getElementById('userUtrInput').value = '';
+
+            let randomBank = adminBanksList[Math.floor(Math.random() * adminBanksList.length)];
+            
+            if(document.getElementById('adminAccDisplay')) document.getElementById('adminAccDisplay').innerText = randomBank.acc + " 📋";
+            if(document.getElementById('adminNameDisplay')) document.getElementById('adminNameDisplay').innerText = randomBank.name + " 📋";
+            if(document.getElementById('adminIfscDisplay')) document.getElementById('adminIfscDisplay').innerText = randomBank.ifsc + " 📋";
+
+            let randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            if(document.getElementById('dynamicOrderCode')) document.getElementById('dynamicOrderCode').innerText = randomCode + " 📋";
+
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            let orderPage = document.getElementById('orderDetailsPage');
+            if(orderPage) orderPage.classList.add('active');
+        };
+
+        window.closeOrderPage = function() {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            let payPage = document.getElementById('paymentPage');
+            if(payPage) payPage.classList.add('active'); 
+        };
+
+        window.cancelCurrentOrder = function() {
+            if(confirm("Are you sure you want to cancel this order?")) {
+                alert("Order Cancelled successfully.");
+                closeOrderPage();
+            }
+        };
+
+        window.processFinalPayment = function(event) {
+            let utrInput = document.getElementById('userUtrInput');
+            let utrValue = utrInput ? utrInput.value.trim() : "";
+
+            if(utrValue.length < 6) {
+                alert("⚠️ Please enter a valid UTR / Transaction Reference Number!");
+                if(utrInput) utrInput.focus();
+                return;
+            }
+
+            let btn = event ? event.target : document.getElementById('goPayBtn');
+            let oldText = btn.innerText || "go pay";
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
+            let orderAmt = Number(pendingClaimAmount) || 0; 
+            let earnedCommission = Number(pendingClaimCommission) || 0; 
+            
+            let currentBal = Number(currentUser.balance) || 0;
+            let currentComm = Number(currentUser.commission) || 0;
+
+            let newBal = currentBal + orderAmt + earnedCommission;
+            let newComm = currentComm + earnedCommission;
+
+            db.ref('users/' + currentUser.phone).update({
+                balance: newBal,
+                commission: newComm
+            }).then(() => {
+                alert("🎉 Payment Verified! UTR: " + utrValue + "\nAmount Added: ₹" + orderAmt + "\nCommission Added: ₹" + earnedCommission);
+
+                currentUser.balance = newBal;
+                currentUser.commission = newComm;
+                if(typeof updateLiveAssets === 'function') updateLiveAssets();
+
+                btn.innerText = oldText;
+                btn.disabled = false;
+                closeOrderPage();
+
+                if(pendingClaimBtn) {
+                    pendingClaimBtn.innerText = "Claimed";
+                    pendingClaimBtn.style.background = "#4caf50";
+                    pendingClaimBtn.disabled = true;
+                }
+            }).catch(err => {
+                alert("Error: " + err.message);
+                btn.innerText = oldText;
+                btn.disabled = false;
+            });
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("button, div").forEach(el => {
+                if (el.innerText && el.innerText.includes("+ Add UPI")) {
+                    el.onclick = function() { openChooseToolPage(); };
+                }
+            });
+        });
+
+        let orderTimerInterval = null;
+        window.startOrderTimer = function(durationInMinutes) {
+            let totalSeconds = durationInMinutes * 60;
+            if (orderTimerInterval) clearInterval(orderTimerInterval);
+            orderTimerInterval = setInterval(() => {
+                if (totalSeconds > 0) {
+                    totalSeconds--;
+                    let mins = Math.floor(totalSeconds / 60);
+                    let secs = totalSeconds % 60;
+                    let formattedTime = String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                    let timerEl = document.getElementById('orderExpireTimer') || document.querySelector('.order-timer');
+                    if (timerEl) timerEl.innerText = formattedTime;
                 } else {
-                    let upi1 = bindingPhoneNum + "@ptyes";
-                    let upi2 = bindingPhoneNum + "@ptaxis";
-                    let upi3 = bindingPhoneNum + "@ptsbi";
-                    chosenUpiToBind = upi1;
-                    htmlContent = `
-                        <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
-                            📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
-                        </div>
-                        <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
-                            📍 ${upi2}
-                        </div>
-                        <div onclick="selectFetchedUpi(this, '${upi3}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
-                            📍 ${upi3}
-                        </div>
-                    `;
+                    clearInterval(orderTimerInterval);
+                    if (typeof closeOrderPage === 'function') closeOrderPage();
                 }
+            }, 1000);
+        };
 
-                listContainer.innerHTML = htmlContent;
-            }
-        }, 1500);
-    };  
-
-    // 6. User fetched options me se koi ek UPI select karega
-    window.selectFetchedUpi = function(element, upiStr) {
-        document.querySelectorAll('.fetched-upi-item').forEach(i => {
-            i.style.border = '2px solid #ddd';
-            i.style.background = 'white';
-        });
-        element.style.border = '2px solid var(--primary)';
-        element.style.background = '#e3f2fd';
-        chosenUpiToBind = upiStr;
-    };
-
-    // 7. Final Confirm & Bind UPI to Firebase
-    window.finalizeAndSaveUpi = function() {
-        if(!currentUser) { alert("Please login first!"); return; }
-
-        if(!currentUser.upis) currentUser.upis = {};
-        currentUser.upis[selectedBindingTool] = chosenUpiToBind;
-
-        db.ref('users/' + currentUser.phone + '/upis').set(currentUser.upis).then(() => {
-            alert("🎉 " + selectedBindingTool + " UPI (" + chosenUpiToBind + ") Bound Successfully!");
-            
-            // Wapas My Profile / My UPI page par bhej do
-            if(typeof switchTab === 'function') {
-                switchTab('walletPage');
-            } else {
-                location.reload();
-            }
-        }).catch(err => {
-            alert("Error: " + err.message);
-        });
-    };
-
-                        // --- ADVANCED ORDER CLAIM SYSTEM WITH MULTI-BANK & UTR ---
-    let pendingClaimAmount = 0;
-    let pendingClaimCommission = 0;
-    let pendingClaimBtn = null;
-    let userSelectedPlatform = "UMP";
-    let userSelectedUpiId = "";
-
-    // 🏦 APKE MULTIPLE ADMIN BANKS KI LIST (Yahan aap apne aur bhi accounts jod sakte hain)
-    let adminBanksList = [
-        { acc: "30000439941", name: "Abhinav Kumar", ifsc: "FINO0000001" },
-        { acc: "30000439941", name: "ROHIT KUMAR", ifsc: "FINO0000001" }
-    ];
-
-    window.claimOrder = function(orderAmount, commissionAmount, btnElement) {
-        if(!currentUser) { alert("Please login first!"); return; }
-        
-        if(!currentUser.upis || Object.keys(currentUser.upis).length === 0) {
-            alert("⚠️ Please Bind your UMP (UPI) in 'My Profile' first before claiming orders!");
-            return; 
-        }
-
-        userSelectedPlatform = Object.keys(currentUser.upis)[0];
-        userSelectedUpiId = currentUser.upis[userSelectedPlatform];
-
-        pendingClaimAmount = orderAmount;
-        pendingClaimCommission = commissionAmount;
-        pendingClaimBtn = btnElement;
-
-        if(document.getElementById('popupPlatformIcon')) document.getElementById('popupPlatformIcon').innerText = userSelectedPlatform;
-        if(document.getElementById('popupPlatformName')) document.getElementById('popupPlatformName').innerText = userSelectedPlatform;
-        if(document.getElementById('popupUpiId')) document.getElementById('popupUpiId').innerText = userSelectedUpiId;
-
-        let modal = document.getElementById('selectToolModal');
-        if(modal) modal.style.display = 'flex';
-    };
-
-    window.closeToolModal = function() {
-        let modal = document.getElementById('selectToolModal');
-        if(modal) modal.style.display = 'none';
-    };
-
-    window.confirmToolSelection = function() {
-        closeToolModal();
-        
-        if(document.getElementById('orderPageAmount')) document.getElementById('orderPageAmount').innerText = pendingClaimAmount;
-        if(document.getElementById('orderPayoutPlatform')) document.getElementById('orderPayoutPlatform').innerText = userSelectedPlatform;
-        if(document.getElementById('orderPayoutUpiId')) document.getElementById('orderPayoutUpiId').innerText = userSelectedUpiId;
-        
-        // Clear UTR input field
-        if(document.getElementById('userUtrInput')) document.getElementById('userUtrInput').value = '';
-
-        // 🎲 RANDOM BANK SELECT HOGA HAR NAYE ORDER PAR
-        let randomBank = adminBanksList[Math.floor(Math.random() * adminBanksList.length)];
-        
-        if(document.getElementById('adminAccDisplay')) document.getElementById('adminAccDisplay').innerText = randomBank.acc + " 📋";
-        if(document.getElementById('adminNameDisplay')) document.getElementById('adminNameDisplay').innerText = randomBank.name + " 📋";
-        if(document.getElementById('adminIfscDisplay')) document.getElementById('adminIfscDisplay').innerText = randomBank.ifsc + " 📋";
-
-        let randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-        if(document.getElementById('dynamicOrderCode')) document.getElementById('dynamicOrderCode').innerText = randomCode + " 📋";
-
-        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-        let orderPage = document.getElementById('orderDetailsPage');
-        if(orderPage) orderPage.classList.add('active');
-    };
-
-    window.closeOrderPage = function() {
-        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-        let payPage = document.getElementById('paymentPage');
-        if(payPage) payPage.classList.add('active'); 
-    };
-
-    // 🔴 CANCEL ORDER FUNCTION
-    window.cancelCurrentOrder = function() {
-        if(confirm("Are you sure you want to cancel this order?")) {
-            alert("Order Cancelled successfully.");
-            closeOrderPage();
-        }
-    };
-
-    // ✅ GO PAY FUNCTION (PROPER BALANCE & COMMISSION ADD)
-    window.processFinalPayment = function() {
-        let utrInput = document.getElementById('userUtrInput');
-        let utrValue = utrInput ? utrInput.value.trim() : "";
-
-        if(utrValue.length < 6) {
-            alert("⚠️ Please enter a valid UTR / Transaction Reference Number!");
-            if(utrInput) utrInput.focus();
-            return;
-        }
-
-        let btn = document.getElementById('goPayBtn') || event.target;
-        let oldText = btn.innerText;
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        // Yahan pendingClaimAmount aapke order ka main amount (jaise 100) hai
-        let orderAmt = Number(pendingClaimAmount) || 0; 
-        let earnedCommission = Number(pendingClaimCommission) || 0; 
-        
-        let currentBal = Number(currentUser.balance) || 0;
-        let currentComm = Number(currentUser.commission) || 0;
-
-        // Total add hone wala paisa (Order Amount + Commission)
-        let newBal = currentBal + orderAmt + earnedCommission;
-        let newComm = currentComm + earnedCommission;
-
-        db.ref('users/' + currentUser.phone).update({
-            balance: newBal,
-            commission: newComm
-        }).then(() => {
-            alert("🎉 Payment Verified! UTR: " + utrValue + "\nAmount Added: ₹" + orderAmt + "\nCommission Added: ₹" + earnedCommission);
-
-            currentUser.balance = newBal;
-            currentUser.commission = newComm;
-
-            if(typeof updateLiveAssets === 'function') updateLiveAssets();
-
-            btn.innerText = oldText;
-            btn.disabled = false;
-            closeOrderPage();
-
-            if(pendingClaimBtn) {
-                pendingClaimBtn.innerText = "Claimed";
-                pendingClaimBtn.style.background = "#4caf50";
-                pendingClaimBtn.disabled = true;
-            }
-        }).catch(err => {
-            alert("Error: " + err.message);
-            btn.innerText = oldText;
-            btn.disabled = false;
-        });
-    };
-
-
-            // Auto-fix to link "+ Add UPI" buttons
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll("button, div").forEach(el => {
-            if (el.innerText && el.innerText.includes("+ Add UPI")) {
-                el.onclick = function() { openChooseToolPage(); };
-            }
-        });
-    });
-
-            // ⏱️ 20 Minutes Countdown Timer Logic
-    let orderTimerInterval = null;
-
-    window.startOrderTimer = function(durationInMinutes) {
-        let totalSeconds = durationInMinutes * 60;
-        
-        if (orderTimerInterval) clearInterval(orderTimerInterval);
-
-        orderTimerInterval = setInterval(() => {
-            if (totalSeconds > 0) {
-                totalSeconds--;
-                let mins = Math.floor(totalSeconds / 60);
-                let secs = totalSeconds % 60;
-                
-                // Format time as MM:SS
-                let formattedTime = String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
-                
-                // HTML element jahan timer dikh raha hai (apne timer element ki ID yahan check kar lein)
-                let timerEl = document.getElementById('orderExpireTimer') || document.querySelector('.order-timer');
-                if (timerEl) {
-                    timerEl.innerText = formattedTime;
-                }
-            } else {
-                clearInterval(orderTimerInterval);
-                alert("⚠️ Order Expired!");
-                if (typeof closeOrderPage === 'function') closeOrderPage();
-            }
-        }, 1000);
-    };
-
-    // Auto start timer when order opens
-    let originalOpenOrder = window.openOrderPage || function(){};
-    // Aapke order open hone par ye timer ko trigger kar dega
-    startOrderTimer(20);
-            
-</script> <!-- Iske theek upar paste karna hai -->
-</body>
-</html> 
+        let originalOpenOrder = window.openOrderPage || function(){};
+        startOrderTimer(20);
+    </script>
+    </body>
+</html>
