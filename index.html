@@ -1631,27 +1631,6 @@ function updateLiveAssets() {
         });
     };
 
-                // 🚀 Direct Click Handler for Login & Register Buttons
-    document.addEventListener("DOMContentLoaded", function() {
-        // Login button click trigger
-        let loginBtn = document.querySelector('#loginPage button') || document.querySelector('button[onclick*="Login"]');
-        if(loginBtn) {
-            loginBtn.onclick = function(e) {
-                e.preventDefault();
-                window.handleUserLogin();
-            };
-        }
-
-        // Register button click trigger
-        let regBtn = document.querySelector('#registerPage button') || document.querySelector('button[onclick*="Register"]');
-        if(regBtn) {
-            regBtn.onclick = function(e) {
-                e.preventDefault();
-                window.handleUserRegisterButton();
-            };
-        }
-    });
-            
             
 </script> <!-- Iske theek upar paste karna hai -->
 </body>
