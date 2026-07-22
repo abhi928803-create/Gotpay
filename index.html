@@ -398,7 +398,7 @@
                     <div>Payment</div>
                 </div>
                 
-                <div class="nav-item center-btn-wrapper" onclick="walletPage('homePage', this)">
+                <div class="nav-item center-btn-wrapper" onclick="switchTab('walletPage', this)">
                     <div class="center-action-btn">
                         <i class="fa-solid fa-wallet"></i>
                     </div>
@@ -587,28 +587,69 @@
             window.loadDashboard(session);
         }
 
-         // --- UPI MANAGEMENT ---
-        function renderUpiList() {
-            let listHtml = "";
-            let selectHtml = '<option value="">-- Select Linked UPI --</option>';
+// --- UPDATED UPI MANAGEMENT (Auto Card Generator) ---
+function renderUpiList() {
+    let profileListHtml = "";
+    let walletCardsHtml = "";
+    let selectHtml = '<option value="">-- Select Linked UPI --</option>';
+    
+    // Check agar user ke paas UPI hai
+    if(currentUser.upis && Object.keys(currentUser.upis).length > 0) {
+        for(let platform in currentUser.upis) {
+            let upiId = currentUser.upis[platform];
             
-            if(currentUser.upis && Object.keys(currentUser.upis).length > 0) {
-                for(let platform in currentUser.upis) {
-                    let upiId = currentUser.upis[platform];
-                    listHtml += `
-                        <div class="list-item">
-                            <div><strong style="color:var(--primary);">${platform}</strong><br><span style="font-size:12px;">${upiId}</span></div>
-                            <button class="remove-btn" onclick="removeUpi('${platform}')">Remove</button>
-                        </div>
-                    `;
-                    selectHtml += `<option value="${upiId}">${platform} - ${upiId}</option>`;
-                }
-            } else {
-                listHtml = "<p style='text-align:center; padding:10px;'>No UPI Linked.</p>";
-            }
-            document.getElementById('linkedUpiList').innerHTML = listHtml;
-            document.getElementById('withdrawUpiSelect').innerHTML = selectHtml;
+            // 1. Profile Page ke liye choti list
+            profileListHtml += `
+                <div class="list-item">
+                    <div><strong style="color:var(--primary);">${platform}</strong><br><span style="font-size:12px;">${upiId}</span></div>
+                    <button class="remove-btn" onclick="removeUpi('${platform}')">Remove</button>
+                </div>
+            `;
+            
+            // 2. Withdraw page ke liye dropdown
+            selectHtml += `<option value="${upiId}">${platform} - ${upiId}</option>`;
+            
+            // 3. Wallet Page ke liye aapka PREMIUM CARD design (Automatic)
+            walletCardsHtml += `
+            <div style="background: linear-gradient(135deg, #1e3c72, #2a5298); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; overflow: hidden;">
+                <div style="position: absolute; right: -30px; top: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1;">
+                    <div>
+                        <h3 style="color: #ffffff; font-size: 26px; margin: 0; font-weight: 900; letter-spacing: 1px;">UPI</h3>
+                        <p style="color: #d1e0ff; font-size: 14px; margin: 5px 0 0 0;">${upiId}</p>
+                    </div>
+                    <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; border: 1px solid #4caf50; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Active</span>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 1;">
+                    <span style="color: #b3caff; font-size: 11px;">Limits: 100 ~ 1,00,000</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="color: #ffffff; font-size: 13px; font-weight: bold;">${platform}</span>
+                        <button onclick="removeUpi('${platform}')" style="background: rgba(255, 0, 0, 0.2); color: #ffcccc; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer;">Delete</button>
+                    </div>
+                </div>
+            </div>`;
         }
+    } else {
+        // Agar koi UPI add nahi kiya hai
+        profileListHtml = "<p style='text-align:center; padding:10px;'>No UPI Linked.</p>";
+        walletCardsHtml = `
+            <div style="text-align:center; padding: 40px 20px;">
+                <div style="font-size: 40px; color: #ccc; margin-bottom: 10px;"><i class="fa-solid fa-wallet"></i></div>
+                <p style="color:#999; font-size:14px;">No UPI accounts linked yet.</p>
+                <button onclick="switchTab('profileTab')" style="margin-top:15px; background:var(--primary); color:white; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">Link UPI Now</button>
+            </div>`;
+    }
+    
+    // HTML ko update karna
+    document.getElementById('linkedUpiList').innerHTML = profileListHtml;
+    document.getElementById('withdrawUpiSelect').innerHTML = selectHtml;
+    
+    if(document.getElementById('walletUpiContainer')) {
+        document.getElementById('walletUpiContainer').innerHTML = walletCardsHtml;
+    }
+}
 
         window.addUpi = async () => {
             let platform = document.getElementById('bindUpiType').value;
