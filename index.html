@@ -739,41 +739,47 @@
             }
         }
 
-        // --- AUTOMATIC ORDERS RENDER ---
-        function loadAutomaticOrders() {
-            const ordersRef = firebase.database().ref('orders');
-            ordersRef.on('value', (snapshot) => {
-                const ordersListEl = document.getElementById('paymentOrdersList');
-                if (!ordersListEl) return;
-                ordersListEl.innerHTML = ''; 
-                
-                const data = snapshot.val();
-                if (!data) {
-                    ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
-                    return;
-                }
-                
-                Object.keys(data).forEach((key) => {
-                    const order = data[key];
-                    const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-                    
-                    const cardHTML = `
-                        <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
-                                <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: ${randomCode}</span>
-                            </div>
-                            <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ ${order.amount}</strong></div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ ${order.income} <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
-                                <button onclick="switchTab('depositTab', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
-                            </div>
-                        </div>
-                    `;
-                    ordersListEl.innerHTML += cardHTML;
-                });
-            });
+// --- UPDATED AUTOMATIC ORDERS RENDER ---
+function loadAutomaticOrders() {
+    const ordersRef = firebase.database().ref('orders');
+    ordersRef.on('value', (snapshot) => {
+        const ordersListEl = document.getElementById('paymentOrdersList');
+        if (!ordersListEl) return;
+        ordersListEl.innerHTML = ''; 
+        
+        const data = snapshot.val();
+        if (!data) {
+            ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
+            return;
         }
+        
+        Object.keys(data).forEach((key) => {
+            const order = data[key] || {};
+            const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            // Safe Amount Calculation
+            const amountVal = order.amount || order.amt || 0;
+            
+            // Income Agar Database Me Na Ho To 6% Auto Calculate Hoga
+            const incomeVal = order.income || order.profit || (amountVal * 0.06).toFixed(2);
+            
+            const cardHTML = `
+                <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
+                        <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: ${randomCode}</span>
+                    </div>
+                    <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ ${amountVal}</strong></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ ${incomeVal} <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
+                        <button onclick="switchTab('depositTab', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
+                    </div>
+                </div>
+            `;
+            ordersListEl.innerHTML += cardHTML;
+        });
+    });
+}
         loadAutomaticOrders();
     </script>
 </body>
