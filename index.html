@@ -10,10 +10,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; }
         
-        /* App Container */
         .app-container { max-width: 400px; margin: auto; background: white; min-height: 100vh; position: relative; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow-x: hidden; }
-        
-        /* Auth Pages */
         .auth-page { display: none; padding: 40px 25px; text-align: center; height: 100vh; background: white; }
         .auth-page.active { display: block; }
         .logo { font-size: 42px; color: var(--primary); font-weight: 900; margin-bottom: 5px; }
@@ -23,173 +20,43 @@
         .input-field:focus { border-color: var(--primary); background: white; }
         .otp-btn { position: absolute; right: 8px; top: 8px; background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
         .primary-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 25px; box-shadow: 0 4px 15px rgba(0, 86, 210, 0.3); }
-        .switch-link { margin-top: 20px; color: var(--primary); font-size: 14px; cursor: pointer; font-weight: 600; }
-
-        /* Dashboard Pages */
+        
         .page-content { display: none; padding: 15px; }
         .page-content.active { display: block; }
-        
         .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; }
         .user-badge { display: flex; align-items: center; gap: 10px; }
         .avatar { width: 45px; height: 45px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 20px; font-weight: bold; }
         
         .balance-card { background: linear-gradient(135deg, #1e3c72, #2a5298); margin: 15px 0; border-radius: 18px; padding: 25px 20px; color: white; box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3); text-align: center; }
-        .balance-card h1 { font-size: 36px; margin: 10px 0; font-weight: 900; }
-        
         .card-box { background: white; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; margin-bottom: 15px; }
         .select-field { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px; background: #fafafa; outline: none; }
-        
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
         .remove-btn { background: #ffebee; color: var(--danger); border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
 
-        /* Bottom Nav */
-        .nav { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 12px 10px; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); border-radius: 20px 20px 0 0; z-index: 1000; }
-        .nav-item { text-align: center; color: #999; font-size: 11px; display: flex; flex-direction: column;align-items: center; gap: 5px; cursor: pointer; flex: 1; }
-        .nav-item i { font-size: 20px; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-         #customToast {
-         visibility: hidden;
-         min-width: 250px;
-         background-color: #333;
-         color: #fff;
-         text-align: center;
-         border-radius: 8px;
-         padding: 15px;
-         position: fixed;
-         z-index: 9999;
-         left: 50%;
-         bottom: 30px;
-         transform: translateX(-50%);
-         font-size: 14px;
-         box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-         opacity: 0;
-         transition: opacity 0.3s, bottom 0.3s;
-         }
+        #customToast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 15px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+        #customToast.show { visibility: visible; opacity: 1; bottom: 50px; }
 
-         #customToast.show {
-         visibility: visible;
-         opacity: 1;
-          bottom: 50px;
-         }
-        /* --- NEW DASHBOARD STYLES --- */
-.stats-bar {
-    display: flex;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    border-radius: 12px;
-    margin-top: -10px;
-    margin-bottom: 20px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-.stat-box {
-    flex: 1;
-    padding: 12px;
-}
-.stat-box:first-child {
-    border-right: 1px solid rgba(255,255,255,0.2);
-}
-.quick-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-.action-btn {
-    text-align: center;
-    cursor: pointer;
-}
-.icon-circle {
-    width: 50px;
-    height: 50px;
-    background: #f4f7fc;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    color: var(--primary);
-    margin: 0 auto 8px auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.promo-banner {
-    background: linear-gradient(135deg, #00c6ff, #0072ff);
-    border-radius: 12px;
-    padding: 15px 20px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 10px rgba(0,114,255,0.2);
-}
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-.section-header h3 {
-    margin: 0;
-    font-size: 16px;
-    color: #333;
-}
-        /* --- NEW BOTTOM NAVIGATION STYLES --- */
-.nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    max-width: 400px;
-    background: white;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 10px 5px 10px;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-    border-radius: 20px 20px 0 0;
-    z-index: 1000;
-}
-.nav-item {
-    text-align: center;
-    color: #a0a0a0;
-    font-size: 11px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: 0.3s;
-    width: 60px;
-}
-.nav-item i {
-    font-size: 20px;
-    margin-bottom: 4px;
-}
-.nav-item.active {
-    color: var(--primary);
-    font-weight: bold;
-}
-.center-btn-wrapper {
-    position: relative;
-    top: -25px;
-}
-.center-action-btn {
-    width: 55px;
-    height: 55px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    border: 4px solid white;
-}
+        .stats-bar { display: flex; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 12px; margin-top: -10px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .stat-box { flex: 1; padding: 12px; }
+        .stat-box:first-child { border-right: 1px solid rgba(255,255,255,0.2); }
+        .quick-actions { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .action-btn { text-align: center; cursor: pointer; }
+        .icon-circle { width: 50px; height: 50px; background: #f4f7fc; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--primary); margin: 0 auto 8px auto; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .promo-banner { background: linear-gradient(135deg, #00c6ff, #0072ff); border-radius: 12px; padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,114,255,0.2); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        
+        .nav { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; align-items: center; padding: 10px 10px 5px 10px; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 1000; }
+        .nav-item { text-align: center; color: #a0a0a0; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.3s; width: 60px; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .center-btn-wrapper { position: relative; top: -25px; }
+        .center-action-btn { width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: 4px solid white; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-    <div id="customToast"></div>
+        <div id="customToast"></div>
         
         <!-- LOGIN PAGE -->
         <div id="loginPage" class="auth-page active">
@@ -205,7 +72,7 @@
             <button type="button" class="primary-btn" onclick="document.getElementById('loginPage').classList.remove('active'); document.getElementById('registerPage').classList.add('active');">Create New Account</button>
         </div>
 
-        <!-- REGISTER PAGE (NO OTP) -->
+        <!-- REGISTER PAGE -->
         <div id="registerPage" class="auth-page">
             <h1 class="logo">Got<span>Pay</span></h1>
             <p style="color:#666; margin-bottom:20px;">Register Account</p>
@@ -221,140 +88,167 @@
             <button type="button" class="primary-btn" onclick="window.registerUser()">Register</button>
             <button type="button" class="primary-btn" onclick="document.getElementById('registerPage').classList.remove('active'); document.getElementById('loginPage').classList.add('active');">Already registered? Login</button>
         </div>
-
-        <!-- DASHBOARD APP -->
+        
+<!-- DASHBOARD APP -->
         <div id="mainApp" style="display: none;">
             
             <!-- HOME PAGE -->
             <div id="homePage" class="page-content active">
-    
-    <!-- Top Header -->
-    <div class="header">
-        <div class="user-badge">
-            <div class="avatar"><i class="fa-solid fa-user" style="color: var(--primary);"></i></div>
-            <div>
-                <strong id="displayUsername" style="font-size: 16px; color: #333;">Loading...</strong>
-                <div style="font-size: 12px; color: #777; margin-top: 2px;">ID: <span id="displayUid">---</span> <i class="fa-regular fa-copy" style="margin-left: 5px; cursor: pointer;"></i></div>
-            </div>
-        </div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <i class="fa-regular fa-bell" style="font-size: 20px; color: #555; cursor: pointer;"></i>
-            <i class="fa-solid fa-power-off" style="color: var(--danger); font-size: 20px; cursor: pointer;" onclick="logout()"></i>
-        </div>
-    </div>
+                <!-- Top Header -->
+                <div class="header">
+                    <div class="user-badge">
+                        <div class="avatar"><i class="fa-solid fa-user" style="color: var(--primary);"></i></div>
+                        <div>
+                            <strong id="displayUsername" style="font-size: 16px; color: #333;">Loading...</strong>
+                            <div style="font-size: 12px; color: #777; margin-top: 2px;">ID: <span id="displayUid">---</span> <i class="fa-regular fa-copy" style="margin-left: 5px; cursor: pointer;"></i></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <i class="fa-regular fa-bell" style="font-size: 20px; color: #555; cursor: pointer;"></i>
+                        <i class="fa-solid fa-power-off" style="color: var(--danger); font-size: 20px; cursor: pointer;" onclick="logout()"></i>
+                    </div>
+                </div>
 
-    <!-- Main Balance Card -->
-    <div class="balance-card" style="margin-top: 20px; margin-bottom: 5px; border-radius: 15px 15px 0 0; padding-bottom: 30px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="color: white;">
-                <div style="font-size: 14px; opacity: 0.9;">Available Balance</div>
-                <h1 style="margin: 8px 0; font-size: 38px;"><span id="userBalance">0.00</span></h1>
-            </div>
-            <button style="background: white; color: var(--primary); border: none; padding: 6px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Detail</button>
-        </div>
-    </div>
+                <!-- Main Balance Card -->
+                <div class="balance-card" style="margin-top: 20px; margin-bottom: 5px; border-radius: 15px 15px 0 0; padding-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="color: white;">
+                            <div style="font-size: 14px; opacity: 0.9;">Available Balance</div>
+                            <h1 style="margin: 8px 0; font-size: 38px;"><span id="userBalance">0.00</span></h1>
+                        </div>
+                        <button style="background: white; color: var(--primary); border: none; padding: 6px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Detail</button>
+                    </div>
+                </div>
 
-    <!-- Deposit / Withdrawal Stats -->
-    <div class="stats-bar">
-        <div class="stat-box">
-            <div style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-arrow-up" style="color: #4caf50; margin-right: 5px;"></i>Deposit</div>
-            <div style="font-weight: bold; margin-top: 5px; font-size: 15px;">₹ 0.00</div>
-        </div>
-        <div class="stat-box">
-            <div style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-arrow-down" style="color: #ff9800; margin-right: 5px;"></i>Withdrawal</div>
-            <div style="font-weight: bold; margin-top: 5px; font-size: 15px;">₹ 0.00</div>
-        </div>
-    </div>
+                <!-- Deposit / Withdrawal Stats -->
+                <div class="stats-bar">
+                    <div class="stat-box">
+                        <div style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-arrow-up" style="color: #4caf50; margin-right: 5px;"></i>Deposit</div>
+                        <div style="font-weight: bold; margin-top: 5px; font-size: 15px;">₹ 0.00</div>
+                    </div>
+                    <div class="stat-box">
+                        <div style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-arrow-down" style="color: #ff9800; margin-right: 5px;"></i>Withdrawal</div>
+                        <div style="font-weight: bold; margin-top: 5px; font-size: 15px;">₹ 0.00</div>
+                    </div>
+                </div>
 
-    <!-- Quick Action Icons -->
-    <div class="quick-actions">
-        <div class="action-btn" onclick="switchTab('depositTab')">
-            <div class="icon-circle"><i class="fa-solid fa-building-columns"></i></div>
-            <div style="font-size: 12px; font-weight: 600; color: #444;">Deposit</div>
-        </div>
-        <div class="action-btn" onclick="switchTab('withdrawTab')">
-            <div class="icon-circle"><i class="fa-solid fa-wallet"></i></div>
-            <div style="font-size: 12px; font-weight: 600; color: #444;">Withdraw</div>
-        </div>
-        <div class="action-btn">
-            <div class="icon-circle"><i class="fa-solid fa-list-check"></i></div>
-            <div style="font-size: 12px; font-weight: 600; color: #444;">Task</div>
-        </div>
-        <div class="action-btn">
-            <div class="icon-circle"><i class="fa-solid fa-users"></i></div>
-            <div style="font-size: 12px; font-weight: 600; color: #444;">Team</div>
-        </div>
-    </div>
+                <!-- Quick Action Icons -->
+                <div class="quick-actions">
+                    <div class="action-btn" onclick="switchTab('depositTab')">
+                        <div class="icon-circle"><i class="fa-solid fa-building-columns"></i></div>
+                        <div style="font-size: 12px; font-weight: 600; color: #444;">Deposit</div>
+                    </div>
+                    <div class="action-btn" onclick="switchTab('withdrawTab')">
+                        <div class="icon-circle"><i class="fa-solid fa-wallet"></i></div>
+                        <div style="font-size: 12px; font-weight: 600; color: #444;">Withdraw</div>
+                    </div>
+                    <div class="action-btn">
+                        <div class="icon-circle"><i class="fa-solid fa-list-check"></i></div>
+                        <div style="font-size: 12px; font-weight: 600; color: #444;">Task</div>
+                    </div>
+                    <div class="action-btn">
+                        <div class="icon-circle"><i class="fa-solid fa-users"></i></div>
+                        <div style="font-size: 12px; font-weight: 600; color: #444;">Team</div>
+                    </div>
+                </div>
 
-    <!-- Promo Banner -->
-    <div class="promo-banner">
-        <div>
-            <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; opacity: 0.9;">Newcomer Rewards</div>
-            <div style="font-size: 20px; font-weight: 900; margin: 4px 0;">In progress</div>
-            <div style="font-size: 11px; opacity: 0.9;">Complete daily paid tasks to claim.</div>
-        </div>
-        <button style="background: white; color: #0072ff; border: none; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer;">View details</button>
-    </div>
+                <!-- Promo Banner -->
+                <div class="promo-banner">
+                    <div>
+                        <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; opacity: 0.9;">Newcomer Rewards</div>
+                        <div style="font-size: 20px; font-weight: 900; margin: 4px 0;">In progress</div>
+                        <div style="font-size: 11px; opacity: 0.9;">Complete daily paid tasks to claim.</div>
+                    </div>
+                    <button style="background: white; color: #0072ff; border: none; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer;">View details</button>
+                </div>
 
-    <!-- Transactions List -->
-    <div class="transactions-section">
-        <div class="section-header">
-            <h3>Transactions</h3>
-            <span style="color: var(--primary); font-size: 13px; font-weight: bold; cursor: pointer;">See All</span>
-        </div>
-        <div id="recentHistory" class="card-box" style="padding: 10px;">
-            <!-- Your Javascript will automatically load history here -->
-            <p style="text-align: center; color: #999; font-size: 13px;">No recent activity.</p>
-        </div>
-    </div>
-    
-</div>
+                <!-- Transactions List -->
+                <div class="transactions-section">
+                    <div class="section-header">
+                        <h3>Transactions</h3>
+                        <span style="color: var(--primary); font-size: 13px; font-weight: bold; cursor: pointer;">See All</span>
+                    </div>
+                    <div id="recentHistory" class="card-box" style="padding: 10px;">
+                        <div id="homeHistoryList">
+                            <p style="text-align: center; color: #999; font-size: 13px;">No recent activity.</p>
+                        </div>
+                    </div>
+                </div>
+            </div> 
 
             <!-- PAYMENT PAGE -->
-<div id="paymentPage" class="page-content" style="padding-bottom: 80px; min-height: 100vh; background-color: #f4f7ff;">
-    <!-- Header -->
-    <h2 style="text-align: center; color: var(--primary); padding: 20px 0; margin: 0; font-size: 22px;">Payment</h2>
+            <div id="paymentPage" class="page-content" style="padding-bottom: 80px; min-height: 100vh; background-color: #f4f7ff;">
+                <h2 style="text-align: center; color: var(--primary); padding: 20px 0; margin: 0; font-size: 22px;">Payment</h2>
+                <div style="padding: 0 15px;">
+                    <div style="background: linear-gradient(135deg, var(--primary), #1a56db); border-radius: 20px; padding: 20px; color: white; box-shadow: 0 4px 15px rgba(26,86,219,0.3); margin-bottom: 20px; position: relative; overflow: hidden;">
+                        <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Cashback</div>
+                        <div style="font-size: 32px; font-weight: bold; margin-bottom: 15px;">6%</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px; border-radius: 12px;">
+                                <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">Balance</div>
+                                <div style="font-size: 16px; font-weight: bold;" id="paymentBalance">₹ 0.00</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px; border-radius: 12px;">
+                                <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">Reward</div>
+                                <div style="font-size: 16px; font-weight: bold;">₹ 0</div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 10px; border-radius: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 11px; opacity: 0.8;">Pending</span>
+                            <span style="font-size: 14px; font-weight: bold;">₹ 0</span>
+                        </div>
+                    </div>
 
-    <div style="padding: 0 15px;">
-        <!-- Top Banner Card (Blue Theme) -->
-        <div style="background: linear-gradient(135deg, var(--primary), #1a56db); border-radius: 20px; padding: 20px; color: white; box-shadow: 0 4px 15px rgba(26,86,219,0.3); margin-bottom: 20px; position: relative; overflow: hidden;">
-            <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Cashback</div>
-            <div style="font-size: 32px; font-weight: bold; margin-bottom: 15px;">6%</div>
+                    <div style="font-size: 11px; color: #666; text-align: center; margin-bottom: 15px;">
+                        ⚠️ Please use Freecharge or Mobikwik or Paytm wallet for payment!
+                    </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px; border-radius: 12px;">
-                    <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">Balance</div>
-                    <div style="font-size: 16px; font-weight: bold;" id="paymentBalance">₹ 0.00</div>
-                </div>
-                <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px; border-radius: 12px;">
-                    <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">Reward</div>
-                    <div style="font-size: 16px; font-weight: bold;">₹ 0</div>
+                    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px;" class="no-scrollbar">
+                        <button style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 13px; white-space: nowrap; cursor: pointer;">Top Picks</button>
+                        <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">100-199</button>
+                        <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">200-299</button>
+                        <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">300-399</button>
+                    </div>
+
+                    <div id="paymentOrdersList" style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- Firebase automatic orders -->
+                    </div>
                 </div>
             </div>
-            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 10px; border-radius: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 11px; opacity: 0.8;">Pending</span>
-                <span style="font-size: 14px; font-weight: bold;">₹ 0</span>
+
+            <!-- ADDED DEPOSIT TAB -->
+            <div id="depositTab" class="page-content">
+                <h2>Deposit Funds</h2>
+                <div class="card-box">
+                    <label style="font-size:12px; font-weight:bold;">Deposit Amount (₹):</label>
+                    <input type="number" id="depositAmount" class="input-field" placeholder="E.g. 500" oninput="calculateBonus()">
+                    <p style="font-size:12px; color:var(--success); margin-top:5px;">Bonus (+6%): Expected Total ₹<span id="bonusDisplay">0.00</span></p>
+
+                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Select Payment Method:</label>
+                    <select id="buyGateway" class="select-field">
+                        <option value="Paytm">Paytm</option>
+                        <option value="PhonePe">PhonePe</option>
+                        <option value="Google Pay">Google Pay</option>
+                        <option value="Other UPI">Other UPI</option>
+                    </select>
+                    
+                    <button class="primary-btn" onclick="generateDepositRequest()">Generate QR Code</button>
+
+                    <!-- QR Code Section -->
+                    <div id="depositQRBox" style="display:none; text-align:center; margin-top:20px; padding-top:20px; border-top:1px solid #eee;">
+                        <p style="font-weight:bold; font-size:16px;">Pay ₹<span id="depAmountDisplay"></span></p>
+                        <p style="font-size:13px; color:#555; margin-bottom:10px;">via <span id="depGatewayDisplay"></span> to <br> <strong id="adminUpiDisplay" style="color:var(--primary);"></strong></p>
+                        
+                        <img id="qrImage" src="" alt="QR Code" style="width:200px; height:200px; border-radius:10px; border:2px solid var(--primary); padding:10px; margin-bottom:15px;">
+                        
+                        <label style="font-size:12px; font-weight:bold; display:block; text-align:left;">Enter 12-Digit UTR Number:</label>
+                        <input type="text" id="utrInput" class="input-field" placeholder="Submit UTR after payment" maxlength="12">
+                        
+                        <button class="primary-btn" style="background:var(--success); margin-top:10px;" onclick="submitDepositUTR()">Submit Payment</button>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Instruction Note -->
-        <div style="font-size: 11px; color: #666; text-align: center; margin-bottom: 15px;">
-            ⚠️ Please use Freecharge or Mobikwik or Paytm wallet for payment!
-        </div>
-
-        <!-- Filter Tabs -->
-        <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px;" class="no-scrollbar">
-            <button style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 13px; white-space: nowrap; cursor: pointer;">Top Picks</button>
-            <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;" onclick="switchTab('depositTab', this)">100-199</button>
-            <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;" onclick="switchTab('depositTab', this)">200-299</button>
-            <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;" onclick="switchTab('depositTab', this)">300-399</button>
-        </div>
-
-<!-- Order Cards List (100 to 10000 range with unique 6-digit codes) -->
-<div id="paymentOrdersList" style="display: flex; flex-direction: column; gap: 12px;">
-    <!-- Firebase database se orders yaha automatic aayenge -->
-</div>
-        
             <!-- WITHDRAW (SELL) PAGE -->
             <div id="withdrawTab" class="page-content">
                 <h2>Sell Token (Withdraw)</h2>
@@ -372,110 +266,92 @@
                     <button class="primary-btn" style="background: var(--danger);" onclick="submitWithdraw()">Withdraw Funds</button>
                 </div>
             </div>
+
             <!-- STATISTICS PAGE -->
-<div id="statisticsPage" class="page-content" style="padding-bottom: 80px; min-height: 100vh;">
-    <!-- Header -->
-    <h2 style="text-align: center; color: var(--primary); padding: 20px 0; margin: 0; font-size: 22px;">Statistics</h2>
+            <div id="statisticsPage" class="page-content" style="padding-bottom: 80px; min-height: 100vh;">
+                <h2 style="text-align: center; color: var(--primary); padding: 20px 0; margin: 0; font-size: 22px;">Statistics</h2>
+                <div style="padding: 0 15px;">
+                    <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 2px; margin-right: 8px;"></div>
+                            <h3 style="margin: 0; font-size: 16px; color: #333;">Statistics</h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-wallet"></i></div>
+                                    <div style="font-size: 12px; color: #666;">Balance</div>
+                                </div>
+                                <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsBalance">₹ 0.00</div>
+                            </div>
+                            <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <div style="background: #fbc531; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                                    <div style="font-size: 12px; color: #666;">Sell</div>
+                                </div>
+                                <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsSell">₹ 0.00</div>
+                            </div>
+                            <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <div style="background: #20bf6b; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-circle-dollar-to-slot"></i></div>
+                                    <div style="font-size: 12px; color: #666;">Deposit</div>
+                                </div>
+                                <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsDeposit">₹ 0.00</div>
+                            </div>
+                            <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <div style="background: #fc5c65; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                                    <div style="font-size: 12px; color: #666;">Commission</div>
+                                </div>
+                                <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsCommission">₹ 0.00</div>
+                            </div>
+                        </div>
+                    </div>
 
-    <div style="padding: 0 15px;">
-        <!-- Statistics Section -->
-        <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 2px; margin-right: 8px;"></div>
-                <h3 style="margin: 0; font-size: 16px; color: #333;">Statistics</h3>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <!-- Balance -->
-                <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-wallet"></i></div>
-                        <div style="font-size: 12px; color: #666;">Balance</div>
+                    <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 2px; margin-right: 8px;"></div>
+                            <h3 style="margin: 0; font-size: 16px; color: #333;">Payment</h3>
+                        </div>
+                        <div style="background: #f4f7ff; border-radius: 10px; padding: 12px;">
+                            <div style="background: #e0eaff; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <div style="color: #333; font-size: 12px; font-weight: bold;">Real Time Exchange Rates(INR/USDT)</div>
+                                <div style="color: var(--primary); font-size: 14px; font-weight: bold;">113</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
+                                    <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> In Process Amount</div>
+                                    <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsInProcess">₹ 0.00</div>
+                                </div>
+                                <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
+                                    <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> In Process Orders</div>
+                                    <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsInOrders">0</div>
+                                </div>
+                                <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
+                                    <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> Commission Rate</div>
+                                    <div style="font-weight: bold; font-size: 14px; color: #333;">6%</div>
+                                </div>
+                                <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
+                                    <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> Estimated Income</div>
+                                    <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsEstimatedIncome">₹ 0.00</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsBalance">₹ 0.00</div>
-                </div>
-                <!-- Sell -->
-                <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <div style="background: #fbc531; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
-                        <div style="font-size: 12px; color: #666;">Sell</div>
-                    </div>
-                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsSell">₹ 0.00</div>
-                </div>
-                <!-- Deposit -->
-                <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <div style="background: #20bf6b; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-circle-dollar-to-slot"></i></div>
-                        <div style="font-size: 12px; color: #666;">Deposit</div>
-                    </div>
-                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsDeposit">₹ 0.00</div>
-                </div>
-                <!-- Commission -->
-                <div style="border: 1px solid #e0eaff; border-radius: 10px; padding: 12px; background: #f8faff;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <div style="background: #fc5c65; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 12px;"><i class="fa-solid fa-money-bill-trend-up"></i></div>
-                        <div style="font-size: 12px; color: #666;">Commission</div>
-                    </div>
-                    <div style="font-weight: bold; font-size: 16px; color: #333; text-align: center;" id="statsCommission">₹ 0.00</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Payment Section -->
-        <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 2px; margin-right: 8px;"></div>
-                <h3 style="margin: 0; font-size: 16px; color: #333;">Payment</h3>
-            </div>
-
-            <div style="background: #f4f7ff; border-radius: 10px; padding: 12px;">
-                <!-- Exchange Rate Banner -->
-                <div style="background: #e0eaff; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <div style="color: #333; font-size: 12px; font-weight: bold;">Real Time Exchange Rates(INR/USDT)</div>
-                    <div style="color: var(--primary); font-size: 14px; font-weight: bold;">113</div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <!-- In Process Amount -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
-                        <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> In Process Amount</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsInProcess">₹ 0.00</div>
-                    </div>
-                    <!-- In Process Orders -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
-                        <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> In Process Orders</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsInOrders">0</div>
-                    </div>
-                    <!-- Commission Rate -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
-                        <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> Commission Rate</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #333;">6%</div>
-                    </div>
-                    <!-- Estimated Income -->
-                    <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #e0eaff;">
-                        <div style="font-size: 11px; color: #666; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 4px;"><i class="fa-solid fa-coins" style="color: #fbc531;"></i> Estimated Income</div>
-                        <div style="font-weight: bold; font-size: 14px; color: #333;" id="statsEstimatedIncome">₹ 0.00</div>
-                    </div>
+                    <button class="primary-btn" style="width: 100%; border: none; padding: 14px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 20px;">Start Selling</button>
                 </div>
             </div>
-        </div>
 
-        <!-- Action Button -->
-        <button class="primary-btn" style="width: 100%; border: none; padding: 14px; border-radius: 25px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 20px;">Start Selling</button>
-    </div>
-</div/>
-
-            <!-- PROFILE (ADD/REMOVE UPI & HISTORY) -->
+            <!-- PROFILE (ADD/REMOVE UPI) -->
             <div id="profileTab" class="page-content">
                 <h2 style="margin-bottom:15px;">Manage Accounts</h2>
-                
-                <!-- Add UPI Box (WITH OTP) -->
                 <div class="card-box">
                     <h3 style="color:var(--primary); margin-bottom:5px;">Add New UPI</h3>
                     <select id="bindUpiType" class="select-field">
                         <option value="MobiKwik">MobiKwik</option>
                         <option value="Paytm">Paytm</option>
-                        <option value="PhonePe">PhonePe</option> <option value="AmazonPay">AmazonPay</option>
+                        <option value="PhonePe">PhonePe</option> 
+                        <option value="AmazonPay">AmazonPay</option>
                         <option value="Paytm Business">Paytm Business</option>
                     </select>
                     <input type="text" id="bindUpiId" class="input-field" placeholder="Enter UPI ID (e.g. 9876543210@paytm)">
@@ -488,41 +364,42 @@
                     <button class="primary-btn" style="padding:10px; margin-top:15px;" onclick="addUpi()">Link UPI</button>
                 </div>
 
-                <!-- Linked UPIs List -->
                 <div class="card-box">
                     <h4 style="margin-bottom:10px;">Your Linked UPIs</h4>
                     <div id="linkedUpiList" style="font-size:13px; color:#555;">Loading...</div>
                 </div>
             </div>
 
-            <!-- NEW BOTTOM NAV -->
-<div class="nav">
-    <div class="nav-item active" onclick="switchTab('homePage', this)">
-        <i class="fa-solid fa-house"></i>
-        <div>Home</div>
-    </div>
-    <div class="nav-item" onclick="switchTab('paymentTab', this)">
-        <i class="fa-solid fa-credit-card"></i>
-        <div>Payment</div>
-    </div>
-    
-    <!-- Center Floating Button -->
-    <div class="nav-item center-btn-wrapper" onclick="switchTab('homePage', this)">
-        <div class="center-action-btn">
-            <i class="fa-solid fa-wallet"></i>
-        </div>
-    </div>
+            <!-- BOTTOM NAV -->
+            <div class="nav">
+                <div class="nav-item active" onclick="switchTab('homePage', this)">
+                    <i class="fa-solid fa-house"></i>
+                    <div>Home</div>
+                </div>
+                <div class="nav-item" onclick="switchTab('paymentPage', this)">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <div>Payment</div>
+                </div>
+                
+                <div class="nav-item center-btn-wrapper" onclick="switchTab('homePage', this)">
+                    <div class="center-action-btn">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                </div>
 
-   <div class="nav-item" onclick="switchTab('statisticsPage', this)">
-        <i class="fa-solid fa-chart-pie"></i>
-        <div>Statistics</div>
-    </div>
-    <div class="nav-item" onclick="switchTab('profileTab', this)">
-        <i class="fa-solid fa-user"></i>
-        <div>My</div>
-    </div>
-</div>
-        <!-- FIREBASE & JS LOGIC -->
+                <div class="nav-item" onclick="switchTab('statisticsPage', this)">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <div>Statistics</div>
+                </div>
+                <div class="nav-item" onclick="switchTab('profileTab', this)">
+                    <i class="fa-solid fa-user"></i>
+                    <div>My</div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Close app-container -->
+
+    <!-- FIREBASE & JS LOGIC -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script>
@@ -541,8 +418,9 @@
         const db = firebase.database();
         let currentUser = null; 
         let currentBalance = 0;
-        document.getElementById('paymentBalance').innerText = '₹ ' + currentBalance.toFixed(2);
         let generatedOTP = "";
+        
+        document.getElementById('paymentBalance').innerText = '₹ ' + currentBalance.toFixed(2);
 
         // --- UI ROUTING ---
         window.showPage = (pageId) => {
@@ -558,23 +436,21 @@
                 element.classList.add('active');
             }
         }
+        
         window.showToast = function(message) {
-        let toast = document.getElementById("customToast");
-        toast.innerText = message;
-        toast.classList.add("show");
-    
-        setTimeout(function() {
-           toast.classList.remove("show");
-         }, 3000);
+            let toast = document.getElementById("customToast");
+            toast.innerText = message;
+            toast.classList.add("show");
+            setTimeout(function() { toast.classList.remove("show"); }, 3000);
         };
         
-        // --- OTP SIMULATOR (FOR UPI BINDING) ---
+        // --- OTP SIMULATOR ---
         window.sendDemoOTP = () => {
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
             showToast("GotPay Alert\nYour OTP is: " + generatedOTP);
         }
 
-        // --- AUTHENTICATION & UID LOGIC (NO OTP) ---
+        // --- AUTH LOGIC ---
         window.registerUser = async () => {
             let name = document.getElementById('regName').value.trim();
             let phone = document.getElementById('regPhone').value.trim();
@@ -657,7 +533,7 @@
             window.showPage('loginPage');
         };
 
-        // --- LOAD DASHBOARD FUNCTION ---
+        // --- DASHBOARD LOGIC ---
         window.loadDashboard = function(phone) {
             document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
             let mainApp = document.getElementById('mainApp');
@@ -671,10 +547,14 @@
                     let usernameEl = document.getElementById('displayUsername');
                     let uidEl = document.getElementById('displayUid');
                     let balanceEl = document.getElementById('userBalance');
+                    let withdrawBal = document.getElementById('withdrawBalDisplay');
+                    let payBalance = document.getElementById('paymentBalance');
                     
                     if(usernameEl) usernameEl.innerText = currentUser.username;
                     if(uidEl) uidEl.innerText = currentUser.uid;
                     if(balanceEl) balanceEl.innerText = "₹ " + currentBalance.toFixed(2);
+                    if(withdrawBal) withdrawBal.innerText = "₹ " + currentBalance.toFixed(2);
+                    if(payBalance) payBalance.innerText = "₹ " + currentBalance.toFixed(2);
                     
                     if(typeof renderUpiList === 'function') {
                         renderUpiList();
@@ -682,17 +562,15 @@
                 }
             });
 
-            // Real-time History (Home Page)
             db.ref('deposit_requests').on('value', renderHistory);
         };
 
-        // Auto Login
         let session = localStorage.getItem("gotpay_session");
         if(session) {
             window.loadDashboard(session);
         }
 
-        // --- MANAGE UPIs (ADD WITH OTP / REMOVE) ---
+         // --- UPI MANAGEMENT ---
         function renderUpiList() {
             let listHtml = "";
             let selectHtml = '<option value="">-- Select Linked UPI --</option>';
@@ -726,11 +604,9 @@
             try {
                 await db.ref(`users/${currentUser.phone}/upis`).update({ [platform]: upiId });
                 alert(`✅ ${platform} UPI Added Successfully!`);
-                
-                // Fields Reset
                 document.getElementById('bindUpiId').value = "";
                 document.getElementById('bindOtp').value = "";
-                generatedOTP = ""; // Reset OTP after use
+                generatedOTP = ""; 
             } catch(e) {
                 alert("Error saving UPI: " + e.message);
             }
@@ -746,7 +622,7 @@
             }
         }
 
-        // --- DEPOSIT SYSTEM (BUY + 6% BONUS + DYNAMIC UPI) ---
+        // --- DEPOSIT SYSTEM ---
         window.calculateBonus = () => {
             let amt = Number(document.getElementById('depositAmount').value) || 0;
             document.getElementById('bonusDisplay').innerText = (amt + (amt * 0.06)).toFixed(2);
@@ -758,16 +634,10 @@
             if(!amount || amount < 100 || amount > 10000) return alert("Deposit amount must be between ₹100 and ₹10000");
 
             let adminUpi = "";
-
-            if (amount <= 100) {
-                adminUpi = "palakkumari01@fam"; 
-            } else if (amount <= 500) {
-                adminUpi = "abhinavkumar0000112-2@okicici"; 
-            } else if (amount <= 2000) {
-                adminUpi = "abhikhtc@ptaxis"; 
-            } else {
-                adminUpi = "tarwey01@ptyes"; 
-            }
+            if (amount <= 100) adminUpi = "palakkumari01@fam"; 
+            else if (amount <= 500) adminUpi = "abhinavkumar0000112-2@okicici"; 
+            else if (amount <= 2000) adminUpi = "abhikhtc@ptaxis"; 
+            else adminUpi = "tarwey01@ptyes"; 
             
             document.getElementById('depAmountDisplay').innerText = amount;
             document.getElementById('depGatewayDisplay').innerText = gateway;
@@ -810,7 +680,7 @@
             }
         }
 
-        // --- WITHDRAW SYSTEM (SELL) ---
+        // --- WITHDRAW SYSTEM ---
         window.submitWithdraw = async () => {
             let amount = Number(document.getElementById('withdrawAmount').value);
             let upi = document.getElementById('withdrawUpiSelect').value;
@@ -838,7 +708,7 @@
             }
         }
 
-        // --- RENDER RECENT HISTORY ---
+        // --- HISTORY RENDER ---
         function renderHistory(snap) {
             if(!currentUser) return;
             let html = "";
@@ -850,7 +720,7 @@
             records.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
             
             if(records.length === 0) {
-                html = "<p style='text-align:center;'>No recent activity.</p>";
+                html = "<p style='text-align:center; color:#999;'>No recent activity.</p>";
             } else {
                 records.slice(0, 5).forEach(r => {
                     let color = r.status === 'Success' ? 'var(--success)' : (r.status === 'Rejected' ? 'var(--danger)' : '#ff9800');
@@ -858,82 +728,55 @@
                     <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
                         <div>
                             <strong style="font-size:13px; color:#333;">Deposit <span style="color:white; background:${color}; padding:2px 5px; border-radius:4px; font-size:10px; margin-left:5px;">${r.status}</span></strong>
-                            <br><span style="font-size:10px;">${new Date(r.timestamp).toLocaleDateString()} | UTR: ${r.utr}</span>
+                            <br><span style="font-size:10px; color:#777;">${new Date(r.timestamp).toLocaleDateString()} | UTR: ${r.utr}</span>
                         </div>
                         <div style="color:var(--success); font-weight:bold; font-size:14px;">+₹${r.amount_with_bonus}</div>
                     </div>`;
                 });
             }
-            document.getElementById('homeHistoryList').innerHTML = html;
+            if(document.getElementById('homeHistoryList')) {
+                document.getElementById('homeHistoryList').innerHTML = html;
+            }
         }
-        // Function to load orders automatically from Firebase
-function loadAutomaticOrders() {
-    const ordersRef = firebase.database().ref('orders');
-    ordersRef.on('value', (snapshot) => {
-        const ordersListEl = document.getElementById('paymentOrdersList');
-        if (!ordersListEl) return;
-        ordersListEl.innerHTML = ''; // पुराना डेटा साफ़ करें
-        
-        const data = snapshot.val();
-        if (!data) {
-    ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
-    return;
-}
-        // डेटाबेस से डेटा लेकर एक-एक करके कार्ड बनाना
-        Object.keys(data).forEach((key) => {
-            const order = data[key];
-            
-            // हर आर्डर के लिए अलग 6-डिजिट का रैंडम कोड बनाना
-            const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-            
-            const cardHTML = `
-                <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
-                        <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: ${randomCode}</span>
-                    </div>
-                    <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ ${order.amount}</strong></div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ ${order.income} <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
-                        <button onclick="switchTab('depositPage', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
-                    </div>
-                </div>
-            `;
-            ordersListEl.innerHTML += cardHTML;
-        });
-    });
-}
-loadAutomaticOrders();
+
+        // --- AUTOMATIC ORDERS RENDER ---
+        function loadAutomaticOrders() {
+            const ordersRef = firebase.database().ref('orders');
+            ordersRef.on('value', (snapshot) => {
+                const ordersListEl = document.getElementById('paymentOrdersList');
+                if (!ordersListEl) return;
+                ordersListEl.innerHTML = ''; 
+                
+                const data = snapshot.val();
+                if (!data) {
+                    ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
+                    return;
+                }
+                
+                Object.keys(data).forEach((key) => {
+                    const order = data[key];
+                    const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                    
+                    const cardHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
+                                <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: ${randomCode}</span>
+                            </div>
+                            <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ ${order.amount}</strong></div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ ${order.income} <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
+                                <button onclick="switchTab('depositTab', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
+                            </div>
+                        </div>
+                    `;
+                    ordersListEl.innerHTML += cardHTML;
+                });
+            });
+        }
+        loadAutomaticOrders();
     </script>
-       </div>
-</div> 
-<div style="position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; z-index: 999999;">
-  
-  <a href="#" onclick="switchTab('homePage', this)" class="nav-item active" style="text-decoration: none; color: #666; text-align: center; font-size: 12px;">
-    <div style="font-size: 20px;">🏠</div>
-    <span>Home</span>
-  </a>
-
-  <a href="#" onclick="switchTab('paymentPage', this)" class="nav-item" style="text-decoration: none; color: #666; text-align: center; font-size: 12px;">
-    <div style="font-size: 20px;">💳</div>
-    <span>Payment</span>
-  </a>
-
-  <a href="#" onclick="switchTab('walletPage', this)" style="text-decoration: none; background: #0052cc; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white;">
-    <div style="font-size: 20px;">👛</div>
-  </a>
-
-  <a href="#" onclick="switchTab('statisticsPage', this)" class="nav-item" style="text-decoration: none; color: #666; text-align: center; font-size: 12px;">
-    <div style="font-size: 20px;">📊</div>
-    <span>Statistics</span>
-  </a>
-
-  <a href="#" onclick="switchTab('myPage', this)" class="nav-item" style="text-decoration: none; color: #666; text-align: center; font-size: 12px;">
-    <div style="font-size: 20px;">👤</div>
-    <span>My</span>
-  </a>
-
-</div>
-
 </body>
 </html>
+
+            
