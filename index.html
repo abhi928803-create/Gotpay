@@ -267,67 +267,6 @@
                 </div>
             </div>
 
-            <!-- STATISTICS PAGE -->
-            // --- LIVE ASSET & STATISTICS CALCULATOR ---
-function updateLiveAssets() {
-    if(!currentUser) return;
-
-    // Balance & Commission Update (Statistics & Profile Page)
-    let totalComm = currentUser.commission || 0.00;
-    let currentBal = currentUser.balance || 0.00;
-    
-    if(document.getElementById('myTotalCommission')) document.getElementById('myTotalCommission').innerText = totalComm.toFixed(2);
-    if(document.getElementById('statCommission')) document.getElementById('statCommission').innerText = totalComm.toFixed(2);
-    if(document.getElementById('statBalance')) document.getElementById('statBalance').innerText = currentBal.toFixed(2);
-
-    let totalPending = 0; // In Process calculate karne ke liye
-
-    // Deposit Update Karega
-    db.ref('deposit_requests').on('value', snap => {
-        let totalDep = 0;
-        let pendingDep = 0;
-        snap.forEach(c => {
-            let d = c.val();
-            if(d.phone === currentUser.phone) { 
-                totalDep += Number(d.original_amount) || 0;
-                if(d.status === 'Pending') pendingDep += Number(d.original_amount) || 0;
-            }
-        });
-        if(document.getElementById('myTotalDeposit')) document.getElementById('myTotalDeposit').innerText = totalDep.toFixed(2);
-        if(document.getElementById('statDeposit')) document.getElementById('statDeposit').innerText = totalDep.toFixed(2);
-        
-        // Pending logic (Global variable update)
-        totalPending = pendingDep;
-        updatePendingUI();
-    });
-
-    // Withdraw Update Karega
-    db.ref('withdraw_requests').on('value', snap => {
-        let totalWd = 0;
-        let pendingWd = 0;
-        snap.forEach(c => {
-            let d = c.val();
-            if(d.phone === currentUser.phone) {
-                totalWd += Number(d.amount) || 0;
-                if(d.status === 'Pending') pendingWd += Number(d.amount) || 0;
-            }
-        });
-        if(document.getElementById('myTotalWithdraw')) document.getElementById('myTotalWithdraw').innerText = totalWd.toFixed(2);
-        if(document.getElementById('statWithdraw')) document.getElementById('statWithdraw').innerText = totalWd.toFixed(2);
-        
-        // Pending logic (Global variable update)
-        totalPending += pendingWd;
-        updatePendingUI();
-    });
-
-    // Pending UI update helper
-    function updatePendingUI() {
-        if(document.getElementById('statInProcess')) {
-            document.getElementById('statInProcess').innerText = totalPending.toFixed(2);
-        }
-    }
-}
-
             <!-- 🟢 NAYA "MY" (PROFILE) PAGE - GOTPAY BLUE THEME 🟢 -->
 <div id="profileTab" class="page-content" style="padding: 15px; padding-bottom: 100px; min-height: 100vh;">
     
