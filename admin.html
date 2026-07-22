@@ -2,34 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GotPay - Professional Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GotPay - Secure Admin Control Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #0056D2; --bg: #f4f7f6; --success: #4caf50; --danger: #e53935; }
+        :root { 
+            --primary: #2563eb; 
+            --primary-dark: #1d4ed8; 
+            --bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --text: #f8fafc; 
+            --text-muted: #94a3b8; 
+            --success: #10b981; 
+            --danger: #ef4444; 
+            --border: #334155;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: var(--bg); color: #333; padding: 20px; }
-        .admin-container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h2 { color: var(--primary); margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .request-card { background: #fafafa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .req-info p { font-size: 14px; margin-bottom: 4px; color: #555; }
-        .req-info p strong { color: #111; }
-        .utr-highlight { background: #e3f2fd; color: var(--primary); padding: 3px 8px; border-radius: 4px; font-weight: bold; }
-        .action-btns { display: flex; gap: 10px; }
-        .btn-approve { background: var(--success); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .btn-reject { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .no-data { text-align: center; color: #888; padding: 30px; font-size: 15px; }
+        body { background: var(--bg); color: var(--text); padding: 15px; min-height: 100vh; }
+        
+        .admin-wrapper { max-width: 480px; margin: auto; padding-bottom: 40px; }
+        
+        /* Top Header Card */
+        .admin-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 20px; padding: 25px 20px; color: white; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); margin-bottom: 20px; position: relative; overflow: hidden; }
+        .admin-header::after { content: ''; position: absolute; right: -20px; bottom: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .admin-header h1 { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+        .admin-header p { font-size: 13px; opacity: 0.85; line-height: 1.4; }
+
+        /* Stats Bar */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 15px; text-align: center; }
+        .stat-card .num { font-size: 20px; font-weight: bold; color: var(--text); margin-top: 4px; }
+        .stat-card .label { font-size: 12px; color: var(--text-muted); }
+
+        /* Section Title */
+        .section-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; color: var(--text); }
+        .badge-count { background: var(--primary); color: white; font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+
+        /* Request Card Style */
+        .request-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: 0.2s; }
+        .request-card:hover { border-color: var(--primary); }
+        
+        .req-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .user-name { font-size: 15px; font-weight: bold; color: var(--text); }
+        .user-phone { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .amount-tag { font-size: 16px; font-weight: 900; color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+        .req-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; margin-bottom: 15px; color: var(--text-muted); }
+        .req-details span { color: var(--text); font-weight: 600; }
+        
+        .utr-box { background: rgba(37, 99, 235, 0.15); border: 1px dashed var(--primary); padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .utr-box .utr-val { color: #60a5fa; font-weight: bold; font-family: monospace; font-size: 15px; letter-spacing: 1px; }
+
+        /* Action Buttons */
+        .card-actions { display: flex; gap: 10px; }
+        .btn-action { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
+        .btn-approve { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        .btn-approve:active { transform: scale(0.97); }
+        .btn-reject { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .btn-reject:active { transform: scale(0.97); }
+
+        .no-data { text-align: center; color: var(--text-muted); padding: 40px 20px; background: var(--card-bg); border-radius: 16px; border: 1px dashed var(--border); }
+        .no-data i { font-size: 35px; margin-bottom: 10px; color: var(--border); }
     </style>
 </head>
 <body>
 
-    <div class="admin-container">
-        <h2><i class="fa-solid fa-shield-halved"></i> GotPay Admin Control Panel</h2>
-        <p style="margin-bottom: 20px; font-size: 13px; color: #666;">Verify user UTR and approve payments safely to update their wallet balance automatically.</p>
-        
-        <h3>Pending Payment Approvals</h3>
-        <div id="adminPendingList" style="margin-top: 15px;">
-            <div class="no-data">Loading pending requests...</div>
+    <div class="admin-wrapper">
+        <!-- Header Banner -->
+        <div class="admin-header">
+            <h1><i class="fa-solid fa-shield-halved"></i> GotPay Admin</h1>
+            <p>Secure command center to verify UTR references and authorize digital wallet credits instantly.</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="label">Pending Queue</div>
+                <div class="num" id="pendingCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">System Status</div>
+                <div class="num" style="color: var(--success); font-size: 16px; margin-top: 6px;"><i class="fa-solid fa-circle-dot" style="font-size: 10px;"></i> Live Online</div>
+            </div>
+        </div>
+
+        <!-- Pending List Section -->
+        <div class="section-title">
+            <span>Pending Approvals</span>
+            <span class="badge-count" id="badgeTotal">0 Requests</span>
+        </div>
+
+        <div id="adminPendingList">
+            <div class="no-data">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading secure requests...</p>
+            </div>
         </div>
     </div>
 
@@ -51,54 +118,96 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // --- FETCH PENDING REQUESTS ---
+        // --- FETCH LIVE PENDING REQUESTS ---
         const pendingRef = db.ref('order_payments_pending');
         pendingRef.on('value', (snapshot) => {
             let container = document.getElementById('adminPendingList');
+            let pendingCountEl = document.getElementById('pendingCount');
+            let badgeTotalEl = document.getElementById('badgeTotal');
+            
             container.innerHTML = '';
             
             let data = snapshot.val();
             if (!data) {
-                container.innerHTML = '<div class="no-data">No pending payment requests right now.</div>';
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p>No pending payment requests right now.</p>
+                    </div>`;
+                pendingCountEl.innerText = "0";
+                badgeTotalEl.innerText = "0 Requests";
                 return;
             }
             
+            let activeCount = 0;
+            let cardsHTML = '';
+
             Object.keys(data).forEach((key) => {
                 let req = data[key];
                 
                 // Sirf 'Pending' status wale dikhayen
                 if(req.status === "Pending") {
-                    let card = document.createElement('div');
-                    card.className = 'request-card';
-                    card.innerHTML = `
-                        <div class="req-info">
-                            <p><strong>User:</strong> ${req.username} (Ph: ${req.phone})</p>
-                            <p><strong>User ID:</strong> ${req.uid}</p>
-                            <p><strong>Amount:</strong> ₹${req.order_amount} | <strong>Commission:</strong> ₹${req.commission}</p>
-                            <p><strong>Platform:</strong> ${req.platform}</p>
-                            <p><strong>UTR / Ref No:</strong> <span class="utr-highlight">${req.utr}</span></p>
-                            <p style="font-size: 11px; color: #999; margin-top: 4px;">Time: ${new Date(req.timestamp).toLocaleString()}</p>
-                        </div>
-                        <div class="action-btns">
-                            <button class="btn-approve" onclick="approvePayment('${key}', '${req.phone}', ${req.order_amount}, ${req.commission})">Approve</button>
-                            <button class="btn-reject" onclick="rejectPayment('${key}')">Reject</button>
+                    activeCount++;
+                    let timeFormatted = req.timestamp ? new Date(req.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent';
+                    
+                    cardsHTML += `
+                        <div class="request-card">
+                            <div class="req-top">
+                                <div>
+                                    <div class="user-name"><i class="fa-solid fa-user-circle" style="color:var(--primary); margin-right:4px;"></i> ${req.username || 'User'}</div>
+                                    <div class="user-phone">Ph: ${req.phone} | UID: ${req.uid}</div>
+                                </div>
+                                <div class="amount-tag">₹${req.order_amount}</div>
+                            </div>
+                            
+                            <div class="req-details">
+                                <div>Platform: <span>${req.platform}</span></div>
+                                <div>Commission: <span style="color:var(--success);">+₹${req.commission}</span></div>
+                                <div style="grid-column: span 2;">Time: <span style="color:var(--text);">${timeFormatted}</span></div>
+                            </div>
+
+                            <div class="utr-box">
+                                <div style="font-size: 11px; color: var(--text-muted);">UTR / Ref:</div>
+                                <div class="utr-val">${req.utr}</div>
+                            </div>
+
+                            <div class="card-actions">
+                                <button class="btn-action btn-approve" onclick="approvePayment('${key}', '${req.phone}', ${req.order_amount}, ${req.commission})">
+                                    <i class="fa-solid fa-check"></i> Approve
+                                </button>
+                                <button class="btn-action btn-reject" onclick="rejectPayment('${key}')">
+                                    <i class="fa-solid fa-xmark"></i> Reject
+                                </button>
+                            </div>
                         </div>
                     `;
-                    container.appendChild(card);
                 }
             });
+
+            if(activeCount === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fa-regular fa-circle-check" style="color:var(--success);"></i>
+                        <p>All caught up! No pending approvals.</p>
+                    </div>`;
+            } else {
+                container.innerHTML = cardsHTML;
+            }
+
+            pendingCountEl.innerText = activeCount;
+            badgeTotalEl.innerText = activeCount + " Requests";
         });
 
-        // --- APPROVE PAYMENT (Adds Balance to User Wallet) ---
+        // --- APPROVE PAYMENT ---
         window.approvePayment = async function(firebaseKey, userPhone, orderAmt, commissionAmt) {
-            if(!confirm("Are you sure you want to APPROVE this payment? Balance will be added to the user.")) return;
+            if(!confirm("⚠️ Approve this payment? Wallet balance will be credited to the user instantly.")) return;
 
             try {
                 let userRef = db.ref('users/' + userPhone);
                 let userSnap = await userRef.once('value');
                 
                 if(!userSnap.exists()) {
-                    alert("Error: User account not found in database!");
+                    alert("❌ Error: Target user account not found in database!");
                     return;
                 }
 
@@ -115,26 +224,26 @@
                     commission: newComm
                 });
 
-                // 2. Pending request ka status 'Approved' kar dein taaki list se hat jaye
+                // 2. Request status 'Approved' update karein
                 await db.ref('order_payments_pending/' + firebaseKey).update({
                     status: "Approved"
                 });
 
-                alert("✅ Payment Approved Successfully! User balance updated.");
+                alert("🎉 Success! Payment approved and user balance updated.");
             } catch(err) {
-                alert("Error: " + err.message);
+                alert("❌ Error: " + err.message);
             }
         };
 
         // --- REJECT PAYMENT ---
         window.rejectPayment = async function(firebaseKey) {
-            if(!confirm("Are you sure you want to REJECT this payment?")) return;
+            if(!confirm("❌ Are you sure you want to reject this transaction request?")) return;
 
             try {
                 await db.ref('order_payments_pending/' + firebaseKey).update({
                     status: "Rejected"
                 });
-                alert("❌ Payment Request Rejected.");
+                alert("🚫 Request rejected successfully.");
             } catch(err) {
                 alert("Error: " + err.message);
             }
