@@ -1641,72 +1641,7 @@
             return Math.abs(hash);
         }
 
-        function loadTeamData() {
-            if(!currentUser) return;
-            let uniqueCode = currentUser.invite_code || Math.random().toString(36).substring(2, 8).toUpperCase();
-            if(!currentUser.invite_code) {
-                db.ref('users/' + currentUser.phone).update({ invite_code: uniqueCode });
-                currentUser.invite_code = uniqueCode;
-            }
-            let siteUrl = window.location.origin + window.location.pathname;
-            let fullInviteLink = siteUrl + "?ref=" + uniqueCode;
-            let inviteEl = document.getElementById('userInviteLink');
-            if(inviteEl) inviteEl.innerText = fullInviteLink;
-            if(document.getElementById('teamTotalComm')) {
-                let comm = currentUser.commission || 0;
-                document.getElementById('teamTotalComm').innerText = "₹ " + comm.toFixed(2);
-            }
-        }
-
-        window.copyInviteLink = function() {
-            let inviteEl = document.getElementById('userInviteLink');
-            if(inviteEl) {
-                navigator.clipboard.writeText(inviteEl.innerText);
-                alert("📋 Invitation Link Copied to Clipboard!");
-            }
-        };
-
-        let currentOrderSubTab = 'receive';
-        window.switchOrderSubTab = function(tabName) {
-            currentOrderSubTab = tabName;
-            let btnRec = document.getElementById('btnReceiveTab');
-            let btnPur = document.getElementById('btnPurchaseTab');
-            let purCard = document.getElementById('purchaseSummaryCard');
-
-            if(tabName === 'receive') {
-                btnRec.style.background = 'var(--primary)';
-                btnRec.style.color = 'white';
-                btnPur.style.background = 'transparent';
-                btnPur.style.color = 'var(--text-muted)';
-                if(purCard) purCard.style.display = 'none';
-            } else {
-                btnPur.style.background = 'var(--primary)';
-                btnPur.style.color = 'white';
-                btnRec.style.background = 'transparent';
-                btnRec.style.color = 'var(--text-muted)';
-                if(purCard) {
-                    purCard.style.display = 'block';
-                    let currentBal = Number(currentUser ? currentUser.balance : 0) || 0;
-                    if(document.getElementById('historyBalDisplay')) {
-                        document.getElementById('historyBalDisplay').innerText = "₹ " + currentBal.toFixed(2);
-                    }
-                }
-            }
-            renderOrderHistoryLists();
-        };
-
-        let originalSwitchTab = window.switchTab;
-        window.switchTab = function(tabId, element) {
-            if(typeof originalSwitchTab === 'function') originalSwitchTab(tabId, element);
-            
-            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-            let target = document.getElementById(tabId);
-            if(target) target.style.display = 'block';
-
-            if(tabId === 'teamTab') loadTeamData();
-            if(tabId === 'orderTab') renderOrderHistoryLists();
-        };
-
+  
                // --- TEAM & UNIQUE INVITATION LINK GENERATOR ---
         function loadTeamData() {
             if(!currentUser) return;
