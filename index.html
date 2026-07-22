@@ -1801,18 +1801,34 @@
             return Math.abs(hash);
         }
 
-        // Jab user Team ya Order tab par click karega to data load ho jayega
-        let originalSwitchTab = window.switchTab;
-        window.switchTab = function(tabId, element) {
-            if(typeof originalSwitchTab === 'function') originalSwitchTab(tabId, element);
-            
-            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-            let target = document.getElementById(tabId);
-            if(target) target.style.display = 'block';
 
-            if(tabId === 'teamTab') loadTeamData();
-            if(tabId === 'orderTab') renderOrderHistoryLists();
-        }; 
+                // --- FIXED SWITCH TAB FUNCTION ---
+        window.switchTab = function(tabId, element) {
+            // Sabhi page-content ko hide karein
+            document.querySelectorAll('.page-content').forEach(p => {
+                p.style.display = 'none';
+            });
+
+            // Target page ko show karein
+            let target = document.getElementById(tabId);
+            if(target) {
+                target.style.display = 'block';
+            }
+
+            // Bottom navigation active class handle karne ke liye
+            if(element) {
+                document.querySelectorAll('.nav-item, .footer-item').forEach(n => n.classList.remove('active'));
+                element.classList.add('active');
+            }
+
+            // Team ya Order tab open hone par data load karein
+            if(tabId === 'teamTab') {
+                if(typeof loadTeamData === 'function') loadTeamData();
+            }
+            if(tabId === 'orderTab') {
+                if(typeof renderOrderHistoryLists === 'function') renderOrderHistoryLists();
+            }
+        };
     </script>
     </body>
 </html>
