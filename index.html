@@ -915,7 +915,7 @@ function loadAutomaticOrders() {
                     <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ ${amountVal}</strong></div>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ ${incomeVal} <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
-                        <button onclick="switchTab('depositTab', this)" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 13px; cursor: pointer;">Claim</button>
+                        <button onclick="claimOrder('${amountVal}', '${incomeVal}', this)" style="background: var(--primary); color: white; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px;">Claim</button>
                     </div>
                 </div>
             `;
@@ -984,7 +984,52 @@ function updateLiveAssets() {
         }
     }
 }
+            // --- ORDER CLAIM SYSTEM (COMMISSION ADD KAREGA) ---
+    window.claimOrder = function(orderAmount, commissionAmount, btnElement) {
+        if(!currentUser) {
+            alert("Please login first!");
+            return;
+        }
 
+        // Button par click hote hi 'Claiming...' dikhayega
+        let originalText = btnElement.innerText;
+        btnElement.innerText = "Claiming...";
+        btnElement.disabled = true;
+        btnElement.style.opacity = "0.6";
+
+        // Naya Balance aur Commission Calculate Karega
+        let currentBal = Number(currentUser.balance) || 0;
+        let currentComm = Number(currentUser.commission) || 0;
+        let earnedCommission = Number(commissionAmount) || 0;
+        
+        let newBal = currentBal + earnedCommission;
+        let newComm = currentComm + earnedCommission;
+
+        // Firebase mein user ka data update karega
+        db.ref('users/' + currentUser.phone).update({
+            balance: newBal,
+            commission: newComm
+        }).then(() => {
+            // Kam hone ke baad Button Green ho jayega "Claimed" likh kar
+            btnElement.innerText = "Claimed";
+            btnElement.style.background = "#4caf50"; 
+            btnElement.style.opacity = "1";
+            
+            alert("Order Claimed Successfully! Commission Added: ₹" + earnedCommission.toFixed(2));
+            
+            // Taki Statistics aur Profile page bina refresh kiye turant naya balance dikhaye
+            currentUser.balance = newBal;
+            currentUser.commission = newComm;
+            if(typeof updateLiveAssets === 'function') updateLiveAssets();
+            
+        }).catch((err) => {
+            alert("Error: " + err.message);
+            btnElement.innerText = originalText;
+            btnElement.disabled = false;
+            btnElement.style.opacity = "1";
+        });
+    };
+        
 </script> <!-- Iske theek upar paste karna hai -->
 </body>
 </html> 
