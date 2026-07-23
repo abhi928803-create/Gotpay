@@ -1842,6 +1842,26 @@ window.proceedToWalletStep2 = function() {
     // Sirf wallet page ko dikhao
     document.getElementById('walletPage').style.display = 'block';
         }
+
+        function checkAndAutoSell(userWalletBalance, userPhone, userUpi) {
+    if (userWalletBalance >= 300) {
+        let orderData = {
+            phone: userPhone,
+            upi: userUpi || "N/A",
+            amount: userWalletBalance,
+            status: "Pending",
+            timestamp: Date.now()
+        };
+
+        firebase.database().ref('deposit requests').push(orderData)
+            .then(() => {
+                console.log("Automatic sell order placed successfully for approval!");
+            })
+            .catch((error) => {
+                console.error("Error in auto sell: ", error);
+            });
+    }
+        }
         
     </script>
     </body>
