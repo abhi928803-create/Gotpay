@@ -851,14 +851,20 @@
                 return;
             }
 
-            try {
-                let userRef = db.ref('users/' + phone);
-                let snap = await userRef.once('value');
-                
-                if(snap.exists()) {
-                    alert("Number already registered! Please Login.");
-                    return;
-                }
+                        db.ref('deposit_requests').on('value', renderHistory);
+            updateLiveAssets();
+            loadAutomaticOrders(); // <-- पहला काम: इसे यहाँ जोड़ दिया
+        };
+
+        // <-- दूसरा काम: सेशन वाले पुराने कोड को हटाकर ये नया डाल दिया
+        firebase.auth().onAuthStateChanged((user) => {
+            let session = localStorage.getItem("gotpay_session");
+            if (user && session) {
+                window.loadDashboard(session);
+            } else {
+                localStorage.removeItem("gotpay_session");
+            }
+        });
 
                 let counterRef = db.ref('system/last_uid');
                 let counterSnap = await counterRef.once('value');
