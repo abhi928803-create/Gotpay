@@ -965,9 +965,10 @@
                 }
             });
 
-            db.ref('deposit_requests').on('value', renderHistory);
-            updateLiveAssets();
-        };
+                db.ref('deposit_requests').on('value', renderHistory);
+    updateLiveAssets();
+    loadAutomaticOrders(); // <--- YE NAYI LINE YAHAN ADD KAREIN
+};
 
         let session = localStorage.getItem("gotpay_session");
         if(session) {
