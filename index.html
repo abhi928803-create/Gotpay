@@ -1731,14 +1731,12 @@ window.proceedToWalletStep2 = function() {
         }
 
   
-               // --- TEAM & UNIQUE INVITATION LINK GENERATOR ---
+                       // --- TEAM & UNIQUE INVITATION LINK GENERATOR ---
         function loadTeamData() {
             if(!currentUser) return;
             
-            // Har user ke liye unique 6-digit code generate karna ya UID se banana
             let uniqueCode = currentUser.invite_code || Math.random().toString(36).substring(2, 8).toUpperCase();
             
-            // Agar pehle se saved nahi hai to database me save kar do
             if(!currentUser.invite_code) {
                 db.ref('users/' + currentUser.phone).update({ invite_code: uniqueCode });
                 currentUser.invite_code = uniqueCode;
@@ -1747,22 +1745,24 @@ window.proceedToWalletStep2 = function() {
             let siteUrl = window.location.origin + window.location.pathname;
             let fullInviteLink = siteUrl + "?ref=" + uniqueCode;
 
-            let inviteEl = document.getElementById('userInviteLink');
+            let inviteEl = document.getElementById('userInviteLinkBox');
             if(inviteEl) inviteEl.innerText = fullInviteLink;
 
-            if(document.getElementById('teamTotalComm')) {
-                let comm = currentUser.commission || 0;
-                document.getElementById('teamTotalComm').innerText = "₹ " + comm.toFixed(2);
+            let comm = currentUser.commission || 0;
+            let teamCommEl = document.getElementById('teamTotalComm');
+            if(teamCommEl) {
+                teamCommEl.innerText = "₹ " + comm.toFixed(2);
             }
         }
 
         window.copyInviteLink = function() {
-            let inviteEl = document.getElementById('userInviteLink');
+            let inviteEl = document.getElementById('userInviteLinkBox');
             if(inviteEl) {
                 navigator.clipboard.writeText(inviteEl.innerText);
                 alert("📋 Invitation Link Copied to Clipboard!");
             }
         };
+
 
         // --- ORDER SUB-TAB SWITCHING (Receive / Purchase) ---
         let currentOrderSubTab = 'receive';
