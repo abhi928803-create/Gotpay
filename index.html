@@ -883,17 +883,6 @@
         }
     };
 
-    // <-- सेशन वाला कोड बाहर होना चाहिए
-    firebase.auth().onAuthStateChanged((user) => {
-        let session = localStorage.getItem("gotpay_session");
-        if (user && session) {
-            window.loadDashboard(session);
-        } else {
-            localStorage.removeItem("gotpay_session");
-        }
-    });
-
-
         window.loginUser = async () => {
             let phone = document.getElementById('loginPhone').value.trim();
             let pass = document.getElementById('loginPass').value.trim();
