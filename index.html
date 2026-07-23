@@ -1303,14 +1303,23 @@
             }
         };
 
-        window.proceedToWalletStep2 = function() {
-            let phoneInput = document.getElementById('walletPhoneInput');
-            bindingPhoneNum = phoneInput ? phoneInput.value.trim() : "";
+        let generatedOtp = ""; // Isko function ke upar ya yahan define kar dein
 
-            if(bindingPhoneNum.length < 10) {
-                alert("⚠️ Please enter a valid phone number!");
-                return;
-            }
+window.proceedToWalletStep2 = function() {
+    let phoneInput = document.getElementById('walletPhoneInput');
+    bindingPhoneNum = phoneInput ? phoneInput.value.trim() : "";
+
+    if (bindingPhoneNum.length < 10) {
+        alert("⚠️ Please enter a valid phone number!");
+        return;
+    }
+
+    // 6-digit ka random OTP generate karein
+    generatedOtp = Math.floor(100000 + Math.random() * 900000);
+    
+    // Real feel ke liye OTP popup mein show karein
+    alert("Your 6-digit OTP code is: " + generatedOtp);
+
 
             document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
             let page = document.getElementById('walletStep2Page');
