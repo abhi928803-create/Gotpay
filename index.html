@@ -840,7 +840,19 @@
             showToast("GotPay Alert\nYour OTP is: " + generatedOTP);
         }
 
-            // --- AUTH LOGIC ---
+               // --- SECURE AUTH LOGIC (FOR REAL USERS) ---
+    
+    // Ye code automatically user ko login rakhega
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            let phone = user.email.split('@')[0];
+            window.loadDashboard(phone);
+        } else {
+            let mainApp = document.getElementById('mainApp');
+            if(mainApp) mainApp.style.display = 'none';
+        }
+    });
+
     window.registerUser = async () => {
         let name = document.getElementById('regName').value.trim();
         let phone = document.getElementById('regPhone').value.trim();
@@ -851,77 +863,78 @@
             return;
         }
 
-        try {
-            let userRef = db.ref('users/' + phone);
-            let snap = await userRef.once('value');
-            
-            if (snap.exists()) {
-                alert("Account already exists! Please login.");
-                return;
-            }
+        let fakeEmail = phone + "@gotpay.com"; // Secret email for Firebase Security
 
+        try {
+            let btn = document.querySelector('#registerPage .primary-btn');
+            btn.innerText = "Registering...";
+            
+            // Firebase Auth mein secure account banayein
+            await firebase.auth().createUserWithEmailAndPassword(fakeEmail, pass);
+            
+            // Database mein data save karein
             let counterRef = db.ref('system/last_uid');
             let counterSnap = await counterRef.once('value');
             let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
 
-            await userRef.set({
+            await db.ref('users/' + phone).set({
                 username: name,
                 phone: phone,
-                password: pass,
                 uid: newUid,
                 balance: 250,
                 upis: {}
             });
             
             await counterRef.set(newUid);
-
+            btn.innerText = "Register";
             alert("Registration Successful! ₹250 Bonus added");
             window.showPage('loginPage');
+
         } catch (error) {
-            console.error("Error:", error);
-            alert("Error: " + error.message);
+            document.querySelector('#registerPage .primary-btn').innerText = "Register";
+            if(error.code === 'auth/email-already-in-use') {
+                alert("Account already exists! Please login.");
+            } else if(error.code === 'auth/weak-password') {
+                alert("Password should be at least 6 characters.");
+            } else {
+                alert("Error: " + error.message);
+            }
         }
     };
 
-        window.loginUser = async () => {
-            let phone = document.getElementById('loginPhone').value.trim();
-            let pass = document.getElementById('loginPass').value.trim();
+    window.loginUser = async () => {
+        let phone = document.getElementById('loginPhone').value.trim();
+        let pass = document.getElementById('loginPass').value.trim();
+        
+        if(phone.length !== 10 || !pass) {
+            alert("Enter valid details.");
+            return;
+        }
+
+        let fakeEmail = phone + "@gotpay.com";
+
+        try {
+            let btn = document.querySelector('#loginPage .primary-btn');
+            btn.innerText = "Logging in...";
             
-            if(phone.length !== 10 || !pass) {
-                alert("Enter valid details.");
-                return;
-            }
+            // Secure Firebase Login
+            await firebase.auth().signInWithEmailAndPassword(fakeEmail, pass);
+            btn.innerText = "Login";
+            
+        } catch (error) {
+            document.querySelector('#loginPage .primary-btn').innerText = "Login";
+            alert("Incorrect Mobile Number or Password!");
+        }
+    };
 
-            try {
-                let userRef = db.ref('users/' + phone);
-                let snap = await userRef.once('value');
-                
-                if(!snap.exists()) {
-                    alert("Account not found!");
-                    return;
-                }
-                
-                let userData = snap.val();
-                
-                if(String(userData.password).trim() !== String(pass)) {
-                    alert("Incorrect Password!");
-                    return;
-                }
-
-                localStorage.setItem("gotpay_session", phone);
-                window.loadDashboard(phone);
-            } catch (error) {
-                console.error("Login Error:", error);
-                alert("Error: " + error.message);
-            }
-        };
-
-        window.logout = () => {
-            localStorage.removeItem("gotpay_session");
-            currentUser = null;
-            document.getElementById('mainApp').style.display = 'none';
+    window.logout = () => {
+        firebase.auth().signOut().then(() => {
             window.showPage('loginPage');
-        };
+        }).catch((error) => {
+            alert("Error logging out.");
+        });
+    };
+
                 // --- DASHBOARD LOGIC ---
         window.loadDashboard = function(phone) {
             document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
