@@ -1234,7 +1234,7 @@
                 document.getElementById('homeHistoryList').innerHTML = html;
             }
         }
-                        // --- UPDATED AUTOMATIC ORDERS RENDER ---
+                                // --- UPDATED AUTOMATIC ORDERS RENDER ---
         function loadAutomaticOrders() {
             const ordersRef = firebase.database().ref('orders');
             ordersRef.on('value', (snapshot) => {
@@ -1274,6 +1274,7 @@
                 });
             });
         }
+
 
         
         // --- LIVE ASSET & STATISTICS CALCULATOR ---
