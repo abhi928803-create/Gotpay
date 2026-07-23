@@ -1,1 +1,1855 @@
-fgvvcv
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GotPay - Professional Digital Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #0056D2; --secondary: #003b8e; --bg: #f4f7f6; --text: #333; --success: #4caf50; --danger: #e53935; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; }
+        
+        .app-container { max-width: 400px; margin: auto; background: white; min-height: 100vh; position: relative; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow-x: hidden; }
+        .auth-page { display: none; padding: 40px 25px; text-align: center; height: 100vh; background: white; }
+        .auth-page.active { display: block; }
+        .logo { font-size: 42px; color: var(--primary); font-weight: 900; margin-bottom: 5px; }
+        .logo span { color: #ff9800; }
+        .input-group { position: relative; margin-top: 15px; text-align: left; }
+        .input-field { width: 100%; padding: 14px; border: 1.5px solid #e0e0e0; border-radius: 12px; font-size: 14px; background: #fafafa; outline: none; transition: 0.3s; }
+        .input-field:focus { border-color: var(--primary); background: white; }
+        .otp-btn { position: absolute; right: 8px; top: 8px; background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        .primary-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 25px; box-shadow: 0 4px 15px rgba(0, 86, 210, 0.3); }
+        
+        .page-content { display: none; padding: 15px; }
+        .page-content.active { display: block; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; }
+        .user-badge { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 45px; height: 45px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 20px; font-weight: bold; }
+        
+        .balance-card { background: linear-gradient(135deg, #1e3c72, #2a5298); margin: 15px 0; border-radius: 18px; padding: 25px 20px; color: white; box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3); text-align: center; }
+        .card-box { background: white; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; margin-bottom: 15px; }
+        .select-field { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px; background: #fafafa; outline: none; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .remove-btn { background: #ffebee; color: var(--danger); border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
+
+        #customToast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 15px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+        #customToast.show { visibility: visible; opacity: 1; bottom: 50px; }
+
+        .stats-bar { display: flex; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 12px; margin-top: -10px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .stat-box { flex: 1; padding: 12px; }
+        .stat-box:first-child { border-right: 1px solid rgba(255,255,255,0.2); }
+        .quick-actions { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .action-btn { text-align: center; cursor: pointer; }
+        .icon-circle { width: 50px; height: 50px; background: #f4f7fc; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--primary); margin: 0 auto 8px auto; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .promo-banner { background: linear-gradient(135deg, #00c6ff, #0072ff); border-radius: 12px; padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,114,255,0.2); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        
+        .nav { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; align-items: center; padding: 10px 10px 5px 10px; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 20px 20px 0 0; z-index: 1000; }
+        .nav-item { text-align: center; color: #a0a0a0; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.3s; width: 60px; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .center-btn-wrapper { position: relative; top: -25px; }
+        .center-action-btn { width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: 4px solid white; }
+        
+        /* New Modal Animation */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+     <div class="app-container">
+        <div id="customToast"></div>
+        
+        <!-- NEW SUCCESS MODAL (Replaces normal alert - "Admin" Removed) -->
+        <div id="successModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center;">
+            <div style="background: white; width: 80%; max-width: 300px; border-radius: 15px; padding: 25px 20px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out;">
+                <div style="width: 60px; height: 60px; background: #e1fef0; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 15px auto;">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 style="color: #333; margin-top: 0; margin-bottom: 10px; font-size: 18px;">Payment Submitted!</h3>
+                <p id="successModalText" style="font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 20px;">
+                    Your payment request has been successfully processed.
+                </p>
+                <button onclick="closeSuccessModal()" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 12px; border-radius: 25px; width: 100%; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.2);">OK, Got it</button>
+            </div>
+        </div>
+
+        <!-- LOGIN PAGE -->
+        <div id="loginPage" class="auth-page active">
+            <h1 class="logo">Got<span>Pay</span></h1>
+            <p style="color:#666; margin-bottom:30px;">Login to your account</p>
+            <div class="input-group">
+                <input type="tel" id="loginPhone" class="input-field" placeholder="Mobile Number (10 Digits)" maxlength="10">
+            </div>
+            <div class="input-group">
+                <input type="password" id="loginPass" class="input-field" placeholder="Password">
+            </div>
+            <button type="button" class="primary-btn" onclick="loginUser()">Login</button>
+            <button type="button" class="primary-btn" onclick="document.getElementById('loginPage').classList.remove('active'); document.getElementById('registerPage').classList.add('active');">Create New Account</button>
+        </div>
+
+        <!-- REGISTER PAGE -->
+        <div id="registerPage" class="auth-page">
+            <h1 class="logo">Got<span>Pay</span></h1>
+            <p style="color:#666; margin-bottom:20px;">Register Account</p>
+            <div class="input-group">
+                <input type="text" id="regName" class="input-field" placeholder="Username / Full Name">
+            </div>
+            <div class="input-group">
+                <input type="tel" id="regPhone" class="input-field" placeholder="Mobile Number" maxlength="10">
+            </div>
+            <div class="input-group">
+                <input type="password" id="regPass" class="input-field" placeholder="Set Password">
+            </div>
+            <button type="button" class="primary-btn" onclick="registerUser()">Register</button>
+            <button type="button" class="primary-btn" onclick="document.getElementById('registerPage').classList.remove('active'); document.getElementById('loginPage').classList.add('active');">Already registered? Login</button>
+        </div>
+
+       <!-- DASHBOARD APP -->
+        <div id="mainApp" style="display: none;">
+            
+            <!-- HOME PAGE -->
+            <div id="homePage" class="page-content active">
+                <!-- Top Header -->
+                <div class="header">
+                    <div class="user-badge">
+                        <div class="avatar"><i class="fa-solid fa-user" style="color: var(--primary);"></i></div>
+                        <div>
+                            <strong id="displayUsername" style="font-size: 16px; color: #333;">Loading...</strong>
+                            <div style="font-size: 12px; color: #777; margin-top: 2px;">ID: <span id="displayUid">---</span> <i class="fa-regular fa-copy" style="margin-left: 5px; cursor: pointer;"></i></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <i class="fa-regular fa-bell" style="font-size: 20px; color: #555; cursor: pointer;"></i>
+                        <i class="fa-solid fa-power-off" style="color: var(--danger); font-size: 20px; cursor: pointer;" onclick="logout()"></i>
+                    </div>
+                </div>
+
+                <!-- Main Balance Card -->
+                <div class="balance-card" style="margin-top: 20px; margin-bottom: 5px; border-radius: 15px 15px 0 0; padding-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="color: white;">
+                            <div style="font-size: 14px; opacity: 0.9;">Available Balance</div>
+                            <h1 style="margin: 8px 0; font-size: 38px;"><span id="userBalance">0.00</span></h1>
+                        </div>
+                        <button style="background: white; color: var(--primary); border: none; padding: 6px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">Detail</button>
+                    </div>
+                </div>
+
+                <!-- Deposit / Withdrawal Stats -->
+                <div class="stats-bar">
+                    <div class="stat-box">
+                        <div style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-arrow-up" style="color: #4caf50; margin-right: 5px;"></i>Deposit</div>
+                        <div style="font-weight: bold; margin-top: 5px; font-size: 15px;">₹ 0.00</div>
+                    </div>
+                    <div class="stat-box">
+                        <div style="font-size: 12px; opacity: 0.9;"><i class="fa-solid fa-arrow-down" style="color: #ff9800; margin-right: 5px;"></i>Withdrawal</div>
+                        <div style="font-weight: bold; margin-top: 5px; font-size: 15px;">₹ 0.00</div>
+                    </div>
+                </div>
+
+                        <!-- Quick Action Icons -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0;">
+            <!-- USDT Icon -->
+            <div onclick="switchTab('usdtTab')" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border, #334155); border-radius: 14px; padding: 12px 5px; text-align: center; cursor: pointer;">
+                <div style="font-size: 20px; color: var(--primary, #2563eb); margin-bottom: 5px;"><i class="fa-solid fa-coins"></i></div>
+                <span style="font-size: 12px; color: var(--text, #f8fafc); font-weight: 600;">USDT</span>
+            </div>
+            <!-- Task Icon -->
+            <div onclick="switchTab('taskTab')" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border, #334155); border-radius: 14px; padding: 12px 5px; text-align: center; cursor: pointer;">
+                <div style="font-size: 20px; color: var(--primary, #2563eb); margin-bottom: 5px;"><i class="fa-solid fa-list-check"></i></div>
+                <span style="font-size: 12px; color: var(--text, #f8fafc); font-weight: 600;">Task</span>
+            </div>
+            <!-- Team Icon -->
+            <div onclick="switchTab('teamTab', this)" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border, #334155); border-radius: 14px; padding: 12px 5px; text-align: center; cursor: pointer;">
+                <div style="font-size: 20px; color: var(--primary, #2563eb); margin-bottom: 5px;"><i class="fa-solid fa-users"></i></div>
+                <span style="font-size: 12px; color: var(--text, #f8fafc); font-weight: 600;">Team</span>
+            </div>
+            <!-- Order Icon -->
+            <div onclick="switchTab('orderTab', this)" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border, #334155); border-radius: 14px; padding: 12px 5px; text-align: center; cursor: pointer;">
+                <div style="font-size: 20px; color: var(--primary, #2563eb); margin-bottom: 5px;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <span style="font-size: 12px; color: var(--text, #f8fafc); font-weight: 600;">Order</span>
+            </div>
+        </div>
+
+            <!-- Promo Banner -->
+                <div class="promo-banner">
+                    <div>
+                        <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; opacity: 0.9;">Newcomer Rewards</div>
+                        <div style="font-size: 20px; font-weight: 900; margin: 4px 0;">In progress</div>
+                        <div style="font-size: 11px; opacity: 0.9;">Complete daily paid tasks to claim.</div>
+                    </div>
+                    <button style="background: white; color: #0072ff; border: none; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer;">View details</button>
+                </div>
+
+                <!-- Transactions List -->
+                <div class="transactions-section">
+                    <div class="section-header">
+                        <h3>Transactions</h3>
+                        <span style="color: var(--primary); font-size: 13px; font-weight: bold; cursor: pointer;">See All</span>
+                    </div>
+                    <div id="recentHistory" class="card-box" style="padding: 10px;">
+                        <div id="homeHistoryList">
+                            <p style="text-align: center; color: #999; font-size: 13px;">No recent activity.</p>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+            <!-- PAYMENT PAGE -->
+            <div id="paymentPage" class="page-content" style="padding-bottom: 80px; min-height: 100vh; background-color: #f4f7ff;">
+                <h2 style="text-align: center; color: var(--primary); padding: 20px 0; margin: 0; font-size: 22px;">Payment</h2>
+                <div style="padding: 0 15px;">
+                    <div style="background: linear-gradient(135deg, var(--primary), #1a56db); border-radius: 20px; padding: 20px; color: white; box-shadow: 0 4px 15px rgba(26,86,219,0.3); margin-bottom: 20px; position: relative; overflow: hidden;">
+                        <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Cashback</div>
+                        <div style="font-size: 32px; font-weight: bold; margin-bottom: 15px;">6%</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px; border-radius: 12px;">
+                                <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">Balance</div>
+                                <div style="font-size: 16px; font-weight: bold;" id="paymentBalance">₹ 0.00</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px; border-radius: 12px;">
+                                <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">Reward</div>
+                                <div style="font-size: 16px; font-weight: bold;">₹ 0</div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 10px; border-radius: 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 11px; opacity: 0.8;">Pending</span>
+                            <span style="font-size: 14px; font-weight: bold;">₹ 0</span>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 11px; color: #666; text-align: center; margin-bottom: 15px;">
+                        ⚠️ Please use Freecharge or Mobikwik or Paytm wallet for payment!
+                    </div>
+
+                    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px;" class="no-scrollbar">
+                        <button style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 13px; white-space: nowrap; cursor: pointer;">Top Picks</button>
+                        <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">100-199</button>
+                        <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">200-299</button>
+                        <button style="background: white; color: #666; border: 1px solid #e0eaff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">300-399</button>
+                    </div>
+
+                    <div id="paymentOrdersList" style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- Firebase automatic orders -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADDED DEPOSIT TAB -->
+            <div id="depositTab" class="page-content">
+                <h2>Deposit Funds</h2>
+                <div class="card-box">
+                    <label style="font-size:12px; font-weight:bold;">Deposit Amount (₹):</label>
+                    <input type="number" id="depositAmount" class="input-field" placeholder="E.g. 500" oninput="calculateBonus()">
+                    <p style="font-size:12px; color:var(--success); margin-top:5px;">Bonus (+6%): Expected Total ₹<span id="bonusDisplay">0.00</span></p>
+
+                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Select Payment Method:</label>
+                    <select id="buyGateway" class="select-field">
+                        <option value="Paytm">Paytm</option>
+                        <option value="PhonePe">PhonePe</option>
+                        <option value="Google Pay">Google Pay</option>
+                        <option value="Other UPI">Other UPI</option>
+                    </select>
+                    
+                    <button class="primary-btn" onclick="generateDepositRequest()">Generate QR Code</button>
+
+                    <!-- QR Code Section -->
+                    <div id="depositQRBox" style="display:none; text-align:center; margin-top:20px; padding-top:20px; border-top:1px solid #eee;">
+                        <p style="font-weight:bold; font-size:16px;">Pay ₹<span id="depAmountDisplay"></span></p>
+                        <p style="font-size:13px; color:#555; margin-bottom:10px;">via <span id="depGatewayDisplay"></span> to <br> <strong id="adminUpiDisplay" style="color:var(--primary);"></strong></p>
+                        
+                        <img id="qrImage" src="" alt="QR Code" style="width:200px; height:200px; border-radius:10px; border:2px solid var(--primary); padding:10px; margin-bottom:15px;">
+                        
+                        <label style="font-size:12px; font-weight:bold; display:block; text-align:left;">Enter 12-Digit UTR Number:</label>
+                        <input type="text" id="utrInput" class="input-field" placeholder="Submit UTR after payment" maxlength="12">
+                        
+                        <button class="primary-btn" style="background:var(--success); margin-top:10px;" onclick="submitDepositUTR()">Submit Payment</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WITHDRAW (SELL) PAGE -->
+            <div id="withdrawTab" class="page-content">
+                <h2>Sell Token (Withdraw)</h2>
+                <div class="card-box">
+                    <p style="text-align:center; font-size:14px; margin-bottom:15px;">Available: <strong id="withdrawBalDisplay" style="color:var(--success); font-size:20px;">₹0.00</strong></p>
+                    
+                    <label style="font-size:12px; font-weight:bold;">Withdrawal Amount (₹):</label>
+                    <input type="number" id="withdrawAmount" class="input-field" placeholder="E.g. 500">
+
+                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Select Your Linked UPI:</label>
+                    <select id="withdrawUpiSelect" class="select-field">
+                        <option value="">-- No UPI Linked (Add in Profile) --</option>
+                    </select>
+                    
+                    <button class="primary-btn" style="background: var(--danger);" onclick="submitWithdraw()">Withdraw Funds</button>
+                </div>
+            </div>
+
+             <!-- STATISTICS PAGE -->
+            <div id="statisticsPage" class="page-content" style="padding: 15px 20px; padding-bottom: 100px; min-height: 100vh; background: #ffffff;">
+                <h2 style="text-align: center; color: var(--primary); padding: 10px 0 25px 0; margin: 0; font-size: 20px; font-weight: bold;">Statistics</h2>
+                
+                <!-- Section 1: Statistics -->
+                <div style="margin-bottom: 20px; border: 1px solid #f0f0f0; border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 2px; margin-right: 8px;"></div>
+                        <span style="font-weight: bold; font-size: 16px; color: #333;">Statistics</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <!-- Balance -->
+                        <div style="border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px 10px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
+                                <div style="background: var(--primary); color: white; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px;"><i class="fa-solid fa-wallet"></i></div>
+                                <span style="font-size: 12px; color: #666;">Balance</span>
+                            </div>
+                            <div style="font-size: 15px; font-weight: bold; color: #333;">₹ <span id="statBalance">0.00</span></div>
+                        </div>
+                        
+                        <!-- Sell -->
+                        <div style="border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px 10px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
+                                <div style="background: #ffca28; color: white; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px;"><i class="fa-solid fa-right-left"></i></div>
+                                <span style="font-size: 12px; color: #666;">Sell</span>
+                            </div>
+                            <div style="font-size: 15px; font-weight: bold; color: #333;">₹ <span id="statWithdraw">0.00</span></div>
+                        </div>
+                        
+                        <!-- Deposit -->
+                        <div style="border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px 10px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
+                                <div style="background: #4caf50; color: white; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px;"><i class="fa-solid fa-arrow-down"></i></div>
+                                <span style="font-size: 12px; color: #666;">Deposit</span>
+                            </div>
+                            <div style="font-size: 15px; font-weight: bold; color: #333;">₹ <span id="statDeposit">0.00</span></div>
+                        </div>
+                        
+                        <!-- Commission -->
+                        <div style="border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px 10px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
+                                <div style="background: #ff5252; color: white; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px;"><i class="fa-solid fa-sack-dollar"></i></div>
+                                <span style="font-size: 12px; color: #666;">Commission</span>
+                            </div>
+                            <div style="font-size: 15px; font-weight: bold; color: #333;">₹ <span id="statCommission">0.00</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Payment -->
+                <div style="border: 1px solid #f0f0f0; border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 2px; margin-right: 8px;"></div>
+                        <span style="font-weight: bold; font-size: 16px; color: #333;">Payment</span>
+                    </div>
+                    
+                    <!-- Exchange Rate Box -->
+                    <div style="background: #f5f7fa; border-radius: 8px; padding: 12px 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; color: #444; font-weight: 600;">Real Time Exchange Rates(INR/USDT)</span>
+                        <span style="font-size: 14px; color: var(--primary); font-weight: bold;">113</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <!-- In Process Amount -->
+                        <div style="background: white; border-radius: 8px; padding: 12px 10px; text-align: center; border: 1px solid #f0f0f0;">
+                            <div style="font-size: 10px; color: #888; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 4px;"><i class="fa-solid fa-coins" style="color: #fbc02d;"></i> In Process Amount</div>
+                            <div style="font-size: 13px; font-weight: bold; color: #333;">₹ <span id="statInProcess">0.00</span></div>
+                        </div>
+                        
+                        <!-- In Process Orders -->
+                        <div style="background: white; border-radius: 8px; padding: 12px 10px; text-align: center; border: 1px solid #f0f0f0;">
+                            <div style="font-size: 10px; color: #888; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 4px;"><i class="fa-solid fa-coins" style="color: #fbc02d;"></i> In Process Orders</div>
+                            <div style="font-size: 13px; font-weight: bold; color: #333;">0</div>
+                        </div>
+                        
+                        <!-- Commission Rate -->
+                        <div style="background: white; border-radius: 8px; padding: 12px 10px; text-align: center; border: 1px solid #f0f0f0;">
+                            <div style="font-size: 10px; color: #888; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 4px;"><i class="fa-solid fa-coins" style="color: #fbc02d;"></i> Commission Rate</div>
+                            <div style="font-size: 13px; font-weight: bold; color: #333;">6%</div>
+                        </div>
+                        
+                        <!-- Estimated Income -->
+                        <div style="background: white; border-radius: 8px; padding: 12px 10px; text-align: center; border: 1px solid #f0f0f0;">
+                            <div style="font-size: 10px; color: #888; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 4px;"><i class="fa-solid fa-coins" style="color: #fbc02d;"></i> Estimated Income</div>
+                            <div style="font-size: 13px; font-weight: bold; color: #333;">₹ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Start Selling Button -->
+                <button onclick="switchTab('withdrawTab', document.querySelectorAll('.nav-item')[2])" style="background: #004ecb; color: white; border: none; padding: 15px; border-radius: 25px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 78, 203, 0.3);">Start Selling</button>
+            </div>
+
+           <!-- 🟢 1. CHOOSE PAYMENT TOOL PAGE 🟢 -->
+    <div id="chooseToolPage" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px; display: none;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+        <div onclick="goBackToWallet()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Add Tool</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h3 style="color: #333; font-size: 20px; margin: 0;">Choose your payment</h3>
+        </div>
+
+        <!-- Personal / Business Tabs -->
+        <div style="display: flex; background: #e3f2fd; border-radius: 25px; padding: 4px; margin-bottom: 20px;">
+            <div style="flex: 1; text-align: center; padding: 10px; background: var(--primary); color: white; border-radius: 20px; font-weight: bold; font-size: 14px;">Personal</div>
+            <div style="flex: 1; text-align: center; padding: 10px; color: #555; font-weight: bold; font-size: 14px;">Business</div>
+        </div>
+
+        <!-- Tools List -->
+        <div id="toolsListContainer" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+            <!-- Option: Paytm -->
+            <div onclick="selectToolCard(this, 'Paytm')" class="tool-card" style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 2px solid var(--primary); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: #e3f2fd; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">P</div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; font-size: 15px;">Paytm</div>
+                        <div style="font-size: 12px; color: #777;">Payin 100.00 - 50000.00</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 12px; font-weight: bold;">Payout</span>
+            </div>
+
+            <!-- Option: Mobikwik -->
+            <div onclick="selectToolCard(this, 'Mobikwik')" class="tool-card" style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 2px solid transparent; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: #e3f2fd; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">M</div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; font-size: 15px;">Mobikwik <span style="background: #ff9800; color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px;">Binding Bonus</span></div>
+                        <div style="font-size: 12px; color: #777;">Payin 99.00 - 50000.00</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 12px; font-weight: bold;">Payout</span>
+            </div>
+
+            <!-- Option: Freecharge -->
+            <div onclick="selectToolCard(this, 'Freecharge')" class="tool-card" style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 2px solid transparent; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: #e3f2fd; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">F</div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; font-size: 15px;">Freecharge</div>
+                        <div style="font-size: 12px; color: #777;">Payin 100.00 - 50000.00</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 12px; font-weight: bold;">Payout</span>
+            </div>
+
+            <!-- Option: Navi -->
+            <div onclick="selectToolCard(this, 'Navi')" class="tool-card" style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 2px solid transparent; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: #e3f2fd; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">N</div>
+                    <div>
+                        <div style="font-weight: bold; color: #333; font-size: 15px;">Navi</div>
+                        <div style="font-size: 12px; color: #777;">Payin 100.00 - 50000.00</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 12px; font-weight: bold;">Payout</span>
+            </div>
+        </div>
+
+        <button onclick="proceedToWalletStep1()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">Sure</button>
+    </div>
+
+    <!-- 🟢 2. WALLET STEP 1: PHONE NUMBER 🟢 -->
+    <div id="walletStep1Page" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px; display: none;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div onclick="openChooseToolPage()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Wallet</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <!-- Step Indicator -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 20px;">
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">1</div><span style="font-size: 11px; color: var(--primary); font-weight: bold;">Phone</span></div>
+            <div style="flex: 1; height: 2px; background: #ddd; margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #ddd; color: #777; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">2</div><span style="font-size: 11px; color: #777;">Authorize</span></div>
+            <div style="flex: 1; height: 2px; background: #ddd; margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #ddd; color: #777; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">3</div><span style="font-size: 11px; color: #777;">Finish</span></div>
+        </div>
+
+        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.05); margin-bottom: 25px;">
+            <h3 id="step1WalletTitle" style="margin-top: 0; color: #333; font-size: 18px;">Create Paytm Wallet</h3>
+            <p style="font-size: 13px; color: #666; line-height: 1.4;">1. Let's get started! Please complete the form below based on your wallet information.<br>2. Click "Next" to complete and enter the next step.</p>
+            
+            <label style="display: block; font-size: 13px; font-weight: bold; color: var(--primary); margin-bottom: 8px;">Your Phone</label>
+            <div style="display: flex; border: 1.5px solid var(--primary); border-radius: 8px; overflow: hidden;">
+                <span style="background: #e3f2fd; padding: 12px; font-weight: bold; color: var(--primary);">+91</span>
+                <input type="tel" id="walletPhoneInput" placeholder="Enter phone number" style="flex: 1; padding: 12px; border: none; outline: none; font-size: 14px;">
+            </div>
+        </div>
+
+        <button onclick="proceedToWalletStep2()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">Next</button>
+    </div>
+
+    <!-- 🟢 3. WALLET STEP 2: OTP VERIFICATION 🟢 -->
+    <div id="walletStep2Page" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px; display: none;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div onclick="proceedToWalletStep1()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Wallet</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <!-- Step Indicator -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 20px;">
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #4caf50; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">✓</div><span style="font-size: 11px; color: #4caf50; font-weight: bold;">Phone</span></div>
+            <div style="flex: 1; height: 2px; background: var(--primary); margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">2</div><span style="font-size: 11px; color: var(--primary); font-weight: bold;">Authorize</span></div>
+            <div style="flex: 1; height: 2px; background: #ddd; margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #ddd; color: #777; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">3</div><span style="font-size: 11px; color: #777;">Finish</span></div>
+        </div>
+
+        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.05); margin-bottom: 25px;">
+            <h3 id="step2OtpTitle" style="margin-top: 0; color: #333; font-size: 18px;">Paytm OTP Verification</h3>
+            <p style="font-size: 13px; color: #666; line-height: 1.4;">1. Please send the OTP code to your phone first.<br>2. Enter the OTP code after receiving it.</p>
+            
+            <label style="display: block; font-size: 13px; font-weight: bold; color: var(--primary); margin-bottom: 6px;">Phone Number</label>
+            <input type="text" id="displayOtpPhone" readonly style="width: 100%; padding: 12px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 15px; box-sizing: border-box;">
+
+            <label style="display: block; font-size: 13px; font-weight: bold; color: var(--primary); margin-bottom: 6px;">OTP Code</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="walletOtpInput" placeholder="Enter OTP" style="flex: 1; padding: 12px; border: 1.5px solid var(--primary); border-radius: 8px; font-size: 14px; box-sizing: border-box; outline: none;">
+                <button style="background: #e3f2fd; color: var(--primary); border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; font-size: 13px;">26s</button>
+            </div>
+            <div style="font-size: 12px; color: #4caf50; margin-top: 8px; font-weight: bold;">OTP has been sent successfully.</div>
+        </div>
+
+        <button onclick="proceedToWalletStep3()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">Next</button>
+    </div>
+
+    <!-- 🟢 4. WALLET STEP 3: FETCH & BIND LINKED UPI 🟢 -->
+    <div id="walletStep3Page" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px; display: none;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div onclick="proceedToWalletStep2()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Wallet</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <!-- Step Indicator -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 20px;">
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #4caf50; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">✓</div><span style="font-size: 11px; color: #4caf50; font-weight: bold;">Phone</span></div>
+            <div style="flex: 1; height: 2px; background: #4caf50; margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: #4caf50; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">✓</div><span style="font-size: 11px; color: #4caf50; font-weight: bold;">Authorize</span></div>
+            <div style="flex: 1; height: 2px; background: var(--primary); margin: 0 5px;"></div>
+            <div style="text-align: center;"><div style="width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 14px;">3</div><span style="font-size: 11px; color: var(--primary); font-weight: bold;">Finish</span></div>
+        </div>
+
+        <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.05); margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #333; font-size: 18px;">Select Linked UPI</h3>
+            <p style="font-size: 13px; color: #666; line-height: 1.4;">Select your bank-linked UPI found for <span id="finishAppTitle" style="font-weight:bold; color:var(--primary);">Navi</span>:</p>
+            
+            <div id="fetchedUpiOptionsList" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <!-- Dynamically populated linked UPIs will appear here -->
+            </div>
+        </div>
+
+        <button onclick="finalizeAndSaveUpi()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">Confirm & Bind UPI</button>
+    </div> 
+
+               <!-- 🟢 NAYA "MY" (PROFILE) PAGE - GOTPAY BLUE THEME 🟢 -->
+<div id="profileTab" class="page-content" style="padding: 15px; padding-bottom: 100px; min-height: 100vh;">
+    
+    <h2 style="text-align: center; color: var(--primary); padding: 10px 0 20px 0; margin: 0; font-size: 22px;">My Profile</h2>
+
+    <!-- Stats Container (Live Update Hoga) -->
+    <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0eaff; margin-bottom: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <!-- Deposit Box -->
+            <div style="background: #f4f7fc; border: 1px solid #e0eaff; border-radius: 12px; padding: 15px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #555;">
+                    <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 11px;"><i class="fa-solid fa-money-check-dollar"></i></div>
+                    <span style="font-size: 13px; font-weight: 600;">Deposit</span>
+                </div>
+                <div style="font-size: 18px; font-weight: bold; color: #333;">₹ <span id="myTotalDeposit">0.00</span></div>
+            </div>
+            <!-- Withdraw Box -->
+            <div style="background: #f4f7fc; border: 1px solid #e0eaff; border-radius: 12px; padding: 15px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #555;">
+                    <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 11px;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <span style="font-size: 13px; font-weight: 600;">Withdraw</span>
+                </div>
+                <div style="font-size: 18px; font-weight: bold; color: #333;">₹ <span id="myTotalWithdraw">0.00</span></div>
+            </div>
+        </div>
+        <!-- Commission Box -->
+        <div style="background: #f4f7fc; border: 1px solid #e0eaff; border-radius: 12px; padding: 15px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #555;">
+                <div style="background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; justify-content: center; align-items: center; font-size: 11px;"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <span style="font-size: 13px; font-weight: 600;">Commission</span>
+            </div>
+            <div style="font-size: 18px; font-weight: bold; color: #333;">₹ <span id="myTotalCommission">0.00</span></div>
+        </div>
+    </div>
+
+    <!-- Grid Menu Container -->
+    <div style="background: white; border-radius: 20px; padding: 25px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0eaff; margin-bottom: 25px; position: relative;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px 10px; text-align: center;">
+            
+            <!-- Wallet (Takes to your new center button page) -->
+            <div onclick="switchTab('walletPage')" style="cursor: pointer;">
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Wallet</div>
+            </div>
+            
+            <!-- Integral / Task -->
+            <div>
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Integral</div>
+            </div>
+            
+            <!-- Service -->
+            <div>
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Service</div>
+            </div>
+            
+            <!-- Message -->
+            <div>
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-comment-dots"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Message</div>
+            </div>
+            
+            <!-- Pin / Security -->
+            <div>
+                <div style="width: 50px; height: 50px; background: #f4f7fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div style="font-size: 12px; font-weight: 600; color: #444;">Pin</div>
+            </div>
+
+        </div>
+        <!-- Version text -->
+        <div style="position: absolute; bottom: 10px; right: 15px; font-size: 10px; color: #aaa; font-weight: bold;">v1.3.5</div>
+    </div>
+
+    <!-- Logout Button -->
+    <button onclick="logout()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 86, 210, 0.3);">
+        Logout
+    </button>
+
+  </div>
+<!-- 🟢 NAYA "MY" PAGE KHATAM 🟢 -->
+
+            <!-- 🟢 UPDATED UPI WALLET PAGE 🟢 -->
+<div id="walletPage" class="page-content" style="padding: 15px; padding-bottom: 100px;">
+    
+    <!-- Header & Add Button -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; margin-top: 10px;">
+        <h2 style="color: var(--primary); font-size: 22px; margin: 0;">My UPI</h2>
+        <button onclick="openChooseToolPage()" style="background: linear-gradient(135deg, #0d6efd, #0052cc); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 82, 204, 0.3);">
+    + Add UPI
+</button>
+    </div>
+
+    <!-- Yahan par automatically aapke add kiye hue UPI cards aayenge -->
+    <div id="walletUpiContainer">
+        <!-- Khali jagah -->
+    </div>
+
+</div>
+                    <!-- 🟢 SELECT TOOL POPUP (MODAL) 🟢 -->
+    <div id="selectToolModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: white; width: 85%; border-radius: 15px; padding: 20px; box-sizing: border-box; text-align: left;">
+            <h3 style="margin-top: 0; margin-bottom: 15px; color: #333; font-size: 18px;">Select tool</h3>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; border: 1.5px solid var(--primary); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div id="popupPlatformIcon" style="color: var(--primary); font-weight: bold; font-style: italic; font-size: 18px;">UMP</div>
+                    <div>
+                        <div id="popupPlatformName" style="font-weight: bold; color: #333; font-size: 14px;">UMP</div>
+                        <div id="popupUpiId" style="font-size: 12px; color: #777;">Loading...</div>
+                    </div>
+                </div>
+                <input type="radio" checked style="accent-color: var(--primary); transform: scale(1.3);">
+            </div>
+            
+            <p style="font-size: 11px; color: #888; margin-bottom: 20px; line-height: 1.4;">* After selecting the payment tool, please use the selected tool to make payment, otherwise the account will not be credited.</p>
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeToolModal()" style="flex: 1; padding: 12px; border: 1px solid var(--primary); background: white; color: var(--primary); border-radius: 8px; font-weight: bold; font-size: 15px;">Cancel</button>
+                <button onclick="confirmToolSelection()" style="flex: 1; padding: 12px; border: none; background: var(--primary); color: white; border-radius: 8px; font-weight: bold; font-size: 15px;">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🟢 NAYA "ORDER DETAILS" PAGE (UTR INPUT & CANCEL WORKING) 🟢 -->
+    <div id="orderDetailsPage" class="page-content" style="background: #f4f7fc; min-height: 100vh; padding: 15px; padding-bottom: 100px;">
+        
+        <!-- Header -->
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <div onclick="closeOrderPage()" style="font-size: 20px; cursor: pointer; color: var(--primary);">←</div>
+            <h2 style="flex: 1; text-align: center; margin: 0; font-size: 18px; color: var(--primary);">Order</h2>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <!-- Details Card -->
+        <div style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.1);">
+            <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; text-align: center; padding: 25px 20px;">
+                <div style="font-size: 28px; font-weight: bold;">INR <span id="orderPageAmount">0.00</span></div>
+                <div style="background: rgba(255,255,255,0.2); display: inline-block; padding: 4px 15px; border-radius: 20px; font-size: 12px; margin-top: 8px;">Expire: <strong id="orderExpireTimer">20:00</strong></div>
+            </div>
+            
+            <div style="padding: 20px; font-size: 13px; color: #555;">
+                                <!-- MULTIPLE ADMIN BANKS CONTAINER -->
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span>PayeeAccount:</span> <strong id="adminAccDisplay" style="color:#333;">Loading... 📋</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span>PayeeName:</span> <strong id="adminNameDisplay" style="color:#333;">Loading... 📋</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0;">
+                    <span>IFSC:</span> <strong id="adminIfscDisplay" style="color:#333;">Loading... 📋</strong>
+                </div>
+
+                <div style="text-align: right; font-size: 11px; color: var(--danger); margin-bottom: 10px;">Note : IF IFSC Mismatched , Do Not Pay</div>
+                
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; border-top: 1px solid #f0f0f0;">
+                    <span>Code:</span> <strong id="dynamicOrderCode" style="color:#333;">5sf196 📋</strong>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span>Payout Wallet:</span> <strong style="color:#333;"><span id="orderPayoutPlatform" style="color:var(--primary); font-style:italic;">UMP</span></strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span>Your Payout UMP:</span> <strong id="orderPayoutUpiId" style="color:#333;">Loading...</strong>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; align-items: center;">
+                    <span>Status:</span> 
+                    <span style="color: #ff9800; font-weight:bold;">Pending 
+                        <button onclick="cancelCurrentOrder()" style="background: #ffebee; color: var(--danger); border: none; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; margin-left: 8px; cursor: pointer;">Cancel</button>
+                    </span>
+                </div>
+                
+                <!-- UTR INPUT BOX -->
+                <div style="margin-top: 20px;">
+                    <label style="display: block; font-size: 12px; font-weight: bold; color: var(--primary); margin-bottom: 5px;">Enter UTR / Transaction Reference Number:</label>
+                    <input type="text" id="userUtrInput" placeholder="Enter 12-digit UTR number" style="width: 100%; padding: 12px; border: 1.5px solid var(--primary); border-radius: 8px; font-size: 14px; box-sizing: border-box; outline: none;">
+                </div>
+            </div>
+        </div>
+        
+        <button id="goPayBtn" onclick="processFinalPayment()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; margin-top: 25px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">go pay</button>
+    </div>
+
+          <!-- REFERRED / MY TEAM PAGE (BLUE THEME) -->
+<div id="teamTab" class="page-content" style="padding: 15px; padding-bottom: 100px; display: none;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h2 style="color: var(--primary); margin: 0 0 5px 0; font-size: 24px;">My Team & Refer</h2>
+        <p style="font-size: 13px; color: #666; margin: 0;">Invite your friends and grow your earnings instantly!</p>
+    </div>
+
+    <!-- Top Stats Cards (Commission & Total Referrals) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <!-- Total Commission Box -->
+        <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e0eaff; text-align: center;">
+            <div style="font-size: 12px; color: #777; margin-bottom: 5px;">Total Commission</div>
+            <div style="font-size: 20px; font-weight: bold; color: var(--primary);">₹ <span id="myTotalCommission">0.00</span></div>
+        </div>
+        <!-- Total Team / Referrals Box -->
+        <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e0eaff; text-align: center;">
+            <div style="font-size: 12px; color: #777; margin-bottom: 5px;">Team Members</div>
+            <div style="font-size: 20px; font-weight: bold; color: #28a745;"><span id="totalTeamCount">0</span></div>
+        </div>
+    </div>
+
+    <!-- Invite Link Card -->
+    <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0eaff; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: #333; font-size: 16px; margin-bottom: 10px;">Share Your Invite Link</h3>
+        <p style="font-size: 13px; color: #666; line-height: 1.4; margin-bottom: 15px;">Share this link with your friends. When they join and use the app, you will get team commission automatically!</p>
+        
+        <!-- Link Display Box -->
+        <div style="background: #f0f4ff; border: 1.5px dashed var(--primary); border-radius: 8px; padding: 10px; word-break: break-all; font-size: 12px; color: #333; font-weight: bold; margin-bottom: 15px;" id="userInviteLinkBox">
+            Loading link...
+        </div>
+
+        <!-- Copy Button -->
+        <button onclick="copyInviteLink()" style="width: 100%; background: linear-gradient(135deg, var(--primary), #1a56db); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 12px rgba(26,86,219,0.3); margin-bottom: 10px;">
+            Copy Invite Link
+        </button>
+
+        <!-- Direct Social Share Buttons -->
+        <div style="display: flex; gap: 10px;">
+            <a id="whatsappShareBtn" href="#" target="_blank" style="flex: 1; background: #25d366; color: white; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px;">
+                WhatsApp
+            </a>
+            <a id="telegramShareBtn" href="#" target="_blank" style="flex: 1; background: #0088cc; color: white; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px;">
+                Telegram
+            </a>
+        </div>
+    </div>
+
+    <!-- Team Commission History List -->
+    <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0eaff;">
+        <h3 style="margin-top: 0; color: #333; font-size: 16px; margin-bottom: 15px;">Team Commission History</h3>
+        <div id="teamCommissionList" style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="text-align: center; color: #999; font-size: 13px; padding: 20px;">No commission history yet.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER PAGE -->
+<div id="orderTab" class="page-content" style="padding-bottom: 100px; min-height: 100vh;">
+    <h2 style="text-align: center; color: var(--primary);">Order History</h2>
+    <div style="display: flex; background: #e3f2fd; border-radius: 25px; padding: 4px; margin-bottom: 20px;">
+        <button id="btnReceiveTab" onclick="switchOrderSubTab('receive')" style="flex: 1; border: none; padding: 10px; background: var(--primary); color: white; border-radius: 20px; font-weight: bold; font-size: 14px;">Receive (Sales)</button>
+        <button id="btnPurchaseTab" onclick="switchOrderSubTab('purchase')" style="flex: 1; border: none; padding: 10px; background: transparent; color: #555; border-radius: 20px; font-weight: bold; font-size: 14px;">Purchase (Deposit)</button>
+    </div>
+    <div id="purchaseSummaryCard" style="display:none; text-align:center; margin-bottom:15px;">
+        <span style="font-size:14px; font-weight:bold;">History Balance: <span id="historyBalDisplay">₹ 0.00</span></span>
+    </div>
+    <div id="orderHistoryListContainer">
+        <!-- JS list yahan load karega -->
+    </div>
+</div>
+
+          <!-- BOTTOM NAV -->
+            <div class="nav">
+                <div class="nav-item active" onclick="switchTab('homePage', this)">
+                    <i class="fa-solid fa-house"></i>
+                    <div>Home</div>
+                </div>
+                <div class="nav-item" onclick="switchTab('paymentPage', this)">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <div>Payment</div>
+                </div>
+                
+                <div class="nav-item center-btn-wrapper" onclick="switchTab('walletPage', this)">
+                    <div class="center-action-btn">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                </div>
+
+                <div class="nav-item" onclick="switchTab('statisticsPage', this)">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <div>Statistics</div>
+                </div>
+                <div class="nav-item" onclick="switchTab('profileTab', this)">
+                    <i class="fa-solid fa-user"></i>
+                    <div>My</div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Close app-container -->
+
+     <!-- FIREBASE & JS LOGIC -->
+   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script> 
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDo8GjgCQ5EGdNH7I8pbRnnxahcpmfwexs",
+            authDomain: "gotpay-3cfe1.firebaseapp.com",
+            databaseURL: "https://gotpay-3cfe1-default-rtdb.firebaseio.com",
+            projectId: "gotpay-3cfe1",
+            storageBucket: "gotpay-3cfe1.firebasestorage.app",
+            messagingSenderId: "62334887647",
+            appId: "1:62334887647:web:d5b389eb34c100b6812b6a",
+            measurementId: "G-EBJBBFRSV7"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        let currentUser = null; 
+        let currentBalance = 0;
+        let generatedOTP = "";
+        
+        if (document.getElementById('paymentBalance')) {
+            document.getElementById('paymentBalance').innerText = '₹ ' + currentBalance.toFixed(2);
+        }
+                // --- UI ROUTING ---
+        window.showPage = (pageId) => {
+            document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+       window.switchTab = (tabId, element=null) => {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(element) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                element.classList.add('active');
+            }
+            if(tabId === 'teamTab' && typeof loadTeamData === 'function') loadTeamData();
+            if(tabId === 'orderTab' && typeof renderOrderHistoryLists === 'function') renderOrderHistoryLists();
+        }
+        
+        window.showToast = function(message) {
+            let toast = document.getElementById("customToast");
+            if(toast) {
+                toast.innerText = message;
+                toast.classList.add("show");
+                setTimeout(function() { toast.classList.remove("show"); }, 3000);
+            }
+        };
+
+        window.closeSuccessModal = function() {
+            document.getElementById('successModal').style.display = 'none';
+        };
+        
+        // --- OTP SIMULATOR ---
+        window.sendDemoOTP = () => {
+            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            showToast("GotPay Alert\nYour OTP is: " + generatedOTP);
+        }
+
+               // --- SECURE AUTH LOGIC (FOR REAL USERS) ---
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            let phone = user.email.split('@')[0];
+            window.loadDashboard(phone);
+        } else {
+            let mainApp = document.getElementById('mainApp');
+            if(mainApp) mainApp.style.display = 'none';
+        }
+    });
+
+    window.registerUser = async () => {
+        let name = document.getElementById('regName').value.trim();
+        let phone = document.getElementById('regPhone').value.trim();
+        let pass = document.getElementById('regPass').value.trim();
+
+        if(!name || phone.length !== 10 || !pass) {
+            alert("Please fill all details correctly. Mobile number must be 10 digits.");
+            return;
+        }
+
+        let fakeEmail = phone + "@gotpay.com";
+
+        try {
+            let btn = document.querySelector('#registerPage .primary-btn');
+            btn.innerText = "Registering...";
+            
+            await firebase.auth().createUserWithEmailAndPassword(fakeEmail, pass);
+            
+            let counterRef = db.ref('system/last_uid');
+            let counterSnap = await counterRef.once('value');
+            let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
+
+            await db.ref('users/' + phone).set({
+                username: name,
+                phone: phone,
+                uid: newUid,
+                balance: 250,
+                upis: {}
+            });
+            
+            await counterRef.set(newUid);
+            btn.innerText = "Register";
+            alert("Registration Successful! ₹250 Bonus added");
+            window.showPage('loginPage');
+
+        } catch (error) {
+            document.querySelector('#registerPage .primary-btn').innerText = "Register";
+            if(error.code === 'auth/email-already-in-use') {
+                alert("Account already exists! Please login.");
+            } else if(error.code === 'auth/weak-password') {
+                alert("Password should be at least 6 characters.");
+            } else {
+                alert("Error: " + error.message);
+            }
+        }
+    };
+
+    window.loginUser = async () => {
+        let phone = document.getElementById('loginPhone').value.trim();
+        let pass = document.getElementById('loginPass').value.trim();
+        
+        if(phone.length !== 10 || !pass) {
+            alert("Enter valid details.");
+            return;
+        }
+
+        let fakeEmail = phone + "@gotpay.com";
+
+        try {
+            let btn = document.querySelector('#loginPage .primary-btn');
+            btn.innerText = "Logging in...";
+            
+            await firebase.auth().signInWithEmailAndPassword(fakeEmail, pass);
+            btn.innerText = "Login";
+            
+        } catch (error) {
+            document.querySelector('#loginPage .primary-btn').innerText = "Login";
+            alert("Incorrect Mobile Number or Password!");
+        }
+    };
+
+    window.logout = () => {
+        firebase.auth().signOut().then(() => {
+            window.showPage('loginPage');
+        }).catch((error) => {
+            alert("Error logging out.");
+        });
+    };
+
+       // --- DASHBOARD LOGIC ---
+        window.loadDashboard = function(phone) {
+            document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
+            let mainApp = document.getElementById('mainApp');
+            if(mainApp) mainApp.style.display = 'block';
+
+            db.ref('users/' + phone).on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    currentUser = snapshot.val();
+                    currentBalance = currentUser.balance || 0;
+                    
+                    let usernameEl = document.getElementById('displayUsername');
+                    let uidEl = document.getElementById('displayUid');
+                    let balanceEl = document.getElementById('userBalance');
+                    let withdrawBal = document.getElementById('withdrawBalDisplay');
+                    let payBalance = document.getElementById('paymentBalance');
+                    
+                    if(usernameEl) usernameEl.innerText = currentUser.username;
+                    if(uidEl) uidEl.innerText = currentUser.uid;
+                    if(balanceEl) balanceEl.innerText = "₹ " + currentBalance.toFixed(2);
+                    if(withdrawBal) withdrawBal.innerText = "₹ " + currentBalance.toFixed(2);
+                    if(payBalance) payBalance.innerText = "₹ " + currentBalance.toFixed(2);
+                    
+                    if(typeof renderUpiList === 'function') {
+                        renderUpiList();
+                    }
+                }
+            });
+
+                db.ref('deposit_requests').on('value', renderHistory);
+    updateLiveAssets();
+    loadAutomaticOrders(); 
+};
+
+        let session = localStorage.getItem("gotpay_session");
+        if(session) {
+            window.loadDashboard(session);
+        }
+
+        // --- UPDATED UPI MANAGEMENT ---
+        function renderUpiList() {
+            let profileListHtml = "";
+            let walletCardsHtml = "";
+            let selectHtml = '<option value="">-- Select Linked UPI --</option>';
+            
+            if(currentUser.upis && Object.keys(currentUser.upis).length > 0) {
+                for(let platform in currentUser.upis) {
+                    let upiId = currentUser.upis[platform];
+                    
+                    profileListHtml += `
+                        <div class="list-item">
+                            <div><strong style="color:var(--primary);">${platform}</strong><br><span style="font-size:12px;">${upiId}</span></div>
+                            <button class="remove-btn" onclick="removeUpi('${platform}')">Remove</button>
+                        </div>
+                    `;
+                    
+                    selectHtml += `<option value="${upiId}">${platform} - ${upiId}</option>`;
+                    
+                    walletCardsHtml += `
+                    <div style="background: linear-gradient(135deg, #1e3c72, #2a5298); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; overflow: hidden;">
+                        <div style="position: absolute; right: -30px; top: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1;">
+                            <div>
+                                <h3 style="color: #ffffff; font-size: 26px; margin: 0; font-weight: 900; letter-spacing: 1px;">UPI</h3>
+                                <p style="color: #d1e0ff; font-size: 14px; margin: 5px 0 0 0;">${upiId}</p>
+                            </div>
+                            <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; border: 1px solid #4caf50; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Active</span>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 1;">
+                            <span style="color: #b3caff; font-size: 11px;">Limits: 100 ~ 1,00,000</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="color: #ffffff; font-size: 13px; font-weight: bold;">${platform}</span>
+                                <button onclick="removeUpi('${platform}')" style="background: rgba(255, 0, 0, 0.2); color: #ffcccc; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer;">Delete</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            } else {
+                profileListHtml = "<p style='text-align:center; padding:10px;'>No UPI Linked.</p>";
+                walletCardsHtml = `
+                    <div style="text-align:center; padding: 40px 20px;">
+                        <div style="font-size: 40px; color: #ccc; margin-bottom: 10px;"><i class="fa-solid fa-wallet"></i></div>
+                        <p style="color:#999; font-size:14px;">No UPI accounts linked yet.</p>
+                        <button onclick="switchTab('profileTab')" style="margin-top:15px; background:var(--primary); color:white; border:none; padding:8px 20px; border-radius:20px; font-weight:bold; cursor:pointer;">Link UPI Now</button>
+                    </div>`;
+            }
+            
+            if(document.getElementById('linkedUpiList')) {
+                document.getElementById('linkedUpiList').innerHTML = profileListHtml;
+            }
+            if(document.getElementById('withdrawUpiSelect')) {
+                document.getElementById('withdrawUpiSelect').innerHTML = selectHtml;
+            }
+            if(document.getElementById('walletUpiContainer')) {
+                document.getElementById('walletUpiContainer').innerHTML = walletCardsHtml;
+            }
+        }
+
+        window.addUpi = async () => {
+            let typeEl = document.getElementById('bindUpiType');
+            let idEl = document.getElementById('bindUpiId');
+            let otpEl = document.getElementById('bindOtp');
+            
+            if(!typeEl || !idEl || !otpEl) return;
+            
+            let platform = typeEl.value;
+            let upiId = idEl.value.trim();
+            let otp = otpEl.value.trim();
+
+            if(!upiId) return alert("Enter UPI ID");
+            if(otp !== generatedOTP || otp === "") return alert("Invalid OTP!");
+
+            try {
+                await db.ref(`users/${currentUser.phone}/upis`).update({ [platform]: upiId });
+                alert(`✅ ${platform} UPI Added Successfully!`);
+                idEl.value = "";
+                otpEl.value = "";
+                generatedOTP = ""; 
+            } catch(e) {
+                alert("Error saving UPI: " + e.message);
+            }
+        }
+
+        window.removeUpi = async (platform) => {
+            if(!confirm(`Are you sure you want to remove ${platform} UPI?`)) return;
+            try {
+                await db.ref(`users/${currentUser.phone}/upis/${platform}`).remove();
+                alert(`❌ ${platform} UPI Removed.`);
+            } catch(e) {
+                alert("Error removing UPI: " + e.message);
+            }
+        }
+                // --- DEPOSIT SYSTEM ---
+        window.calculateBonus = () => {
+            let amt = Number(document.getElementById('depositAmount').value) || 0;
+            if(document.getElementById('bonusDisplay')) {
+                document.getElementById('bonusDisplay').innerText = (amt + (amt * 0.06)).toFixed(2);
+            }
+        }
+
+        window.generateDepositRequest = () => {
+            let amount = Number(document.getElementById('depositAmount').value);
+            let gateway = document.getElementById('buyGateway').value;
+            if(!amount || amount < 100 || amount > 10000) return alert("Deposit amount must be between ₹100 and ₹10000");
+
+            let adminUpi = "";
+            if (amount <= 100) adminUpi = "palakkumari01@fam"; 
+            else if (amount <= 500) adminUpi = "abhinavkumar0000112-2@okicici"; 
+            else if (amount <= 2000) adminUpi = "abhikhtc@ptaxis"; 
+            else adminUpi = "tarwey01@ptyes"; 
+            
+            document.getElementById('depAmountDisplay').innerText = amount;
+            document.getElementById('depGatewayDisplay').innerText = gateway;
+            document.getElementById('adminUpiDisplay').innerText = adminUpi;
+            
+            let upiLink = `upi://pay?pa=${adminUpi}&pn=GotPay&am=${amount}&cu=INR`;
+            document.getElementById('qrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+            
+            document.getElementById('depositQRBox').style.display = 'block';
+        }
+
+        window.submitDepositUTR = async () => {
+            let utr = document.getElementById('utrInput').value.trim();
+            let amount = Number(document.getElementById('depositAmount').value);
+            let gateway = document.getElementById('buyGateway').value;
+            let bonusAmount = amount + (amount * 0.06); 
+
+            if(utr.length < 10) return alert("Enter valid UTR number!");
+
+            try {
+                await db.ref('deposit_requests').push({
+                    phone: currentUser.phone,
+                    username: currentUser.username,
+                    uid: currentUser.uid,
+                    original_amount: amount,
+                    amount_with_bonus: bonusAmount,
+                    gateway: gateway,
+                    utr: utr,
+                    status: "Pending",
+                    timestamp: new Date().toISOString()
+                });
+
+                alert(`✅ Deposit Request Sent!\nAmount: ₹${amount}\nBonus: 6%\nTotal Expected: ₹${bonusAmount}`);
+                document.getElementById('depositQRBox').style.display = 'none';
+                document.getElementById('utrInput').value = '';
+                document.getElementById('depositAmount').value = '';
+                switchTab('homePage', document.querySelector('.nav-item.active'));
+            } catch(e) {
+                alert("Error submitting request: " + e.message);
+            }
+      }
+
+           // --- WITHDRAW SYSTEM ---
+        window.submitWithdraw = async () => {
+            let amount = Number(document.getElementById('withdrawAmount').value);
+            let upi = document.getElementById('withdrawUpiSelect').value;
+            
+            if(!amount || amount < 300) return alert("Minimum withdrawal is ₹300");
+            if(!upi) return alert("Please select a Linked UPI");
+            if(amount > currentBalance) return alert("Insufficient Balance!");
+
+            try {
+                await db.ref('withdraw_requests').push({ 
+                    phone: currentUser.phone,
+                    username: currentUser.username,
+                    uid: currentUser.uid,
+                    amount: amount,
+                    upiId: upi,
+                    status: "Pending",
+                    timestamp: new Date().toISOString()
+                });
+
+                alert("✅ Withdrawal Request Submitted!");
+                document.getElementById('withdrawAmount').value = '';
+                switchTab('homePage', document.querySelector('.nav-item.active'));
+            } catch(e) {
+                alert("Error submitting request: " + e.message);
+            }
+        }
+
+        // --- HISTORY RENDER ---
+        function renderHistory(snap) {
+            if(!currentUser) return;
+            let html = "";
+            let records = [];
+            snap.forEach(c => {
+                let d = c.val();
+                if(d.phone === currentUser.phone) records.push(d);
+            });
+            records.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            if(records.length === 0) {
+                html = "<p style='text-align:center; color:#999;'>No recent activity.</p>";
+            } else {
+                records.slice(0, 5).forEach(r => {
+                    let color = r.status === 'Success' ? 'var(--success)' : (r.status === 'Rejected' ? 'var(--danger)' : '#ff9800');
+                    html += `
+                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+                        <div>
+                            <strong style="font-size:13px; color:#333;">Deposit <span style="color:white; background:${color}; padding:2px 5px; border-radius:4px; font-size:10px; margin-left:5px;">${r.status}</span></strong>
+                            <br><span style="font-size:10px; color:#777;">${new Date(r.timestamp).toLocaleDateString()} | UTR: ${r.utr}</span>
+                        </div>
+                        <div style="color:var(--success); font-weight:bold; font-size:14px;">+₹${r.amount_with_bonus}</div>
+                    </div>`;
+                });
+            }
+            if(document.getElementById('homeHistoryList')) {
+                document.getElementById('homeHistoryList').innerHTML = html;
+            }
+        }
+        
+        function loadAutomaticOrders() {
+            const ordersRef = firebase.database().ref('orders');
+            ordersRef.on('value', (snapshot) => {
+                const ordersListEl = document.getElementById('paymentOrdersList');
+                if (!ordersListEl) return;
+                ordersListEl.innerHTML = ''; 
+                
+                const data = snapshot.val();
+                if (!data) {
+                    ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No orders available</div>';
+                    return;
+                }
+                
+                let hasValidOrders = false;
+
+                Object.keys(data).forEach((key) => {
+                    const order = data[key];
+                    if (!order) return;
+
+                    const amountVal = Number(order.amount || order.amt || order.price || 0);
+                    if (amountVal <= 0) return;
+
+                    hasValidOrders = true;
+                    const incomeVal = (amountVal * 0.06).toFixed(2);
+                    const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                    
+                    const cardHTML = `
+                        <div style="background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e0eaff; position: relative; margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 18px; font-weight: bold; color: var(--primary);">INR</span>
+                                <span style="background: #f0f4ff; color: var(--primary); font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold;">Code: ${randomCode}</span>
+                            </div>
+                            <div style="font-size: 14px; color: #444; margin-bottom: 6px;">Amount: <strong style="color: #000;">₹ ${amountVal}</strong></div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 13px; color: #20bf6b; font-weight: bold;">Income: +₹ ${incomeVal} <span style="background: #e1fef0; color: #20bf6b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">6% Commission</span></span>
+                                <button onclick="claimOrder('${amountVal}', '${incomeVal}', this)" style="background: var(--primary); color: white; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px;">Claim</button>
+                            </div>
+                        </div>
+                    `;
+                    ordersListEl.innerHTML += cardHTML;
+                });
+
+                if (!hasValidOrders) {
+                    ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No active orders found in database</div>';
+                }
+            });
+      }
+
+
+        // --- LIVE ASSET & STATISTICS CALCULATOR ---
+        function updateLiveAssets() {
+            if(!currentUser) return;
+            let totalComm = currentUser.commission || 0.00;
+            let currentBal = currentUser.balance || 0.00;
+            
+            if(document.getElementById('myTotalCommission')) document.getElementById('myTotalCommission').innerText = totalComm.toFixed(2);
+            if(document.getElementById('statCommission')) document.getElementById('statCommission').innerText = totalComm.toFixed(2);
+            if(document.getElementById('statBalance')) document.getElementById('statBalance').innerText = currentBal.toFixed(2);
+
+            let totalPending = 0; 
+            db.ref('deposit_requests').on('value', snap => {
+                let totalDep = 0;
+                let pendingDep = 0;
+                snap.forEach(c => {
+                    let d = c.val();
+                    if(d.phone === currentUser.phone) { 
+                        totalDep += Number(d.original_amount) || 0;
+                        if(d.status === 'Pending') pendingDep += Number(d.original_amount) || 0;
+                    }
+                });
+                if(document.getElementById('myTotalDeposit')) document.getElementById('myTotalDeposit').innerText = totalDep.toFixed(2);
+                if(document.getElementById('statDeposit')) document.getElementById('statDeposit').innerText = totalDep.toFixed(2);
+                
+                totalPending = pendingDep;
+                if(document.getElementById('statInProcess')) document.getElementById('statInProcess').innerText = totalPending.toFixed(2);
+            });
+
+            db.ref('withdraw_requests').on('value', snap => {
+                let totalWd = 0;
+                let pendingWd = 0;
+                snap.forEach(c => {
+                    let d = c.val();
+                    if(d.phone === currentUser.phone) {
+                        totalWd += Number(d.amount) || 0;
+                        if(d.status === 'Pending') pendingWd += Number(d.amount) || 0;
+                    }
+                });
+                if(document.getElementById('myTotalWithdraw')) document.getElementById('myTotalWithdraw').innerText = totalWd.toFixed(2);
+                if(document.getElementById('statWithdraw')) document.getElementById('statWithdraw').innerText = totalWd.toFixed(2);
+                
+                totalPending += pendingWd;
+                if(document.getElementById('statInProcess')) document.getElementById('statInProcess').innerText = totalPending.toFixed(2);
+            });
+        }
+
+        // --- ADVANCED MULTI-STEP UPI BINDING WORKFLOW ---
+        let selectedBindingTool = "Paytm";
+        let bindingPhoneNum = "";
+        let chosenUpiToBind = "";
+
+        window.openChooseToolPage = function() {
+            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+            let page = document.getElementById('chooseToolPage');
+            if(page) page.style.display = 'block';
+        };
+
+        window.selectToolCard = function(element, toolName) {
+            document.querySelectorAll('.tool-card').forEach(c => c.style.border = '2px solid transparent');
+            element.style.border = '2px solid var(--primary)';
+            selectedBindingTool = toolName;
+        };
+
+        window.proceedToWalletStep1 = function() {
+            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+            let page = document.getElementById('walletStep1Page');
+            if(page) page.style.display = 'block';
+
+            if(document.getElementById('step1WalletTitle')) {
+                document.getElementById('step1WalletTitle').innerText = "Create " + selectedBindingTool + " Wallet";
+            }
+            if(document.getElementById('walletPhoneInput')) {
+                document.getElementById('walletPhoneInput').value = "";
+            }
+        };
+
+        let generatedOtp = ""; 
+
+window.proceedToWalletStep2 = function() {
+    let phoneInput = document.getElementById('walletPhoneInput');
+    bindingPhoneNum = phoneInput ? phoneInput.value.trim() : "";
+
+    if (bindingPhoneNum.length < 10) {
+        alert("⚠️ Please enter a valid phone number!");
+        return;
+    }
+
+    generatedOtp = Math.floor(100000 + Math.random() * 900000);
+    alert("Your 6-digit OTP code is: " + generatedOtp);
+
+            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+            let page = document.getElementById('walletStep2Page');
+            if(page) page.style.display = 'block';
+
+            if(document.getElementById('step2OtpTitle')) {
+                document.getElementById('step2OtpTitle').innerText = selectedBindingTool + " OTP Verification";
+            }
+            if(document.getElementById('displayOtpPhone')) {
+                document.getElementById('displayOtpPhone').value = bindingPhoneNum;
+            }
+        };
+
+        window.proceedToWalletStep3 = function(event) {
+            let otpInput = document.getElementById('walletOtpInput');
+            let otpVal = otpInput ? otpInput.value.trim() : "";
+
+            if(otpVal.length < 4) {
+                alert("⚠️ Please enter a valid 4-digit OTP code received on your mobile!");
+                return;
+            }
+
+            let nextBtn = event ? event.target : document.activeElement;
+            let oldText = nextBtn.innerText || "Next";
+            nextBtn.innerText = "Verifying OTP...";
+            nextBtn.disabled = true;
+
+            setTimeout(() => {
+                nextBtn.innerText = oldText;
+                nextBtn.disabled = false;
+
+                document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+                let page = document.getElementById('walletStep3Page');
+                if(page) page.style.display = 'block';
+
+                if(document.getElementById('finishAppTitle')) {
+                    document.getElementById('finishAppTitle').innerText = selectedBindingTool;
+                }
+
+                let listContainer = document.getElementById('fetchedUpiOptionsList');
+                if(listContainer) {
+                    let tool = (selectedBindingTool || "").toLowerCase();
+                    let htmlContent = "";
+
+                    if(tool.includes('mobikwik')) {
+                        let upi1 = bindingPhoneNum + "@mbkns";
+                        chosenUpiToBind = upi1;
+                        htmlContent = `
+                            <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                                📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                            </div>
+                        `;
+                    } else if(tool.includes('freecharge')) {
+                        let upi1 = bindingPhoneNum + "@freecharge";
+                        chosenUpiToBind = upi1;
+                        htmlContent = `
+                            <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                                📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                            </div>
+                        `;
+                    } else if(tool.includes('navi')) {
+                        let upi1 = bindingPhoneNum + "@nyes";
+                        let upi2 = bindingPhoneNum + "@naviaxis";
+                        chosenUpiToBind = upi1;
+                        htmlContent = `
+                            <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                                📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                            </div>
+                            <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                                📍 ${upi2}
+                            </div>
+                        `;
+                    } else {
+                        let upi1 = bindingPhoneNum + "@ptyes";
+                        let upi2 = bindingPhoneNum + "@ptaxis";
+                        let upi3 = bindingPhoneNum + "@ptsbi";
+                        chosenUpiToBind = upi1;
+                        htmlContent = `
+                            <div onclick="selectFetchedUpi(this, '${upi1}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid var(--primary); border-radius: 8px; background: #e3f2fd; cursor: pointer; font-weight: bold; color: #333;">
+                                📍 ${upi1} <span style="font-size: 11px; color: var(--primary); float: right;">Verified & Active</span>
+                            </div>
+                            <div onclick="selectFetchedUpi(this, '${upi2}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                                📍 ${upi2}
+                            </div>
+                            <div onclick="selectFetchedUpi(this, '${upi3}')" class="fetched-upi-item" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; color: #333;">
+                                📍 ${upi3}
+                            </div>
+                        `;
+                    }
+                    listContainer.innerHTML = htmlContent;
+                }
+            }, 1500); 
+        };
+
+        window.selectFetchedUpi = function(element, upiStr) {
+            document.querySelectorAll('.fetched-upi-item').forEach(i => {
+                i.style.border = '2px solid #ddd';
+                i.style.background = 'white';
+            });
+            element.style.border = '2px solid var(--primary)';
+            element.style.background = '#e3f2fd';
+            chosenUpiToBind = upiStr;
+        };
+
+        window.finalizeAndSaveUpi = function() {
+            if(!currentUser) { alert("Please login first!"); return; }
+
+            if(!currentUser.upis) currentUser.upis = {};
+            currentUser.upis[selectedBindingTool] = chosenUpiToBind;
+
+            db.ref('users/' + currentUser.phone + '/upis').set(currentUser.upis).then(() => {
+                alert("🎉 " + selectedBindingTool + " UPI (" + chosenUpiToBind + ") Bound Successfully!");
+                if(typeof switchTab === 'function') switchTab('walletPage');
+                else location.reload();
+            }).catch(err => {
+                alert("Error: " + err.message);
+            });
+        };
+                // --- ADVANCED ORDER CLAIM SYSTEM ---
+        let pendingClaimAmount = 0;
+        let pendingClaimCommission = 0;
+        let pendingClaimBtn = null;
+        let userSelectedPlatform = "UMP";
+        let userSelectedUpiId = "";
+
+        let adminBanksList = [
+            { acc: "30000439941", name: "Abhinav Kumar", ifsc: "FINO0000001" },
+            { acc: "30000439941", name: "ROHIT KUMAR", ifsc: "FINO0000001" }
+        ];
+
+        window.claimOrder = function(orderAmount, commissionAmount, btnElement) {
+            if(!currentUser) { alert("Please login first!"); return; }
+            if(!currentUser.upis || Object.keys(currentUser.upis).length === 0) {
+                alert("⚠️ Please Bind your UMP (UPI) in 'My Profile' first before claiming orders!");
+                return; 
+            }
+
+            userSelectedPlatform = Object.keys(currentUser.upis)[0];
+            userSelectedUpiId = currentUser.upis[userSelectedPlatform];
+
+            pendingClaimAmount = orderAmount;
+            pendingClaimCommission = commissionAmount;
+            pendingClaimBtn = btnElement;
+
+            if(document.getElementById('popupPlatformIcon')) document.getElementById('popupPlatformIcon').innerText = userSelectedPlatform;
+            if(document.getElementById('popupPlatformName')) document.getElementById('popupPlatformName').innerText = userSelectedPlatform;
+            if(document.getElementById('popupUpiId')) document.getElementById('popupUpiId').innerText = userSelectedUpiId;
+
+            let modal = document.getElementById('selectToolModal');
+            if(modal) modal.style.display = 'flex';
+        };
+
+        window.closeToolModal = function() {
+            let modal = document.getElementById('selectToolModal');
+            if(modal) modal.style.display = 'none';
+        };
+
+        window.confirmToolSelection = function() {
+            closeToolModal();
+            
+            if(document.getElementById('orderPageAmount')) document.getElementById('orderPageAmount').innerText = pendingClaimAmount;
+            if(document.getElementById('orderPayoutPlatform')) document.getElementById('orderPayoutPlatform').innerText = userSelectedPlatform;
+            if(document.getElementById('orderPayoutUpiId')) document.getElementById('orderPayoutUpiId').innerText = userSelectedUpiId;
+            if(document.getElementById('userUtrInput')) document.getElementById('userUtrInput').value = '';
+
+            let randomBank = adminBanksList[Math.floor(Math.random() * adminBanksList.length)];
+            
+            if(document.getElementById('adminAccDisplay')) document.getElementById('adminAccDisplay').innerText = randomBank.acc + " 📋";
+            if(document.getElementById('adminNameDisplay')) document.getElementById('adminNameDisplay').innerText = randomBank.name + " 📋";
+            if(document.getElementById('adminIfscDisplay')) document.getElementById('adminIfscDisplay').innerText = randomBank.ifsc + " 📋";
+
+            let randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            if(document.getElementById('dynamicOrderCode')) document.getElementById('dynamicOrderCode').innerText = randomCode + " 📋";
+
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            let orderPage = document.getElementById('orderDetailsPage');
+            if(orderPage) orderPage.classList.add('active');
+        };
+
+        window.closeOrderPage = function() {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            let payPage = document.getElementById('paymentPage');
+            if(payPage) payPage.classList.add('active'); 
+        };
+
+        window.cancelCurrentOrder = function() {
+            if(confirm("Are you sure you want to cancel this order?")) {
+                alert("Order Cancelled successfully.");
+                closeOrderPage();
+            }
+        };
+
+          // --- SECURE FINAL PAYMENT (NO "ADMIN APPROVAL" TEXT) ---
+        window.processFinalPayment = function(event) {
+            let utrInput = document.getElementById('userUtrInput');
+            let utrValue = utrInput ? utrInput.value.trim() : "";
+
+            if(utrValue.length < 6) {
+                alert("⚠️ Please enter a valid UTR / Transaction Reference Number!");
+                if(utrInput) utrInput.focus();
+                return;
+            }
+
+            let btn = event ? event.target : document.getElementById('goPayBtn');
+            let oldText = btn.innerText || "go pay";
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
+            let orderAmt = Number(pendingClaimAmount) || 0; 
+            let earnedCommission = Number(pendingClaimCommission) || 0; 
+
+            // ADMIN PANEL FIX: Added generic keys 'amount' & 'gateway' to match any DB schema
+            let requestData = {
+                phone: currentUser.phone,
+                username: currentUser.username,
+                uid: currentUser.uid,
+                order_amount: orderAmt,
+                amount: orderAmt, // Fallback for standard admin panels
+                commission: earnedCommission,
+                utr: utrValue,
+                platform: userSelectedPlatform,
+                gateway: userSelectedPlatform, // Fallback for standard admin panels
+                status: "Pending", 
+                timestamp: new Date().toISOString()
+            };
+
+            db.ref('order_payments_pending').push(requestData)
+            .then(() => {
+                // UI FIX: Show elegant Success Modal, no "admin approval" text
+                let modalText = document.getElementById('successModalText');
+                if(modalText) modalText.innerHTML = `UTR: <strong>${utrValue}</strong><br>Amount: <strong>₹${orderAmt}</strong><br>Your payment has been successfully processed.`;
+                document.getElementById('successModal').style.display = 'flex';
+                
+                btn.innerText = oldText;
+                btn.disabled = false;
+                closeOrderPage();
+
+                if(pendingClaimBtn) {
+                    pendingClaimBtn.innerText = "Pending";
+                    pendingClaimBtn.style.background = "#ff9800"; 
+                    pendingClaimBtn.disabled = true;
+                }
+            }).catch(err => {
+                alert("Error: " + err.message);
+                btn.innerText = oldText;
+                btn.disabled = false;
+            });
+        };
+
+
+        let orderTimerInterval = null;
+        window.startOrderTimer = function(durationInMinutes) {
+            let totalSeconds = durationInMinutes * 60;
+            if (orderTimerInterval) clearInterval(orderTimerInterval);
+            orderTimerInterval = setInterval(() => {
+                if (totalSeconds > 0) {
+                    totalSeconds--;
+                    let mins = Math.floor(totalSeconds / 60);
+                    let secs = totalSeconds % 60;
+                    let formattedTime = String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                    let timerEl = document.getElementById('orderExpireTimer') || document.querySelector('.order-timer');
+                    if (timerEl) timerEl.innerText = formattedTime;
+                } else {
+                    clearInterval(orderTimerInterval);
+                    if (typeof closeOrderPage === 'function') closeOrderPage();
+                }
+            }, 1000);
+        };
+
+        let originalOpenOrder = window.openOrderPage || function(){};
+        startOrderTimer(20);
+
+         // --- REAL-TIME DYNAMIC ORDER & PAYMENT HISTORY ---
+        function renderOrderHistoryLists() {
+            if(!currentUser) return;
+            let container = document.getElementById('orderHistoryListContainer');
+            if(!container) return;
+
+            let html = "";
+            
+            if(currentOrderSubTab === 'receive') {
+                db.ref('order_payments_pending').once('value', snap => {
+                    let records = [];
+                    snap.forEach(c => {
+                        let d = c.val();
+                        if(d && String(d.phone) === String(currentUser.phone)) {
+                            records.push(d);
+                        }
+                    });
+
+                    if(records.length === 0) {
+                        container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:40px 20px; background:var(--card-bg, #1e293b); border-radius:14px; border:1px solid var(--border);">No receive history found.</div>`;
+                        return;
+                    }
+
+                    records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    records.forEach(r => {
+                        let statusColor = r.status === 'Approved' || r.status === 'Success' ? '#10b981' : (r.status === 'Rejected' ? '#ef4444' : '#f59e0b');
+                        let statusText = r.status === 'Approved' ? 'Succeed' : (r.status === 'Pending' ? 'Pending' : r.status);
+                        let randomOrderCode = "Go" + Math.abs(hashCode(r.utr || "gotpay")).toString().substring(0, 5);
+
+                        html += `
+                        <div style="background:var(--card-bg, #1e293b); border:1px solid var(--border, #334155); border-radius:14px; padding:15px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="font-size:18px; font-weight:900; color:var(--primary); margin-bottom:4px;">- ₹ ${r.order_amount}</div>
+                                <div style="font-size:12px; color:var(--text-muted);">Order Code: <span style="color:var(--text); font-weight:bold;">${randomOrderCode}</span></div>
+                            </div>
+                            <div style="text-align:right;">
+                                <span style="background:${statusColor}22; color:${statusColor}; border:1px solid ${statusColor}44; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:bold;">${statusText}</span>
+                                <div style="font-size:10px; color:var(--text-muted); margin-top:6px;">${new Date(r.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                                <div style="font-size:10px; color:var(--text-muted);">${new Date(r.timestamp).toLocaleDateString()}</div>
+                            </div>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                });
+            } else {
+                db.ref('deposit_requests').once('value', snap => {
+                    let records = [];
+                    snap.forEach(c => {
+                        let d = c.val();
+                        if(d && String(d.phone) === String(currentUser.phone)) {
+                            records.push(d);
+                        }
+                    });
+
+                    if(records.length === 0) {
+                        container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:40px 20px; background:var(--card-bg, #1e293b); border-radius:14px; border:1px solid var(--border);">No purchase history found.</div>`;
+                        return;
+                    }
+
+                    records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    records.forEach(r => {
+                        let statusColor = r.status === 'Success' || r.status === 'Approved' ? '#10b981' : (r.status === 'Rejected' ? '#ef4444' : '#f59e0b');
+                        let statusText = r.status === 'Pending' ? 'Pending' : (r.status === 'Success' || r.status === 'Approved' ? 'Succeed' : r.status);
+                        let randomCode = "5sf" + Math.abs(hashCode(r.utr || "dep")).toString().substring(0, 5);
+                        let rewardAmt = (Number(r.original_amount) * 0.06).toFixed(1);
+
+                        html += `
+                        <div style="background:var(--card-bg, #1e293b); border:1px solid var(--border, #334155); border-radius:14px; padding:15px; margin-bottom:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <div style="font-size:18px; font-weight:900; color:var(--success);">+ ₹ ${r.original_amount}</div>
+                                <span style="background:${statusColor}22; color:${statusColor}; border:1px solid ${statusColor}44; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:bold;">${statusText}</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between;">
+                                <span>Reward: <strong style="color:var(--success);">+ ₹ ${rewardAmt}</strong></span>
+                                <span>Order Code: <b style="color:var(--text);">${randomCode}</b></span>
+                            </div>
+                            <div style="font-size:10px; color:var(--text-muted); margin-top:6px; text-align:right;">${new Date(r.timestamp).toLocaleString()}</div>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                });
+            }
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash);
+      }
+
+           // --- TEAM & UNIQUE INVITATION LINK GENERATOR ---
+        function loadTeamData() {
+            if(!currentUser) return;
+            
+            let uniqueCode = currentUser.invite_code || Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            if(!currentUser.invite_code) {
+                db.ref('users/' + currentUser.phone).update({ invite_code: uniqueCode });
+                currentUser.invite_code = uniqueCode;
+            }
+
+            let siteUrl = window.location.origin + window.location.pathname;
+            let fullInviteLink = siteUrl + "?ref=" + uniqueCode;
+
+            let inviteEl = document.getElementById('userInviteLinkBox');
+            if(inviteEl) inviteEl.innerText = fullInviteLink;
+
+            let comm = currentUser.commission || 0;
+            let teamCommEl = document.getElementById('teamTotalComm');
+            if(teamCommEl) {
+                teamCommEl.innerText = "₹ " + comm.toFixed(2);
+            }
+        }
+
+        window.copyInviteLink = function() {
+            let inviteEl = document.getElementById('userInviteLinkBox');
+            if(inviteEl) {
+                navigator.clipboard.writeText(inviteEl.innerText);
+                alert("📋 Invitation Link Copied to Clipboard!");
+            }
+        };
+
+
+        // --- ORDER SUB-TAB SWITCHING (Receive / Purchase) ---
+        let currentOrderSubTab = 'receive';
+        window.switchOrderSubTab = function(tabName) {
+            currentOrderSubTab = tabName;
+            let btnRec = document.getElementById('btnReceiveTab');
+            let btnPur = document.getElementById('btnPurchaseTab');
+            let purCard = document.getElementById('purchaseSummaryCard');
+
+            if(tabName === 'receive') {
+                btnRec.style.background = 'var(--primary)';
+                btnRec.style.color = 'white';
+                btnPur.style.background = 'transparent';
+                btnPur.style.color = 'var(--text-muted)';
+                if(purCard) purCard.style.display = 'none';
+            } else {
+                btnPur.style.background = 'var(--primary)';
+                btnPur.style.color = 'white';
+                btnRec.style.background = 'transparent';
+                btnRec.style.color = 'var(--text-muted)';
+                if(purCard) {
+                    purCard.style.display = 'block';
+                    if(document.getElementById('historyBalDisplay')) {
+                        let currentBal = Number(currentUser ? currentUser.balance : 0) || 0;
+                        document.getElementById('historyBalDisplay').innerText = "₹ " + currentBal.toFixed(2);
+                    }
+                }
+            }
+            renderOrderHistoryLists();
+        };
+
+        function goBackToWallet() {
+            document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+            document.getElementById('walletPage').style.display = 'block';
+        }
+
+        function checkAndAutoSell(userWalletBalance, userPhone, userUpi) {
+            if (userWalletBalance >= 300) {
+                let orderData = {
+                    phone: userPhone,
+                    upi: userUpi || "N/A",
+                    amount: userWalletBalance,
+                    status: "Pending",
+                    timestamp: Date.now()
+                };
+
+                firebase.database().ref('deposit_requests').push(orderData)
+                    .then(() => {
+                        console.log("Automatic sell order placed successfully");
+                    })
+                    .catch((error) => {
+                        console.error("Error in auto sell: ", error);
+                    });
+            }
+        }
+
+        function copyInviteLink() {
+            let linkText = document.getElementById('userInviteLinkBox').innerText;
+            navigator.clipboard.writeText(linkText).then(() => {
+                alert("✅ Invite link copied successfully!");
+            });
+        }
+        
+    </script>
+    </body>
+</html> 
