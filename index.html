@@ -840,54 +840,59 @@
             showToast("GotPay Alert\nYour OTP is: " + generatedOTP);
         }
 
-        // --- AUTH LOGIC ---
-        window.registerUser = async () => {
-            let name = document.getElementById('regName').value.trim();
-            let phone = document.getElementById('regPhone').value.trim();
-            let pass = document.getElementById('regPass').value.trim();
+            // --- AUTH LOGIC ---
+    window.registerUser = async () => {
+        let name = document.getElementById('regName').value.trim();
+        let phone = document.getElementById('regPhone').value.trim();
+        let pass = document.getElementById('regPass').value.trim();
 
-            if(!name || phone.length !== 10 || !pass) {
-                alert("Please fill all details correctly. Mobile number must be 10 digits.");
+        if(!name || phone.length !== 10 || !pass) {
+            alert("Please fill all details correctly. Mobile number must be 10 digits.");
+            return;
+        }
+
+        try {
+            let userRef = db.ref('users/' + phone);
+            let snap = await userRef.once('value');
+            
+            if (snap.exists()) {
+                alert("Account already exists! Please login.");
                 return;
             }
 
-                        db.ref('deposit_requests').on('value', renderHistory);
-            updateLiveAssets();
-            loadAutomaticOrders(); // <-- पहला काम: इसे यहाँ जोड़ दिया
-        };
+            let counterRef = db.ref('system/last_uid');
+            let counterSnap = await counterRef.once('value');
+            let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
 
-        // <-- दूसरा काम: सेशन वाले पुराने कोड को हटाकर ये नया डाल दिया
-        firebase.auth().onAuthStateChanged((user) => {
-            let session = localStorage.getItem("gotpay_session");
-            if (user && session) {
-                window.loadDashboard(session);
-            } else {
-                localStorage.removeItem("gotpay_session");
-            }
-        });
+            await userRef.set({
+                username: name,
+                phone: phone,
+                password: pass,
+                uid: newUid,
+                balance: 250,
+                upis: {}
+            });
+            
+            await counterRef.set(newUid);
 
-                let counterRef = db.ref('system/last_uid');
-                let counterSnap = await counterRef.once('value');
-                let newUid = counterSnap.exists() ? counterSnap.val() + 1 : 100001;
+            alert("Registration Successful! ₹250 Bonus added");
+            window.showPage('loginPage');
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error: " + error.message);
+        }
+    };
 
-                await userRef.set({
-                    username: name,
-                    phone: phone,
-                    password: pass,
-                    uid: newUid,
-                    balance: 250,
-                    upis: {}
-                });
-                
-                await counterRef.set(newUid);
+    // <-- सेशन वाला कोड बाहर होना चाहिए
+    firebase.auth().onAuthStateChanged((user) => {
+        let session = localStorage.getItem("gotpay_session");
+        if (user && session) {
+            window.loadDashboard(session);
+        } else {
+            localStorage.removeItem("gotpay_session");
+        }
+    });
 
-                alert("Registration Successful! ₹250 Bonus added");
-                window.showPage('loginPage');
-            } catch (error) {
-                console.error("Error:", error);
-                alert("Error: " + error.message);
-            }
-        };
 
         window.loginUser = async () => {
             let phone = document.getElementById('loginPhone').value.trim();
