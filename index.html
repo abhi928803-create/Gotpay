@@ -1907,6 +1907,13 @@ window.proceedToWalletStep2 = function() {
             });
     }
         }
+
+        function copyInviteLink() {
+    let linkText = document.getElementById('userInviteLinkBox').innerText;
+    navigator.clipboard.writeText(linkText).then(() => {
+        alert("✅ Invite link copied successfully!");
+    });
+        }
         
     </script>
     </body>
