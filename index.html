@@ -726,6 +726,32 @@
         
         <button id="goPayBtn" onclick="processFinalPayment()" style="width: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; margin-top: 25px; box-shadow: 0 4px 10px rgba(0, 86, 210, 0.3);">go pay</button>
     </div>
+            
+            <!-- TEAM PAGE -->
+<div id="teamTab" class="page-content" style="padding-bottom: 100px; min-height: 100vh;">
+    <h2 style="text-align: center; color: var(--primary);">My Team</h2>
+    <div class="card-box">
+        <p>Total Commission: <strong id="teamTotalComm" style="color: var(--success);">₹ 0.00</strong></p>
+        <p style="margin-top: 15px; font-size: 14px;">Your Invite Link:</p>
+        <div style="background: #e3f2fd; padding: 10px; border-radius: 8px; margin: 10px 0; word-break: break-all; font-size: 13px;" id="userInviteLink">Loading...</div>
+        <button class="primary-btn" onclick="copyInviteLink()">Copy Link</button>
+    </div>
+</div>
+
+<!-- ORDER PAGE -->
+<div id="orderTab" class="page-content" style="padding-bottom: 100px; min-height: 100vh;">
+    <h2 style="text-align: center; color: var(--primary);">Order History</h2>
+    <div style="display: flex; background: #e3f2fd; border-radius: 25px; padding: 4px; margin-bottom: 20px;">
+        <button id="btnReceiveTab" onclick="switchOrderSubTab('receive')" style="flex: 1; border: none; padding: 10px; background: var(--primary); color: white; border-radius: 20px; font-weight: bold; font-size: 14px;">Receive (Sales)</button>
+        <button id="btnPurchaseTab" onclick="switchOrderSubTab('purchase')" style="flex: 1; border: none; padding: 10px; background: transparent; color: #555; border-radius: 20px; font-weight: bold; font-size: 14px;">Purchase (Deposit)</button>
+    </div>
+    <div id="purchaseSummaryCard" style="display:none; text-align:center; margin-bottom:15px;">
+        <span style="font-size:14px; font-weight:bold;">History Balance: <span id="historyBalDisplay">₹ 0.00</span></span>
+    </div>
+    <div id="orderHistoryListContainer">
+        <!-- JS list yahan load karega -->
+    </div>
+</div>
 
             <!-- BOTTOM NAV -->
             <div class="nav">
