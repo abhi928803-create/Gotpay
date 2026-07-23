@@ -1234,7 +1234,7 @@
                 document.getElementById('homeHistoryList').innerHTML = html;
             }
         }
-                                // --- UPDATED AUTOMATIC ORDERS RENDER ---
+        // --- FIXED AUTOMATIC ORDERS RENDER ---
         function loadAutomaticOrders() {
             const ordersRef = firebase.database().ref('orders');
             ordersRef.on('value', (snapshot) => {
@@ -1248,12 +1248,17 @@
                     return;
                 }
                 
+                let hasValidOrders = false;
+
                 Object.keys(data).forEach((key) => {
-                    const order = data[key] || {};
-                    const amountVal = Number(order.amount || order.amt || 0);
-                    
+                    const order = data[key];
+                    if (!order) return;
+
+                    // Amount ko safely extract karna
+                    const amountVal = Number(order.amount || order.amt || order.price || 0);
                     if (amountVal <= 0) return;
 
+                    hasValidOrders = true;
                     const incomeVal = (amountVal * 0.06).toFixed(2);
                     const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
                     
@@ -1272,11 +1277,14 @@
                     `;
                     ordersListEl.innerHTML += cardHTML;
                 });
+
+                if (!hasValidOrders) {
+                    ordersListEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">No active orders found in database</div>';
+                }
             });
         }
 
 
-        
         // --- LIVE ASSET & STATISTICS CALCULATOR ---
         function updateLiveAssets() {
             if(!currentUser) return;
