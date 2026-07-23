@@ -998,7 +998,7 @@
     };
 
        // --- DASHBOARD LOGIC ---
-        window.loadDashboard = function(phone) {
+                window.loadDashboard = function(phone) {
             document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
             let mainApp = document.getElementById('mainApp');
             if(mainApp) mainApp.style.display = 'block';
@@ -1008,29 +1008,62 @@
                     currentUser = snapshot.val();
                     currentBalance = currentUser.balance || 0;
                     
-                    let usernameEl = document.getElementById('displayUsername');
-                    let uidEl = document.getElementById('displayUid');
-                    let balanceEl = document.getElementById('userBalance');
-                    let withdrawBal = document.getElementById('withdrawBalDisplay');
-                    let payBalance = document.getElementById('paymentBalance');
+                    if(document.getElementById('displayUsername')) document.getElementById('displayUsername').innerText = currentUser.username;
+                    if(document.getElementById('displayUid')) document.getElementById('displayUid').innerText = currentUser.uid;
+                    if(document.getElementById('userBalance')) document.getElementById('userBalance').innerText = "₹ " + currentBalance.toFixed(2);
+                    if(document.getElementById('withdrawBalDisplay')) document.getElementById('withdrawBalDisplay').innerText = "₹ " + currentBalance.toFixed(2);
+                    if(document.getElementById('paymentBalance')) document.getElementById('paymentBalance').innerText = "₹ " + currentBalance.toFixed(2);
                     
-                    if(usernameEl) usernameEl.innerText = currentUser.username;
-                    if(uidEl) uidEl.innerText = currentUser.uid;
-                    if(balanceEl) balanceEl.innerText = "₹ " + currentBalance.toFixed(2);
-                    if(withdrawBal) withdrawBal.innerText = "₹ " + currentBalance.toFixed(2);
-                    if(payBalance) payBalance.innerText = "₹ " + currentBalance.toFixed(2);
-                    
-                    if(typeof renderUpiList === 'function') {
-                        renderUpiList();
-                    }
+                    if(typeof renderUpiList === 'function') renderUpiList();
                 }
             });
 
-                db.ref('deposit_requests').on('value', renderHistory);
-    updateLiveAssets();
-    loadAutomaticOrders(); 
-};
+            // HOME PAGE के लिए Deposit और Withdraw दोनों लोड होंगे
+            db.ref('deposit_requests').on('value', renderHistory);
+            db.ref('withdraw_requests').on('value', renderHistory); 
+            
+            updateLiveAssets();
+            loadAutomaticOrders(); 
+        };
 
+                        function renderHistory() {
+            if(!currentUser) return;
+            let records = [];
+            
+            db.ref('deposit_requests').once('value').then(depSnap => {
+                depSnap.forEach(c => { let d = c.val(); if(d && d.phone === currentUser.phone) { d.txType = 'Deposit'; records.push(d); } });
+                
+                db.ref('withdraw_requests').once('value').then(withSnap => {
+                    withSnap.forEach(c => { let d = c.val(); if(d && d.phone === currentUser.phone) { d.txType = 'Withdrawal'; records.push(d); } });
+                    
+                    records.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    let html = "";
+                    if(records.length === 0) {
+                        html = "<p style='text-align:center; color:#999;'>No recent activity.</p>";
+                    } else {
+                        records.slice(0, 5).forEach(r => {
+                            let color = (r.status === 'Success' || r.status === 'Approved') ? 'var(--success)' : (r.status === 'Rejected' ? 'var(--danger)' : '#ff9800');
+                            let amtText = r.txType === 'Deposit' ? `+₹${r.original_amount}` : `-₹${r.amount}`;
+                            let amtColor = r.txType === 'Deposit' ? 'var(--success)' : 'var(--danger)';
+                            let subText = r.txType === 'Deposit' ? `UTR: ${r.utr}` : `UPI: ${r.upiId}`;
+                            let displayStatus = (r.status === 'Approved') ? 'Success' : r.status;
+                            
+                            html += `
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+                                <div>
+                                    <strong style="font-size:13px; color:#333;">${r.txType} <span style="color:white; background:${color}; padding:2px 5px; border-radius:4px; font-size:10px; margin-left:5px;">${displayStatus}</span></strong>
+                                    <br><span style="font-size:10px; color:#777;">${new Date(r.timestamp).toLocaleDateString()} | ${subText}</span>
+                                </div>
+                                <div style="color:${amtColor}; font-weight:bold; font-size:14px;">${amtText}</div>
+                            </div>`;
+                        });
+                    }
+                    if(document.getElementById('homeHistoryList')) document.getElementById('homeHistoryList').innerHTML = html;
+                });
+            });
+                        }
+    
         let session = localStorage.getItem("gotpay_session");
         if(session) {
             window.loadDashboard(session);
