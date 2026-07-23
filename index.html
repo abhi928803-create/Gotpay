@@ -1556,14 +1556,6 @@
         };
 
 
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll("button, div").forEach(el => {
-                if (el.innerText && el.innerText.includes("+ Add UPI")) {
-                    el.onclick = function() { openChooseToolPage(); };
-                }
-            });
-        });
-
         let orderTimerInterval = null;
         window.startOrderTimer = function(durationInMinutes) {
             let totalSeconds = durationInMinutes * 60;
