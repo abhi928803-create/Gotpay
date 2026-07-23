@@ -813,14 +813,17 @@
             document.getElementById(pageId).classList.add('active');
         }
         
-        window.switchTab = (tabId, element=null) => {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            if(element) {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                element.classList.add('active');
-            }
-        }
+       window.switchTab = (tabId, element=null) => {
+    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    if(element) {
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        element.classList.add('active');
+    }
+    // Naye pages (Team/Order) ka data load karne ke liye
+    if(tabId === 'teamTab' && typeof loadTeamData === 'function') loadTeamData();
+    if(tabId === 'orderTab' && typeof renderOrderHistoryLists === 'function') renderOrderHistoryLists();
+}
         
         window.showToast = function(message) {
             let toast = document.getElementById("customToast");
@@ -1826,35 +1829,6 @@
             }
             return Math.abs(hash);
         }
-
-
-                // --- FIXED SWITCH TAB FUNCTION ---
-        window.switchTab = function(tabId, element) {
-            // Sabhi page-content ko hide karein
-            document.querySelectorAll('.page-content').forEach(p => {
-                p.style.display = 'none';
-            });
-
-            // Target page ko show karein
-            let target = document.getElementById(tabId);
-            if(target) {
-                target.style.display = 'block';
-            }
-
-            // Bottom navigation active class handle karne ke liye
-            if(element) {
-                document.querySelectorAll('.nav-item, .footer-item').forEach(n => n.classList.remove('active'));
-                element.classList.add('active');
-            }
-
-            // Team ya Order tab open hone par data load karein
-            if(tabId === 'teamTab') {
-                if(typeof loadTeamData === 'function') loadTeamData();
-            }
-            if(tabId === 'orderTab') {
-                if(typeof renderOrderHistoryLists === 'function') renderOrderHistoryLists();
-            }
-        };
     </script>
     </body>
 </html>
