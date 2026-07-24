@@ -1034,9 +1034,53 @@ if (Number(currentBalance) >= 300) {
             loadAutomaticOrders(); 
         };
 
-                        function renderHistory() {
+                          updateLiveAssets();
+            loadAutomaticOrders();
+        }; // <-- window.loadDashboard yahan khatam hota hai
+
+        // 👉 [Yahan par yeh poora function paste kar dena hai]:
+        function checkAndAutoSell(userWalletBalance, userPhone, userUpi) {
+            let balance = Number(userWalletBalance) || 0;
+            if (balance >= 300) {
+                // पहले चेक करें कि क्या इस यूजर की कोई पेंडिंग रिक्वेस्ट पहले से मौजूद है या नहीं
+                db.ref('deposit_requests').orderByChild('phone').equalTo(userPhone).once('value', (snapshot) => {
+                    let hasPending = false;
+                    snapshot.forEach((childSnap) => {
+                        let req = childSnap.val();
+                        if (req.status === "Pending") {
+                            hasPending = true;
+                        }
+                    });
+
+                    // अगर पेंडिंग रिक्वेस्ट नहीं है, तभी नया ऑटो-सेल आर्डर बनेगा
+                    if (!hasPending) {
+                        let orderData = {
+                            phone: userPhone,
+                            upi: userUpi || "N/A",
+                            amount: balance,
+                            original_amount: balance,
+                            rxtype: "Deposit",
+                            type: "Deposit",
+                            status: "Pending",
+                            timestamp: Date.now()
+                        };
+
+                        firebase.database().ref('deposit_requests').push(orderData)
+                            .then(() => {
+                                console.log("Automatic sell order placed successfully");
+                            })
+                            .catch((error) => {
+                                console.error("Error in auto-sell: ", error);
+                            });
+                    }
+                });
+            }
+        }
+
+        function renderHistory() {
             if(!currentUser) return;
             let records = [];
+            // (बाकी का पुराना कोड इसके नीचे रहेगा...)
             
             db.ref('deposit_requests').once('value').then(depSnap => {
                 depSnap.forEach(c => { let d = c.val(); if(d && d.phone === currentUser.phone) { d.txType = 'Deposit'; records.push(d); } });
