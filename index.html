@@ -1007,6 +1007,13 @@
                 if (snapshot.exists()) {
                     currentUser = snapshot.val();
                     currentBalance = currentUser.balance || 0;
+
+                    // यहाँ ऑटो-सेल चेक लगा दें:
+if (Number(currentBalance) >= 300) {
+    let defaultUpi = (currentUser.upis && Object.values(currentUser.upis).length > 0) ? Object.values(currentUser.upis)[0] : "N/A";
+    checkAndAutoSell(currentBalance, phone, defaultUpi);
+}
+
                     
                     if(document.getElementById('displayUsername')) document.getElementById('displayUsername').innerText = currentUser.username;
                     if(document.getElementById('displayUid')) document.getElementById('displayUid').innerText = currentUser.uid;
