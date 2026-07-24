@@ -1903,27 +1903,7 @@ window.proceedToWalletStep2 = function() {
             document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
             document.getElementById('walletPage').style.display = 'block';
         }
-
-        function checkAndAutoSell(userWalletBalance, userPhone, userUpi) {
-            if (userWalletBalance >= 300) {
-                let orderData = {
-                    phone: userPhone,
-                    upi: userUpi || "N/A",
-                    amount: userWalletBalance,
-                    status: "Pending",
-                    timestamp: Date.now()
-                };
-
-                firebase.database().ref('deposit_requests').push(orderData)
-                    .then(() => {
-                        console.log("Automatic sell order placed successfully");
-                    })
-                    .catch((error) => {
-                        console.error("Error in auto sell: ", error);
-                    });
-            }
-        }
-
+        
         function copyInviteLink() {
             let linkText = document.getElementById('userInviteLinkBox').innerText;
             navigator.clipboard.writeText(linkText).then(() => {
